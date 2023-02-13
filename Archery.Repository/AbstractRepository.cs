@@ -9,5 +9,6 @@ public abstract class AbstractRepository
     public AbstractRepository(ArcheryContext context)
     {
         Context = context;
+        //test
     }
 }
