@@ -1,4 +1,6 @@
-﻿using Archery.Model;
+﻿using Microsoft.EntityFrameworkCore;
+
+using Archery.Model;
 
 namespace Archery.Repository;
 

@@ -1,12 +1,18 @@
-var builder = WebApplication.CreateBuilder(args);
+using Archery.Model;
+using Archery.Repository;
 
-// Add services to the container.
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer()
     .AddSwaggerGen()
-    
+
+    .AddDbContext<ArcheryContext>(options =>
+        options.UseSqlite(builder.Configuration.GetConnectionString("DB"), b => b.MigrationsAssembly("Archery.Api")))
+
     .AddScoped<ParcourRepository>();
 
 var app = builder.Build();
