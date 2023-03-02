@@ -21,6 +21,6 @@ public class ParcourController : ControllerBase
     [HttpGet(Name = "GetParcourController")]
     public IEnumerable<Parcour> Get()
     {
-        return _repository.GetAllParcours().ToArray();
+        return _repository.GetAllParcours();
     }
 }
