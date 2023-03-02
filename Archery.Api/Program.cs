@@ -23,7 +23,7 @@ builder.Services.AddEndpointsApiExplorer()
     .AddSwaggerGen()
 
     .AddDbContext<ArcheryContext>(options =>
-        options.UseSqlite(builder.Configuration.GetConnectionString("DBTobiPC"), b => b.MigrationsAssembly("Archery.Api")))
+        options.UseSqlite(builder.Configuration.GetConnectionString("DB"), b => b.MigrationsAssembly("Archery.Api")))
 
     .AddScoped<ParcourRepository>();
 
