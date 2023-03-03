@@ -9,7 +9,7 @@
         "pflannery.vscode-versionlens",
         "jrichardeau.vscode-vsproj",
         "fernandoescolar.vscode-solution-explorer",
-        "vue.volar",
-        "ms-dotnettools.csharp"
+        "ms-dotnettools.csharp",
+        "octref.vetur"
     ]
 }
