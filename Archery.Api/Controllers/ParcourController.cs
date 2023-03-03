@@ -5,17 +5,16 @@ using Archery.Repository;
 
 namespace Archery.Api.Controllers;
 
-[ApiController]
 [Route("[controller]")]
-public class ParcourController : ControllerBase
+public class ParcourController : ArcheryController
 {
     private readonly ILogger<ParcourController> _logger;
     private readonly ParcourRepository _repository;
 
-    public ParcourController(ILogger<ParcourController> logger, ParcourRepository repository)
+    public ParcourController(ILogger<ParcourController> logger, ParcourRepository repository) : base(logger)
     {
         _logger = logger;
-        _repository=repository;
+        _repository = repository;
     }
 
     [HttpGet(Name = "GetParcourController")]

@@ -1,7 +1,10 @@
+global using System;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.DependencyInjection;
+
 using Archery.Model;
 using Archery.Repository;
-
-using Microsoft.EntityFrameworkCore;
 
 static async Task CreateDbAsync(IServiceProvider serviceProvider, IWebHostEnvironment env)
 {
@@ -25,6 +28,7 @@ builder.Services.AddEndpointsApiExplorer()
     .AddDbContext<ArcheryContext>(options =>
         options.UseSqlite(builder.Configuration.GetConnectionString("DB"), b => b.MigrationsAssembly("Archery.Api")))
 
+    .AddScoped<UserRepository>()
     .AddScoped<ParcourRepository>();
 
 var app = builder.Build();
