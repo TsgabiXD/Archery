@@ -1,16 +1,18 @@
 <template>
-  <hello-world />
+  <login-register-form />
 </template>
 
 <script lang="ts">
-  import Vue from 'vue'
-  import HelloWorld from '../components/HelloWorld.vue'
+import Vue from "vue";
+import LoginRegisterForm from "../components/LoginRegisterForm.vue";
 
-  export default Vue.extend({
-    name: 'HomeView',
-
-    components: {
-      HelloWorld,
-    },
-  })
+export default Vue.extend({
+  name: "HomeView",
+  data: () => {
+    return {};
+  },
+  components: {
+    LoginRegisterForm,
+  },
+});
 </script>
