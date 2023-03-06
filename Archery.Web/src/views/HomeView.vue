@@ -1,5 +1,7 @@
 <template>
-  <login-register-form />
+  <v-container>
+    <login-register-form />
+  </v-container>
 </template>
 
 <script lang="ts">
