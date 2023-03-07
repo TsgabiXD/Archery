@@ -32,6 +32,14 @@ namespace Archery.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Parcour");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AnimalNumber = 30,
+                            Name = "Kirchschlag"
+                        });
                 });
 
             modelBuilder.Entity("Archery.Model.User", b =>
@@ -67,6 +75,22 @@ namespace Archery.Api.Migrations
                             FirstName = "Tobias",
                             LastName = "Schachner",
                             NickName = "TsgabiXD",
+                            Role = "Admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            FirstName = "Luka",
+                            LastName = "Walkner",
+                            NickName = "woiges",
+                            Role = "Admin"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            FirstName = "Johannes",
+                            LastName = "Rölz",
+                            NickName = "JoRole",
                             Role = "Admin"
                         });
                 });
