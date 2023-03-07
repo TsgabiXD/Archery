@@ -29,6 +29,22 @@ public class ArcheryContext : DbContext
                 LastName = "Schachner",
                 NickName = "TsgabiXD",
                 Role = "Admin"
+            },
+            new
+            {
+                Id = 2,
+                FirstName = "Luka",
+                LastName = "Walkner",
+                NickName = "woiges",
+                Role = "Admin"
+            },
+            new
+            {
+                Id = 3,
+                FirstName = "Johannes",
+                LastName = "Rölz",
+                NickName = "JoRole",
+                Role = "Admin"
             });
     }
 }
