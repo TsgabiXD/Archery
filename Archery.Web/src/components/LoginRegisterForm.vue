@@ -3,23 +3,23 @@
     <v-card-title>
       {{ isLogin ? "Login" : "Registrieren" }}
       <v-spacer></v-spacer>
-      <v-btn elevation="2" outlined rounded v-if="isLogin" small click="switch">
+      <v-btn elevation="2" outlined rounded small @click="switchState">
         {{ isLogin ? "Kein Account?" : "Zurück zum Login?" }}
       </v-btn>
     </v-card-title>
     <v-card-text>
       <v-container class="grey lighten-5" rounded>
-        <v-row>
+        <v-row v-if="!isLogin" dense>
           <v-col cols="12" md="6">
-            <v-text-field label="Vorname" outlined> </v-text-field>
+            <v-text-field label="Vorname" outlined v-model="firstname"> </v-text-field>
           </v-col>
           <v-col cols="12" md="6">
-            <v-text-field label="Nachname" outlined> </v-text-field>
+            <v-text-field label="Nachname" outlined v-model="lastname"> </v-text-field>
           </v-col>
         </v-row>
-        <v-row>
+        <v-row dense>
           <v-col>
-            <v-text-field label="Nickname" outlined> </v-text-field>
+            <v-text-field label="Nickname" outlined v-model="nickname"> </v-text-field>
           </v-col>
         </v-row>
       </v-container>
@@ -43,6 +43,9 @@ export default defineComponent({
     return {
       login: true,
       isLoading: false,
+      firstname: "",
+      lastname: "",
+      nickname: "",
     };
   },
   computed: {
@@ -56,9 +59,15 @@ export default defineComponent({
     },
   },
   methods: {
-    switch(): void {
-      this.isLogin != this.isLogin;
+    switchState():void {
+      this.isLogin = !this.isLogin;
     },
+    registerLogin():void{
+      if(this.isLogin)
+      axios
+        .post("user/getusers")
+        .
+    }
   },
 });
 </script>
