@@ -15,9 +15,11 @@ public class ParcourController : ArcheryController
     {
         _logger = logger;
         _repository = repository;
-    }
+    }    
 
-    [HttpGet(Name = "GetParcourController")]
+    [HttpGet]
+    [Route("GetParcours")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public IEnumerable<Parcour> Get()
     {
         return _repository.GetAllParcours();

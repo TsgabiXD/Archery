@@ -17,7 +17,9 @@ public class UserController : ArcheryController
         _repository = repository;
     }
 
-    [HttpGet(Name = "GetUserController")]
+    [HttpGet]
+    [Route("GetUsers")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public IEnumerable<User> Get()
     {
         return _repository.GetAllUsers();
