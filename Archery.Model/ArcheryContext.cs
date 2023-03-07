@@ -45,7 +45,6 @@ public class ArcheryContext : DbContext
                 LastName = "Rölz",
                 NickName = "JoRole",
                 Role = "Admin"
-            }
-            );
+            });
     }
 }
