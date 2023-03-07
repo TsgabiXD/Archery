@@ -11,22 +11,25 @@
       <v-container class="grey lighten-5" rounded>
         <v-row v-if="!isLogin" dense>
           <v-col cols="12" md="6">
-            <v-text-field label="Vorname" outlined v-model="firstname"> </v-text-field>
+            <v-text-field label="Vorname" outlined v-model="firstname">
+            </v-text-field>
           </v-col>
           <v-col cols="12" md="6">
-            <v-text-field label="Nachname" outlined v-model="lastname"> </v-text-field>
+            <v-text-field label="Nachname" outlined v-model="lastname">
+            </v-text-field>
           </v-col>
         </v-row>
         <v-row dense>
           <v-col>
-            <v-text-field label="Nickname" outlined v-model="nickname"> </v-text-field>
+            <v-text-field label="Nickname" outlined v-model="nickname">
+            </v-text-field>
           </v-col>
         </v-row>
       </v-container>
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn color="primary" elevation="2">
+      <v-btn color="primary" elevation="2" @click="registerLogin">
         {{ isLogin ? "Einloggen" : "Registrieren" }}
       </v-btn>
       <v-spacer></v-spacer>
@@ -59,15 +62,40 @@ export default defineComponent({
     },
   },
   methods: {
-    switchState():void {
+    switchState(): void {
       this.isLogin = !this.isLogin;
+      this.isLoading = false;
     },
-    registerLogin():void{
-      if(this.isLogin)
-      axios
-        .post("user/getusers")
-        .
-    }
+    registerLogin(): void {
+      this.isLoading = true;
+
+      if (this.isLogin)
+        axios
+          .post("user/loginusers", {
+            nickName: this.nickname,
+          }) // TODO login
+          .then((response) => {
+            response.data.Token; // TODO save Token and use it
+          })
+          .catch((err) => console.log(err))
+          .finally(() => {
+            this.isLoading = false;
+          });
+      else
+        axios
+          .post("user/addusers", {
+            firstName: this.firstname,
+            lastName: this.lastname,
+            nickName: this.nickname,
+          })
+          .then((response) => {
+            response.data;
+          })
+          .catch((err) => console.log(err))
+          .finally(() => {
+            this.isLoading = false;
+          });
+    },
   },
 });
 </script>
