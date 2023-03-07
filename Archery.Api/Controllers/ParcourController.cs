@@ -20,8 +20,8 @@ public class ParcourController : ArcheryController
     [HttpGet]
     [Route("GetParcours")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IEnumerable<Parcour> Get()
+    public IActionResult Get()
     {
-        return _repository.GetAllParcours();
+        return Ok(_repository.GetAllParcours());
     }
 }

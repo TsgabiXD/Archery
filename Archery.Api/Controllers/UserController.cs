@@ -20,8 +20,8 @@ public class UserController : ArcheryController
     [HttpGet]
     [Route("GetUsers")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IEnumerable<User> Get()
+    public IActionResult Get()
     {
-        return _repository.GetAllUsers();
+        return Ok(_repository.GetAllUsers());
     }
 }
