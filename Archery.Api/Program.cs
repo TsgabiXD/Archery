@@ -20,6 +20,11 @@ static async Task CreateDbAsync(IServiceProvider serviceProvider, IWebHostEnviro
 
 var builder = WebApplication.CreateBuilder(args);
 
+var appSettings = builder.Configuration.GetRequiredSection(nameof(AppSettings));
+builder.Services.Configure<AppSettings>(appSettings);
+
+builder.Environment.WebRootPath = appSettings.GetValue<string>(nameof(builder.Environment.WebRootPath));
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
