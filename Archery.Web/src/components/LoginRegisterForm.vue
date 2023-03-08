@@ -29,7 +29,7 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn color="primary" elevation="2" @click="registerLogin">
+      <v-btn color="primary" class="mb-2" elevation="2" @click="registerLogin">
         {{ isLogin ? "Einloggen" : "Registrieren" }}
       </v-btn>
       <v-spacer></v-spacer>
