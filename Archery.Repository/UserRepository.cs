@@ -7,6 +7,25 @@ namespace Archery.Repository;
 public class UserRepository : AbstractRepository
 {
     public UserRepository(ArcheryContext context) : base(context) { }
+
+    public IEnumerable<User> GetAllUsers()
+    {
+        return Context.User.AsNoTracking().ToList();
+        
+    }
+
+    public void AddUser(string firstname, string lastname, string nickname)
+    {
+        if (!(string.IsNullOrEmpty(firstname) && string.IsNullOrEmpty(lastname) && string.IsNullOrEmpty(nickname)))
+        {
+            Context.User.Add(new() { FirstName = firstname, LastName = lastname, NickName = nickname });
+            
+            Context.SaveChanges();
+        }               
+    }
+
     
-    public IEnumerable<User> GetAllUsers() => Context.User.AsNoTracking().ToList();
+
+
+    
 }

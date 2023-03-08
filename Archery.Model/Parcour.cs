@@ -10,4 +10,6 @@ public class Parcour
     public string Name { set; get; } = null!;
 
     public int AnimalNumber { set; get; }
+
+    public string Location { set; get; } = null!;
 }
