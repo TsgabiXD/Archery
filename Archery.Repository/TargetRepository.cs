@@ -17,11 +17,11 @@ namespace Archery.Repository
             return Context.Target.AsNoTracking().ToList();
         }
 
-        public void AddTarget(int arrowNumber, int hittedArea)
+        public void AddTarget(int arrowCount, int hitArea)
         {
-            if (!((arrowNumber < 0 && arrowNumber > 3) || (hittedArea < 1 && hittedArea > 3)))
+            if (!((arrowCount < 0 && arrowCount > 3) || (hitArea < 1 && hitArea > 3)))
             {
-                Context.Target.Add(new() { ArrowNumber = arrowNumber, HittedArea = hittedArea });
+                Context.Target.Add(new() { ArrowCount = arrowCount, HitArea = hitArea });
 
                 Context.SaveChanges();
             }

@@ -11,8 +11,8 @@ namespace Archery.Model
     {
         public int Id { get; set; }
         
-        public int ArrowNumber { get; set; }
+        public int ArrowCount { get; set; }
 
-        public int HittedArea { get; set; }
+        public int HitArea { get; set; }
     }
 }
