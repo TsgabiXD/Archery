@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Archery.Repository
 {
-    internal class TargetRepository
+    public class TargetRepository:AbstractRepository
     {
+
+
     }
 }
