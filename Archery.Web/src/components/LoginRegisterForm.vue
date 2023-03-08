@@ -75,7 +75,7 @@ export default defineComponent({
             nickName: this.nickname,
           }) // TODO login
           .then((response) => {
-            response.data.Token; // TODO save Token and use it
+            response.data.Token; // TODO save Token and use it this.$emit()
           })
           .catch((err) => console.log(err))
           .finally(() => {
