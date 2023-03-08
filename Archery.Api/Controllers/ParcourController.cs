@@ -24,4 +24,13 @@ public class ParcourController : ArcheryController
     {
         return Ok(_repository.GetAllParcours());
     }
+
+    [HttpGet]
+    [Route("AddParcour")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult AddParcour(string name, string location, int animalNumber)
+    {
+        return Ok(_repository.AddParcour(name, location, animalNumber));
+    }
+
 }
