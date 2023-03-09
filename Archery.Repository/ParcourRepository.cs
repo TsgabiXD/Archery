@@ -21,7 +21,7 @@ public class ParcourRepository : AbstractRepository
 
     public string AddParcour(string name, string location, int animalNumber)
     {
-        if(!(string.IsNullOrEmpty(name)) && string.IsNullOrEmpty(location) && animalNumber <= 0)
+        if(!(string.IsNullOrEmpty(name) && string.IsNullOrEmpty(location) && animalNumber <= 0))
         {
             Context.Parcour.Add(new() { Name = name, Location = location, AnimalNumber = animalNumber });
 
