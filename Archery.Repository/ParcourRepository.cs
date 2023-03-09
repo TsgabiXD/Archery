@@ -13,6 +13,12 @@ public class ParcourRepository : AbstractRepository
         return Context.Parcour.AsNoTracking().ToList();
     }
 
+    public Parcour GetParcour(int id)
+    {
+        return Context.Parcour.AsNoTracking().SingleOrDefault(p => p.Id == id);
+        
+    }
+
     public string AddParcour(string name, string location, int animalNumber)
     {
         if(!(string.IsNullOrEmpty(name)) && string.IsNullOrEmpty(location) && animalNumber <= 0)
