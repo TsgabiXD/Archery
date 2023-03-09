@@ -30,6 +30,6 @@ public class TargetController : ArcheryController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult Target(int arrowCount,int hitArea)
     {
-        return Ok(_repository.Target(arrowCount, hitArea));
+        return Ok(_repository.AddTarget(arrowCount, hitArea));
     }
 }
