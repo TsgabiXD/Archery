@@ -11,11 +11,11 @@ public class ParcourController : ArcheryController
     private readonly ILogger<ParcourController> _logger;
     private readonly ParcourRepository _repository;
 
-    public ParcourController(ILogger<ParcourController> logger, ParcourRepository repository) : base(logger)
+    public  ParcourController(ILogger<ParcourController> logger, ParcourRepository repository) : base(logger)
     {
         _logger = logger;
         _repository = repository;
-    }    
+    }
 
     [HttpGet]
     [Route("GetParcours")]
@@ -31,6 +31,14 @@ public class ParcourController : ArcheryController
     public IActionResult AddParcours(string name, string location, string nickname)
     {
         return Ok(_repository.AddParcours(name, location, nickname));
+    }
+
+    [HttpGet]
+    [Route("GetParcour")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult GetParcour()
+    {
+        return Ok(_repository.GetParcour());
     }
 
 }
