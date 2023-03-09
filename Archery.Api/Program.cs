@@ -48,7 +48,8 @@ builder.Services.AddControllers()
         options.UseSqlite(builder.Configuration.GetConnectionString("DB"), b => b.MigrationsAssembly("Archery.Api")))
 
     .AddScoped<UserRepository>()
-    .AddScoped<ParcourRepository>();
+    .AddScoped<ParcourRepository>()
+    .AddScoped<TargetRepository>();
 
 var app = builder.Build();
 
