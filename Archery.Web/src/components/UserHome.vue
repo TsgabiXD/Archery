@@ -36,7 +36,7 @@ export default defineComponent({
   },
   mounted() {
     axios
-      .get("story/gettargets")
+      .get("target/gettargets")
       .then((response) => {
         // TODO prüfen
         this.targets = response.data;

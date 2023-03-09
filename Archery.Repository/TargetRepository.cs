@@ -6,6 +6,7 @@ namespace Archery.Repository
     public class TargetRepository : AbstractRepository
     {
         public TargetRepository(ArcheryContext context) : base(context){}
+
         public IEnumerable<Target> GetAllTargets()
         {
             return Context.Target.AsNoTracking().ToList();
