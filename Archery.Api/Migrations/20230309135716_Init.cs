@@ -18,8 +18,9 @@ namespace Archery.Api.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "nvarchar(150)", nullable: false),
-                    AnimalNumber = table.Column<int>(type: "INTEGER", nullable: false)
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    AnimalNumber = table.Column<int>(type: "INTEGER", nullable: false),
+                    Location = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -42,10 +43,30 @@ namespace Archery.Api.Migrations
                     table.PrimaryKey("PK_User", x => x.Id);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Target",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ArrowCount = table.Column<int>(type: "INTEGER", nullable: false),
+                    HitArea = table.Column<int>(type: "INTEGER", nullable: false),
+                    UserId = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Target", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Target_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id");
+                });
+
             migrationBuilder.InsertData(
                 table: "Parcour",
-                columns: new[] { "Id", "AnimalNumber", "Name" },
-                values: new object[] { 1, 30, "Kirchschlag" });
+                columns: new[] { "Id", "AnimalNumber", "Location", "Name" },
+                values: new object[] { 1, 30, "Kirchschlag", "Dinosaurier" });
 
             migrationBuilder.InsertData(
                 table: "User",
@@ -54,8 +75,13 @@ namespace Archery.Api.Migrations
                 {
                     { 1, "Tobias", "Schachner", "TsgabiXD", "Admin" },
                     { 2, "Luka", "Walkner", "woiges", "Admin" },
-                    { 3, "Johannes", "Rölz", "JoRole", "Admin" }
+                    { 3, "Johannes", "R�lz", "JoRole", "Admin" }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Target_UserId",
+                table: "Target",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -63,6 +89,9 @@ namespace Archery.Api.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Parcour");
+
+            migrationBuilder.DropTable(
+                name: "Target");
 
             migrationBuilder.DropTable(
                 name: "User");

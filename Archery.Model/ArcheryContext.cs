@@ -17,7 +17,8 @@ public class ArcheryContext : DbContext
             .HasData(new
             {
                 Id = 1,
-                Name = "Kirchschlag",
+                Name = "Dinosaurier",
+                Location = "Kirchschlag",
                 AnimalNumber = 30
             });
 
@@ -43,7 +44,7 @@ public class ArcheryContext : DbContext
             {
                 Id = 3,
                 FirstName = "Johannes",
-                LastName = "Rölz",
+                LastName = "Rï¿½lz",
                 NickName = "JoRole",
                 Role = "Admin"
             });
