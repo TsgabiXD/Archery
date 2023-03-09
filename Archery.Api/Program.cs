@@ -20,9 +20,28 @@ static async Task CreateDbAsync(IServiceProvider serviceProvider, IWebHostEnviro
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer()
+var appSettings = builder.Configuration.GetRequiredSection(nameof(AppSettings));
+builder.Services.Configure<AppSettings>(appSettings);
+
+builder.Environment.WebRootPath = appSettings.GetValue<string>(nameof(builder.Environment.WebRootPath));
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy
+            .WithOrigins(builder.Configuration.GetValue<string>("CorsPolicyHosts").Split(";"))
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+
+builder.Services.AddControllers()
+
+    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    .Services.AddEndpointsApiExplorer()
+
     .AddSwaggerGen()
 
     .AddDbContext<ArcheryContext>(options =>
@@ -41,6 +60,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthorization();
 

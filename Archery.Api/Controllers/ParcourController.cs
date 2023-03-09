@@ -5,7 +5,7 @@ using Archery.Repository;
 
 namespace Archery.Api.Controllers;
 
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class ParcourController : ArcheryController
 {
     private readonly ILogger<ParcourController> _logger;

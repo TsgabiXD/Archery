@@ -1,9 +1,9 @@
 <template>
   <div>
-    <v-container v-if="token">
+    <v-container v-if="!token">
       <login-register-form @login="bearerToken" />
     </v-container>
-    <user-home v-else-if="isAdmin" />
+    <user-home v-else-if="!isAdmin" />
   </div>
 </template>
 
