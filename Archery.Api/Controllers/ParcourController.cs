@@ -5,7 +5,7 @@ using Archery.Repository;
 
 namespace Archery.Api.Controllers;
 
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class ParcourController : ArcheryController
 {
     private readonly ILogger<ParcourController> _logger;
@@ -25,12 +25,12 @@ public class ParcourController : ArcheryController
         return Ok(_repository.GetAllParcours());
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("AddParcour")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult AddParcours(string name, string location, string nickname)
+    public IActionResult AddParcour(string name, string location, int animalNumber)
     {
-        return Ok(_repository.AddParcours(name, location, nickname));
+        return Ok(_repository.AddParcour(name, location, animalNumber));
     }
 
     [HttpGet]

@@ -21,5 +21,5 @@ public class User
     public string Role { set; get; } = "User";
 
     // foreign key 
-    public List<Target> targets = new();
+    public List<Target> targets { set; get; } = new();
 }

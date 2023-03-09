@@ -6,6 +6,7 @@ public class ArcheryContext : DbContext
 {
     public DbSet<Parcour> Parcour { set; get; } = null!;
     public DbSet<User> User { set; get; } = null!;
+    public DbSet<Target> Target { set; get; } = null!;
 
     public ArcheryContext(DbContextOptions<ArcheryContext> options) : base(options) { }
 
@@ -16,7 +17,8 @@ public class ArcheryContext : DbContext
             .HasData(new
             {
                 Id = 1,
-                Name = "Kirchschlag",
+                Name = "Dinosaurier",
+                Location = "Kirchschlag",
                 AnimalNumber = 30
             });
 
@@ -42,7 +44,7 @@ public class ArcheryContext : DbContext
             {
                 Id = 3,
                 FirstName = "Johannes",
-                LastName = "Rölz",
+                LastName = "Rï¿½lz",
                 NickName = "JoRole",
                 Role = "Admin"
             });
