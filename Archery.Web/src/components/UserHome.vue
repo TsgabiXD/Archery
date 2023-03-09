@@ -2,7 +2,7 @@
   <div>
     <v-card v-for="(target, i) of targets" :key="i">
       <v-card-title> Ziel {{ i + 1 }} </v-card-title>
-      <v-card-text>
+      <v-card-text class="my-1">
         <span class="ml-2"> Pfeile: {{ target.arrowCount }} </span> <br />
         <span class="ml-2"> Trefferfläche: {{ target.hitArea }} </span> <br />
         <span class="title mt-2 ml-1"> Punkte: {{ calcPunkte(target) }} </span>
@@ -36,7 +36,7 @@ export default defineComponent({
   },
   mounted() {
     axios
-      .get("story/gettarget")
+      .get("story/gettargets")
       .then((response) => {
         // TODO prüfen
         this.targets = response.data;
@@ -48,9 +48,9 @@ export default defineComponent({
       // TODO add Type
       if (
         target.arrowCount - 1 < 0 ||
-        target.arrowCount - 1 > 3 ||
+        target.arrowCount - 1 > 2 ||
         target.hitArea - 1 < 0 ||
-        target.hitArea - 1 > 3
+        target.hitArea - 1 > 2
       )
         return 0;
       return this.countingResults[target.arrowCount - 1][target.hitArea - 1];
