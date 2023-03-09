@@ -23,15 +23,7 @@ export default defineComponent({
         [14, 12, 10],
         [8, 6, 4],
       ],
-      targets: [
-        { arrowCount: 2, hitArea: 3 },
-        { arrowCount: 1, hitArea: 1 },
-        { arrowCount: 3, hitArea: 3 },
-        { arrowCount: 0, hitArea: 3 },
-        { arrowCount: 3, hitArea: 0 },
-        { arrowCount: 3, hitArea: 4 },
-        { arrowCount: 4, hitArea: 3 },
-      ], // TODO add Type
+      targets: [], // TODO add Type
     };
   },
   mounted() {
