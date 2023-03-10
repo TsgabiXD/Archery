@@ -3,19 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Archery.Api", "Archery.Api\Archery.Api.csproj", "{9CA085B0-42E2-4AF4-925B-D26E85C0CEC1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Archery.Api", "Archery.Api\Archery.Api.csproj", "{9CA085B0-42E2-4AF4-925B-D26E85C0CEC1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Archery.Model", "Archery.Model\Archery.Model.csproj", "{62CE7424-EE3B-4E4F-8F52-60BE5D1126D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Archery.Model", "Archery.Model\Archery.Model.csproj", "{62CE7424-EE3B-4E4F-8F52-60BE5D1126D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Archery.Repository", "Archery.Repository\Archery.Repository.csproj", "{316D35CC-657C-4759-9418-5FE1AD82FE07}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Archery.Repository", "Archery.Repository\Archery.Repository.csproj", "{316D35CC-657C-4759-9418-5FE1AD82FE07}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{9CA085B0-42E2-4AF4-925B-D26E85C0CEC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -30,5 +27,11 @@ Global
 		{316D35CC-657C-4759-9418-5FE1AD82FE07}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{316D35CC-657C-4759-9418-5FE1AD82FE07}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{316D35CC-657C-4759-9418-5FE1AD82FE07}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B31B3503-9AE0-4578-9422-907D65764263}
 	EndGlobalSection
 EndGlobal
