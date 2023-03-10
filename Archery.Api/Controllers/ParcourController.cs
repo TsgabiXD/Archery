@@ -26,7 +26,7 @@ public class ParcourController : ArcheryController
     }
 
     [HttpGet]
-    [Route("GetParcour")]
+    [Route("GetParcour/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult GetParcour(int id)
     {
