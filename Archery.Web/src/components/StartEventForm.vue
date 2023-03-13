@@ -21,11 +21,26 @@
                 persistent-hint
               >
                 <template v-slot:prepend-item>
-                  <v-btn tile depressed style="width: 100%" @click="addParcour"
-                    >+</v-btn
-                  >
+                  <v-btn tile depressed style="width: 100%" @click="addParcour">
+                    +
+                  </v-btn>
                 </template>
               </v-combobox>
+            </v-col>
+          </v-row>
+          <v-row dense>
+            <v-col>
+              <v-simple-table dense>
+                <tbody>
+                  <tr v-for="user in users" :key="user.name">
+                    <td>{{ user.nickName }}</td>
+                    <td class="d-flex">
+                      <v-spacer></v-spacer>
+                      <v-btn>x</v-btn>
+                    </td>
+                  </tr>
+                </tbody>
+              </v-simple-table>
             </v-col>
           </v-row>
         </v-container>
@@ -56,12 +71,21 @@ export default defineComponent({
       isLoading: false,
       isAddParcour: false,
       parcours: [], // TODO add Type
+      users: [], // TODO add Type
       selectedParcour: "" as string, // TODO add Type
       eventName: "",
     };
   },
   mounted() {
     this.getParcours();
+
+    axios
+      .get("user/getusers")
+      .then((response) => {
+        // TODO prüfen
+        this.users = response.data;
+      })
+      .catch((err) => console.log(err));
   },
   methods: {
     startEvent(): void {
