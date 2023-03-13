@@ -56,10 +56,16 @@ export default defineComponent({
   methods: {
     addParcour(): void {
       axios
-        .post("parcour/addparcour")
-        .then((response) => {
-          // TODO implement
-          response.data;
+        .post("parcour/addparcour", {
+          name: this.parcourName,
+          location: this.location,
+          animalNumber: this.animalCount,
+        })
+        .then(() => {
+          this.parcourName = "";
+          this.location = "";
+          this.animalCount = 0;
+          this.$emit("parcour-added");
         })
         .catch((err) => console.log(err));
     },

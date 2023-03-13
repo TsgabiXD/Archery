@@ -38,7 +38,7 @@
         <v-spacer></v-spacer>
       </v-card-actions>
     </v-card>
-    <new-parcour v-if="isAddParcour" />
+    <new-parcour v-if="isAddParcour" @parcour-added="isAddParcour = false" />
   </div>
 </template>
 
@@ -61,13 +61,7 @@ export default defineComponent({
     };
   },
   mounted() {
-    axios
-      .get("parcour/getparcours")
-      .then((response) => {
-        // TODO prüfen
-        this.parcours = response.data;
-      })
-      .catch((err) => console.log(err));
+    this.getParcours();
   },
   methods: {
     startEvent(): void {
@@ -81,6 +75,20 @@ export default defineComponent({
     },
     addParcour(): void {
       this.isAddParcour = true;
+    },
+    getParcours(): void {
+      axios
+        .get("parcour/getparcours")
+        .then((response) => {
+          // TODO prüfen
+          this.parcours = response.data;
+        })
+        .catch((err) => console.log(err));
+    },
+  },
+  watch: {
+    isAddParcour(newValue: boolean) {
+      if (newValue !== true) this.getParcours();
     },
   },
 });

@@ -15,15 +15,14 @@ public class ParcourRepository : AbstractRepository
 
     public Parcour GetParcour(int id)
     {
-        return Context.Parcour.AsNoTracking().SingleOrDefault(p => p.Id == id);
-        
+        return Context.Parcour.AsNoTracking().Single(p => p.Id == id);
     }
 
-    public string AddParcour(string name, string location, int animalNumber)
+    public string AddParcour(Parcour parcour)
     {
-        if(!(string.IsNullOrEmpty(name) && string.IsNullOrEmpty(location) && animalNumber <= 0))
+        if(!(string.IsNullOrEmpty(parcour.Name) && string.IsNullOrEmpty(parcour.Location) && parcour.AnimalNumber <= 0))
         {
-            Context.Parcour.Add(new() { Name = name, Location = location, AnimalNumber = animalNumber });
+            Context.Parcour.Add(new() { Name = parcour.Name, Location = parcour.Location, AnimalNumber = parcour.AnimalNumber });
 
             Context.SaveChanges();
             return "success";
