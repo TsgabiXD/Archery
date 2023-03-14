@@ -79,21 +79,22 @@ export default defineComponent({
           })
           .catch((err) => console.log(err))
           .finally(() => {
-            this.isLoading = false;
+            this.isLoading = false; // TODO authenticate
           });
       else
         axios
-          .post("user/addusers", {
+          .post("user/adduser", {
             firstName: this.firstname,
             lastName: this.lastname,
             nickName: this.nickname,
+            role: "User"
           })
           .then((response) => {
             response.data;
           })
           .catch((err) => console.log(err))
           .finally(() => {
-            this.isLoading = false;
+            this.isLoading = false; // TODO authenticate
           });
     },
   },

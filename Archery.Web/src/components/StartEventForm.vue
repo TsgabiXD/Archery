@@ -107,7 +107,7 @@ export default defineComponent({
           user: this.eventUser,
           isRunning: true,
         }) // TODO add Type
-        .then((response) => {
+        .then(() => {
           // TODO implement
         })
         .catch((err) => console.log(err))
