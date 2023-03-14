@@ -36,7 +36,15 @@
                     <td>{{ user.nickName }}</td>
                     <td class="d-flex">
                       <v-spacer></v-spacer>
-                      <v-btn>x</v-btn>
+                      <v-switch
+                        v-model="users"
+                        color="success"
+                        :label="user.name"
+                        :value="user.name"
+                        dense
+                        class="ma-0"
+                      >
+                      </v-switch>
                     </td>
                   </tr>
                 </tbody>
