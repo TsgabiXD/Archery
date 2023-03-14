@@ -19,10 +19,10 @@ public class EventController : ArcheryController
     }
 
 
-    [HttpGet]
+    [HttpPost]
     [Route("StartEvent")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult Get()
+    public IActionResult StartEvent(Event newEvent)
     {
         return Ok(_repository.GetAllParcours());
     }
