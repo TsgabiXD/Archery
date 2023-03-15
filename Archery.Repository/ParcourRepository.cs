@@ -6,7 +6,7 @@ namespace Archery.Repository;
 
 public class ParcourRepository : AbstractRepository
 {
-    public ParcourRepository(ArcheryContext context) : base(context) {}
+    public ParcourRepository(ArcheryContext context) : base(context) { }
 
     public IEnumerable<Parcour> GetAllParcours()
     {
@@ -20,14 +20,26 @@ public class ParcourRepository : AbstractRepository
 
     public string AddParcour(Parcour parcour)
     {
-        if(!(string.IsNullOrEmpty(parcour.Name) && string.IsNullOrEmpty(parcour.Location) && parcour.AnimalNumber <= 0))
+        if (parcour.Name.Length <= 150)
         {
-            Context.Parcour.Add(parcour);
-            Context.SaveChanges();
+            if (!(string.IsNullOrEmpty(parcour.Name) && string.IsNullOrEmpty(parcour.Location) && parcour.AnimalNumber <= 0))
+            {
+                try
+                {
+                    Context.Parcour.Add(parcour);
+                    Context.SaveChanges();
 
-            return "success";
+                    //return "success";
+                }
+                catch (Exception ex)
+                {
+                    return "Fail: " + ex.Message;
+                }
+            }
+            return "Ungültige Werte!";
         }
+        return "Vorname, Nachname oder Nickname zu lang!";
 
-        return "fail";
     }
 }
+

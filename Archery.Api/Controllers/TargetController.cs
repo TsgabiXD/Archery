@@ -28,8 +28,12 @@ public class TargetController : ArcheryController
     [HttpPost]
     [Route("AddTarget")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public IActionResult Target(int arrowCount,int hitArea)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         return Ok(_repository.AddTarget(arrowCount, hitArea));
     }
 }

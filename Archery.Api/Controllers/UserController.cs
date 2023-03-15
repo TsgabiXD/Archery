@@ -28,8 +28,12 @@ public class UserController : ArcheryController
     [HttpPost]
     [Route("AddUser")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public IActionResult AddUser(User user)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         return Ok(_repository.AddUser(user));
     }
 
