@@ -90,7 +90,7 @@ export default defineComponent({
             role: "User"
           })
           .then((response) => {
-            response.data;
+            response.data.Token; // TODO save Token and use it this.$emit()
           })
           .catch((err) => console.log(err))
           .finally(() => {

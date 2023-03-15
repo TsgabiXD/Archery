@@ -37,8 +37,12 @@ public class ParcourController : ArcheryController
     [HttpPost]
     [Route("AddParcour")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public IActionResult AddParcour(Parcour parcour)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         return Ok(_repository.AddParcour(parcour));
     }
 
