@@ -22,9 +22,18 @@ namespace Archery.Repository
                 {
                     Context.Event.Add(new() { Name = newEvent.Name, Parcour = newEvent.Parcour, User = newEvent.User, IsRunning = true });
 
+                    var id = Context.Event.Single(e => 
+                            e.Name == newEvent.Name && 
+                            e.Parcour == newEvent.Parcour &&
+                            e.User == newEvent.User &&
+                            e.IsRunning == true )
+                        .Id;
+
                     Context.SaveChanges();
+
+                    return id.ToString();
                 }
-                return "Event gestartet";
+                throw new Exception();
             }
             catch (Exception ex)
             {
@@ -32,11 +41,11 @@ namespace Archery.Repository
             }
         }
 
-        public string EndEvent(Event eventToStop)
+        public string EndEvent(int eventToStop)
         {
             try
             {
-                var stopEvent = Context.Event.SingleOrDefault(e => e.Id == eventToStop.Id);
+                var stopEvent = Context.Event.SingleOrDefault(e => e.Id == eventToStop);
 
                 if (stopEvent == null)
                 {
@@ -48,9 +57,9 @@ namespace Archery.Repository
 
                 return "Event beendet";
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-               return "Fail: " + ex.Message;               
+                return "Fail: " + ex.Message;
             }
         }
     }

@@ -39,7 +39,7 @@ public class EventController : ArcheryController
     [HttpPost]
     [Route("EndEvent")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult EndEvent(Event stopEvent)
+    public IActionResult EndEvent(int stopEvent)
     { 
         return Ok(_repository.EndEvent(stopEvent));
     }
