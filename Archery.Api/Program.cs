@@ -11,6 +11,8 @@ using Microsoft.OpenApi.Models;
 
 using Archery.Model;
 using Archery.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 static async Task CreateDbAsync(IServiceProvider serviceProvider, IWebHostEnvironment env)
 {
@@ -90,8 +92,26 @@ builder.Services.AddControllers()
     .AddScoped<ParcourRepository>()
     .AddScoped<TargetRepository>()
     .AddScoped<EventRepository>()
-
     .AddScoped<TokenService, TokenService>();
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ClockSkew = TimeSpan.Zero,
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = "apiWithAuthBackend",
+            ValidAudience = "apiWithAuthBackend",
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes("!SomethingSecret!")
+            ),
+        };
+    }); // TODO hinterfragen
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
