@@ -45,7 +45,7 @@ builder.Services.AddControllers()
     .AddSwaggerGen()
 
     .AddDbContext<ArcheryContext>(options =>
-        options.UseSqlite(builder.Configuration.GetConnectionString("DB"), b => b.MigrationsAssembly("Archery.Api")))
+        options.UseSqlite(builder.Configuration.GetConnectionString("DBLukaPC"), b => b.MigrationsAssembly("Archery.Api")))
 
     .AddScoped<UserRepository>()
     .AddScoped<ParcourRepository>()
