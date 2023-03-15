@@ -7,6 +7,9 @@ public class ArcheryContext : DbContext
     public DbSet<Parcour> Parcour { set; get; } = null!;
     public DbSet<User> User { set; get; } = null!;
     public DbSet<Target> Target { set; get; } = null!;
+    public DbSet<Event> Event { set; get; } = null!;
+
+    
 
     public ArcheryContext(DbContextOptions<ArcheryContext> options) : base(options) { }
 
