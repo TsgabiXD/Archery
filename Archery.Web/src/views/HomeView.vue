@@ -25,8 +25,8 @@ export default Vue.extend({
   },
   data: () => {
     return {
-      token: "x", // TODO default ""
-      isAdmin: true, // TODO default false
+      token: "",
+      isAdmin: false,
     };
   },
   computed: {

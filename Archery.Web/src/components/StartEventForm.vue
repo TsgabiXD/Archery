@@ -36,7 +36,14 @@
                     <td>{{ user.nickName }}</td>
                     <td class="d-flex">
                       <v-spacer></v-spacer>
-                      <v-btn>x</v-btn>
+                      <v-switch
+                        v-model="eventUser"
+                        color="success"
+                        :value="user"
+                        dense
+                        class="ma-0"
+                      >
+                      </v-switch>
                     </td>
                   </tr>
                 </tbody>
@@ -74,6 +81,7 @@ export default defineComponent({
       users: [], // TODO add Type
       selectedParcour: "" as string, // TODO add Type
       eventName: "",
+      eventUser: [], // TODO add Type
     };
   },
   mounted() {
@@ -84,18 +92,28 @@ export default defineComponent({
       .then((response) => {
         // TODO prüfen
         this.users = response.data;
+        this.eventUser = response.data;
       })
       .catch((err) => console.log(err));
   },
   methods: {
     startEvent(): void {
+      this.isLoading = true;
+
       axios
-        .post("event/startevent")
-        .then((response) => {
+        .post("event/startevent", {
+          name: this.eventName,
+          parcour: this.selectedParcour,
+          user: this.eventUser,
+          isRunning: true,
+        }) // TODO add Type
+        .then(() => {
           // TODO implement
-          this.parcours = response.data;
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err))
+        .finally(() => {
+          this.isLoading = false;
+        });
     },
     addParcour(): void {
       this.isAddParcour = true;

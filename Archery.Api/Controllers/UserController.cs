@@ -28,9 +28,9 @@ public class UserController : ArcheryController
     [HttpPost]
     [Route("AddUser")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult AddUser(string firstname, string lastname, string nickname)
+    public IActionResult AddUser(User user)
     {
-        return Ok(_repository.AddUser(firstname,lastname,nickname));
+        return Ok(_repository.AddUser(user));
     }
 
 }
