@@ -18,6 +18,11 @@ static async Task CreateDbAsync(IServiceProvider serviceProvider, IWebHostEnviro
     }
 }
 
+var pcName = Environment.MachineName;
+var conection = pcName.Contains("03302") ? "DB" :
+                pcName == "P3643" ? "DBLukaPC" :
+                "DBTobiPC";
+
 var builder = WebApplication.CreateBuilder(args);
 
 var appSettings = builder.Configuration.GetRequiredSection(nameof(AppSettings));
@@ -45,7 +50,7 @@ builder.Services.AddControllers()
     .AddSwaggerGen()
 
     .AddDbContext<ArcheryContext>(options =>
-        options.UseSqlite(builder.Configuration.GetConnectionString("DBLukaPC"), b => b.MigrationsAssembly("Archery.Api")))
+        options.UseSqlite(builder.Configuration.GetConnectionString(conection), b => b.MigrationsAssembly("Archery.Api")))
 
     .AddScoped<UserRepository>()
     .AddScoped<ParcourRepository>()

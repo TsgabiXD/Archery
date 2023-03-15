@@ -71,7 +71,7 @@ export default defineComponent({
 
       if (this.isLogin)
         axios
-          .post("user/loginusers", {
+          .post("user/loginuser", {
             nickName: this.nickname,
           }) // TODO login
           .then((response) => {
