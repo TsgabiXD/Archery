@@ -8,7 +8,8 @@
 	"extensions": {
 		"recommendations": [
 			"vue.volar",
-			"octref.vetur"
+			"octref.vetur",
+			"DotJoshJohnson.xml"
 		]
 	}
 }

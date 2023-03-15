@@ -2,9 +2,11 @@ global using System;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.DependencyInjection;
-
+using System.Text;
 using Archery.Model;
 using Archery.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 static async Task CreateDbAsync(IServiceProvider serviceProvider, IWebHostEnvironment env)
 {
@@ -57,6 +59,24 @@ builder.Services.AddControllers()
     .AddScoped<TargetRepository>()
     .AddScoped<EventRepository>();
 
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ClockSkew = TimeSpan.Zero,
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = "apiWithAuthBackend",
+            ValidAudience = "apiWithAuthBackend",
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes("!SomethingSecret!")
+            ),
+        };
+    }); // TODO hinterfragen
 
 var app = builder.Build();
 
@@ -68,11 +88,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseCors();
-
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 await CreateDbAsync(app.Services, app.Environment);
