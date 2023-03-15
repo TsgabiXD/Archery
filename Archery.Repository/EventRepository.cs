@@ -16,28 +16,42 @@ namespace Archery.Repository
 
         public string StartEvent(Event newEvent)
         {
-            if (newEvent != null)
+            try
             {
-                Context.Event.Add(new() {Name = newEvent.Name, Parcour = newEvent.Parcour, User = newEvent.User, IsRunning = true });
+                if (newEvent != null)
+                {
+                    Context.Event.Add(new() { Name = newEvent.Name, Parcour = newEvent.Parcour, User = newEvent.User, IsRunning = true });
 
-                Context.SaveChanges();
-
+                    Context.SaveChanges();
+                }
                 return "Event gestartet";
             }
-            return "fail";
-            
+            catch (Exception ex)
+            {
+                return "Fail: " + ex.Message;
+            }
         }
 
         public string EndEvent(Event eventToStop)
         {
+            try
+            {
+                var stopEvent = Context.Event.SingleOrDefault(e => e.Id == eventToStop.Id);
 
-            var stopEvent = Context.Event.AsNoTracking().Single(e => e.Id == eventToStop.Id);
+                if (stopEvent == null)
+                {
+                    return "Fail: stopEvent ist Null";
+                }
+                stopEvent.IsRunning = false;
 
-            stopEvent.IsRunning = false;
+                Context.SaveChanges();
 
-            Context.SaveChanges();
-
-            return "Event beendet";
+                return "Event beendet";
+            }
+            catch(Exception ex)
+            {
+               return "Fail: " + ex.Message;               
+            }
         }
     }
 }

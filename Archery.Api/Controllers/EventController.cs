@@ -41,8 +41,6 @@ public class EventController : ArcheryController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult EndEvent(Event stopEvent)
     { 
-
-
         return Ok(_repository.EndEvent(stopEvent));
     }
 
