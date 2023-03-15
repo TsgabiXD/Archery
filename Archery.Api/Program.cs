@@ -49,7 +49,9 @@ builder.Services.AddControllers()
 
     .AddScoped<UserRepository>()
     .AddScoped<ParcourRepository>()
-    .AddScoped<TargetRepository>();
+    .AddScoped<TargetRepository>()
+    .AddScoped<EventRepository>();
+
 
 var app = builder.Build();
 
