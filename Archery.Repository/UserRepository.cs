@@ -13,11 +13,11 @@ public class UserRepository : AbstractRepository
         
     }
 
-    public string AddUser(string firstname, string lastname, string nickname)
+    public string AddUser(User user)
     {
-        if (!(string.IsNullOrEmpty(firstname) && string.IsNullOrEmpty(lastname) && string.IsNullOrEmpty(nickname)))
+        if (!(string.IsNullOrEmpty(user.FirstName) && string.IsNullOrEmpty(user.LastName) && string.IsNullOrEmpty(user.NickName)))
         {
-            Context.User.Add(new() { FirstName = firstname, LastName = lastname, NickName = nickname });
+            Context.User.Add(user);
 
             Context.SaveChanges();
             return "success";

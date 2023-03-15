@@ -22,9 +22,9 @@ public class ParcourRepository : AbstractRepository
     {
         if(!(string.IsNullOrEmpty(parcour.Name) && string.IsNullOrEmpty(parcour.Location) && parcour.AnimalNumber <= 0))
         {
-            Context.Parcour.Add(new() { Name = parcour.Name, Location = parcour.Location, AnimalNumber = parcour.AnimalNumber });
-
+            Context.Parcour.Add(parcour);
             Context.SaveChanges();
+
             return "success";
         }
 
