@@ -8,12 +8,10 @@ namespace Archery.Api.Controllers;
 [Route("api/[controller]")]
 public class TargetController : ArcheryController
 {
-    private readonly ILogger<TargetController> _logger;
     private readonly TargetRepository _repository;
 
     public TargetController(ILogger<TargetController> logger, TargetRepository repository) : base(logger)
     {
-        _logger = logger;
         _repository = repository;
     }
 

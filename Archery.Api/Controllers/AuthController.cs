@@ -1,0 +1,41 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+
+using Archery.Api.Helper;
+
+namespace Archery.Api.Controllers;
+
+[Route("api/[controller]")]
+public class AuthController : ArcheryController
+{
+    private readonly UserManager<IdentityUser> _userManager;
+
+    public AuthController(ILogger<EventController> logger, UserManager<IdentityUser> userManager) : base(logger)
+    {
+        _userManager = userManager;
+    }
+
+    [HttpPost]
+    [Route("register")]
+    public async Task<IActionResult> Register(RegistrationRequest request)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var result = await _userManager.CreateAsync(
+            new IdentityUser { UserName = request.Username },
+            request.Password
+        );
+
+        if (result.Succeeded)
+        {
+            request.Password = "";
+            return CreatedAtAction(nameof(Register), request);
+        }
+
+        foreach (var error in result.Errors)
+            ModelState.AddModelError(error.Code, error.Description);
+
+        return BadRequest(ModelState);
+    }
+}

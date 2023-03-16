@@ -8,7 +8,7 @@ namespace Archery.Api.Controllers;
 [ApiController]
 public class ArcheryController : ControllerBase
 {
-    private readonly ILogger<ArcheryController> _logger;
+    protected readonly ILogger<ArcheryController> _logger;
 
     public ArcheryController(ILogger<ArcheryController> logger)
     {
