@@ -11,14 +11,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Archery.Api.Migrations
 {
     [DbContext(typeof(ArcheryContext))]
-    [Migration("20230315133028_EventMigrations")]
-    partial class EventMigrations
+    [Migration("20230316110422_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.3");
+            modelBuilder.HasAnnotation("ProductVersion", "7.0.4");
 
             modelBuilder.Entity("Archery.Model.Event", b =>
                 {

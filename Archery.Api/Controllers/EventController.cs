@@ -11,13 +11,10 @@ namespace Archery.Api.Controllers;
 [Route("api/[controller]")]
 public class EventController : ArcheryController
 {
-
-    private readonly ILogger<EventController> _logger;
     private readonly EventRepository _repository;
 
     public EventController(ILogger<EventController> logger, EventRepository repository) : base(logger)
     {
-        _logger = logger;
         _repository = repository;
     }
 
