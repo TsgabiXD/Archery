@@ -20,18 +20,29 @@ namespace Archery.Repository
             {
                 if (newEvent != null)
                 {
-                    Context.Event.Add(new() { Name = newEvent.Name, Parcour = newEvent.Parcour, User = newEvent.User, IsRunning = true });
+                    var eventParcour = Context.Parcour.Single(p => p.Id == newEvent.Parcour.Id);
 
-                    var id = Context.Event.Single(e => 
-                            e.Name == newEvent.Name && 
-                            e.Parcour == newEvent.Parcour &&
-                            e.User == newEvent.User &&
-                            e.IsRunning == true )
-                        .Id;
+                    List<int> ids = new();
+
+                    foreach (var user in newEvent.User)
+                        foreach (var dbUser in Context.User)
+                            if (dbUser.Id == user.Id)
+                                ids.Add(dbUser.Id);
+
+                    var eventUser = Context.User
+                        .Where(u => ids.Contains(u.Id))
+                        .ToList();
+
+                    var e = Context.Event.Add(new() { Name = newEvent.Name, Parcour = eventParcour, User = eventUser, IsRunning = true }).Entity;
+
+                    if (e == null)
+                    {
+                        return "Event not found";
+                    }
 
                     Context.SaveChanges();
 
-                    return id.ToString();
+                    return e.Id.ToString();
                 }
                 throw new Exception();
             }
