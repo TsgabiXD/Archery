@@ -20,26 +20,28 @@ public class ParcourRepository : AbstractRepository
 
     public string AddParcour(Parcour parcour)
     {
-        if (parcour.Name.Length <= 150)
+        try
         {
-            if (!(string.IsNullOrEmpty(parcour.Name) && string.IsNullOrEmpty(parcour.Location) && parcour.AnimalNumber <= 0))
+            if (!(parcour.Name.Length <= 150))
+                return "Vorname, Nachname oder Nickname zu lang!";
+
+            if (string.IsNullOrEmpty(parcour.Name) || string.IsNullOrEmpty(parcour.Location) || parcour.AnimalNumber <= 0)
+                return "Ungültige Werte!";
+
+            Context.Parcour.Add(new()
             {
-                try
-                {
-                    Context.Parcour.Add(parcour);
-                    Context.SaveChanges();
+                AnimalNumber = parcour.AnimalNumber,
+                Name = parcour.Name,
+                Location = parcour.Location,
+            });
+            Context.SaveChanges();
 
-                    //return "success";
-                }
-                catch (Exception ex)
-                {
-                    return "Fail: " + ex.Message;
-                }
-            }
-            return "Ungültige Werte!";
+            return "success";
         }
-        return "Vorname, Nachname oder Nickname zu lang!";
-
+        catch (Exception ex)
+        {
+            return "Fail: " + ex.Message;
+        }
     }
 }
 
