@@ -25,6 +25,12 @@
             </v-text-field>
           </v-col>
         </v-row>
+        <v-row dense>
+          <v-col>
+            <v-text-field label="Passwort" outlined v-model="password">
+            </v-text-field>
+          </v-col>
+        </v-row>
       </v-container>
     </v-card-text>
     <v-card-actions>
@@ -49,6 +55,7 @@ export default defineComponent({
       firstname: "",
       lastname: "",
       nickname: "",
+      password: ""
     };
   },
   computed: {
