@@ -6,7 +6,7 @@
         <v-container class="grey lighten-5" rounded>
           <v-row dense>
             <v-col cols="12" md="6">
-              <v-text-field label="Parcourname" outlined v-model="eventName">
+              <v-text-field label="Eventname" outlined v-model="eventName">
               </v-text-field>
             </v-col>
             <v-col cols="12" md="6">
@@ -92,7 +92,11 @@ export default defineComponent({
       .then((response) => {
         // TODO prüfen
         this.users = response.data;
-        this.eventUser = response.data;
+        
+        response.data.forEach((e: never) => { // TODO add Type
+        // TODO implementieren if(e.EventId)
+          this.eventUser.push(e);
+        });
       })
       .catch((err) => console.log(err));
   },
