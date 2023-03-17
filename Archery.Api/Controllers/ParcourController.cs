@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 
 using Archery.Model;
 using Archery.Repository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Archery.Api.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 public class ParcourController : ArcheryController
 {

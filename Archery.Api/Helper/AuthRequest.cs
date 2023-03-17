@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace Archery.Api.Helper;
-public class RegistrationRequest
+public class AuthRequest
 {
     [Required]
     public string Username { get; set; } = null!;
