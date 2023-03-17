@@ -62,11 +62,23 @@ namespace Archery.Repository
                 {
                     return "Fail: stopEvent ist Null";
                 }
+
+                List<int> eventIds = new();
+
+                foreach(var user in stopEvent.User)
+                    foreach(var dbUser in Context.User)
+                        if(dbUser.Id == user.Id) eventIds.Add(dbUser.Id);
+
+                var filterUser = Context.User
+                    .Where(t => eventIds.Contains(t.Id))
+                    .ToList();
+
+
                 stopEvent.IsRunning = false;
 
                 Context.SaveChanges();
 
-                return "Event beendet";
+                return " Event beendet";
             }
             catch (Exception ex)
             {
