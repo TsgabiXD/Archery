@@ -1,11 +1,11 @@
 <template>
   <div>
     <v-container v-if="!token">
-      <login-register-form @login="bearerToken" />
+      <login-register-form @login="setToken" />
     </v-container>
-    <user-home v-else-if="!isAdmin" />
+    <user-home v-else-if="!isAdmin" :token="token" />
     <v-container v-else>
-      <start-event-form />
+      <start-event-form :token="token" />
     </v-container>
   </div>
 </template>
@@ -29,15 +29,10 @@ export default Vue.extend({
       isAdmin: false,
     };
   },
-  computed: {
-    bearerToken: {
-      set(value: string): void {
-        this.token = value;
-      },
-      get(): string {
-        return this.token;
-      },
-    },
-  },
+  methods:{
+    setToken(token: string){
+      this.token = token;
+    }
+  }
 });
 </script>

@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 using Archery.Model;
 using Archery.Repository;
 
 namespace Archery.Api.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 public class UserController : ArcheryController
 {
