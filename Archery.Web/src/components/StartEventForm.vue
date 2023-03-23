@@ -73,6 +73,9 @@ export default defineComponent({
   components: {
     NewParcour,
   },
+  props: {
+    token: { type: String, required: true },
+  },
   data: () => {
     return {
       isLoading: false,
@@ -88,13 +91,14 @@ export default defineComponent({
     this.getParcours();
 
     axios
-      .get("user/getusers")
+      .get("user/getusers", this.axiosAuthConfig)
       .then((response) => {
         // TODO prüfen
         this.users = response.data;
-        
-        response.data.forEach((e: never) => { // TODO add Type
-        // TODO implementieren if(e.EventId)
+
+        response.data.forEach((e: never) => {
+          // TODO add Type
+          // TODO implementieren if(e.EventId)
           this.eventUser.push(e);
         });
       })
@@ -105,12 +109,16 @@ export default defineComponent({
       this.isLoading = true;
 
       axios
-        .post("event/startevent", {
-          name: this.eventName,
-          parcour: this.selectedParcour,
-          user: this.eventUser,
-          isRunning: true,
-        }) // TODO add Type
+        .post(
+          "event/startevent",
+          {
+            name: this.eventName,
+            parcour: this.selectedParcour,
+            user: this.eventUser,
+            isRunning: true,
+          },
+          this.axiosAuthConfig
+        ) // TODO add Type
         .then(() => {
           // TODO implement
         })
@@ -124,12 +132,17 @@ export default defineComponent({
     },
     getParcours(): void {
       axios
-        .get("parcour/getparcours")
+        .get("parcour/getparcours", this.axiosAuthConfig)
         .then((response) => {
           // TODO prüfen
           this.parcours = response.data;
         })
         .catch((err) => console.log(err));
+    },
+  },
+  computed: {
+    axiosAuthConfig(): object {
+      return { headers: { Authorization: `Bearer ${this.token}` } };
     },
   },
   watch: {

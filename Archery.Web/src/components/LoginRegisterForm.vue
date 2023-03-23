@@ -27,7 +27,7 @@
         </v-row>
         <v-row dense>
           <v-col>
-            <v-text-field label="Passwort" outlined v-model="password">
+            <v-text-field label="Passwort" type="password" outlined v-model="password">
             </v-text-field>
           </v-col>
         </v-row>
@@ -78,11 +78,12 @@ export default defineComponent({
 
       if (this.isLogin)
         axios
-          .post("user/loginuser", {
-            nickName: this.nickname,
+          .post("auth/login", {
+            username: this.nickname,
+            password: this.password,
           }) // TODO login
           .then((response) => {
-            response.data.Token; // TODO save Token and use it this.$emit()
+            this.$emit("login", response.data.token);
           })
           .catch((err) => console.log(err))
           .finally(() => {
@@ -97,7 +98,7 @@ export default defineComponent({
             role: "User"
           })
           .then((response) => {
-            response.data.Token; // TODO save Token and use it this.$emit()
+            this.$emit("login", response.data.token);
           })
           .catch((err) => console.log(err))
           .finally(() => {

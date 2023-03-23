@@ -16,6 +16,9 @@ import { defineComponent } from "vue";
 import axios from "@/router/axios";
 
 export default defineComponent({
+  props: {
+    token: { type: String, required: true },
+  },
   data: () => {
     return {
       countingResults: [
