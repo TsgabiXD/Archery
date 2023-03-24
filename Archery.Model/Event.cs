@@ -10,7 +10,7 @@ namespace Archery.Model
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;  
-        public Parcour Parcour { get; set; }= null!;
+        public Parcour Parcour { get; set; } = null!;
         public bool IsRunning { get; set; }
 
     }
