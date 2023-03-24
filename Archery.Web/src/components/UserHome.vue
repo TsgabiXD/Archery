@@ -8,6 +8,9 @@
         <span class="title mt-2 ml-1"> Punkte: {{ calcPunkte(target) }} </span>
       </v-card-text>
     </v-card>
+    <v-btn fab large elevation="10" icon fixed bottom right>
+      <v-icon>mdi-plus</v-icon>
+    </v-btn>
   </div>
 </template>
 
