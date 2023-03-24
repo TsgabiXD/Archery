@@ -14,5 +14,9 @@ namespace Archery.Model
         public int ArrowCount { get; set; }
 
         public int HitArea { get; set; }
+
+        // foreign key 
+        public User User { set; get; } = null!;
+        public Event Event { set; get; } = null!;
     }
 }

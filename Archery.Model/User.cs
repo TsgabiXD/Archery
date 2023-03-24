@@ -20,6 +20,4 @@ public class User
     // TODO Add Authorisation
     public string Role { set; get; } = "User";
 
-    // foreign key 
-    public List<Target> targets { set; get; } = new();
 }
