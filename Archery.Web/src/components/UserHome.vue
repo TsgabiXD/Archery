@@ -8,17 +8,31 @@
         <span class="title mt-2 ml-1"> Punkte: {{ calcPunkte(target) }} </span>
       </v-card-text>
     </v-card>
-    <v-btn fab large elevation="10" icon fixed bottom right>
+    <v-btn
+      fab
+      large
+      elevation="10"
+      icon
+      fixed
+      bottom
+      right
+      @click="addingTarget = !addingTarget"
+    >
       <v-icon>mdi-plus</v-icon>
     </v-btn>
+    <new-target :show="addingTarget" @hide="hideNewTarget"></new-target>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import axios from "@/router/axios";
+import NewTarget from "@/components/NewTarget.vue";
 
 export default defineComponent({
+  components: {
+    NewTarget,
+  },
   props: {
     token: { type: String, required: true },
   },
@@ -30,6 +44,7 @@ export default defineComponent({
         [8, 6, 4],
       ],
       targets: [], // TODO add Type
+      addingTarget: false,
     };
   },
   mounted() {
@@ -53,6 +68,9 @@ export default defineComponent({
         return 0;
       return this.countingResults[target.arrowCount - 1][target.hitArea - 1];
     },
+    hideNewTarget(): void{
+      this.addingTarget = false;
+    }
   },
 });
 </script>
