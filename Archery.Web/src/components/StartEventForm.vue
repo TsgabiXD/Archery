@@ -60,7 +60,7 @@
         <v-spacer></v-spacer>
       </v-card-actions>
     </v-card>
-    <new-parcour v-if="isAddParcour" @parcour-added="isAddParcour = false" />
+    <new-parcour v-if="isAddParcour" @parcour-added="isAddParcour = false" :token="token" />
   </div>
 </template>
 

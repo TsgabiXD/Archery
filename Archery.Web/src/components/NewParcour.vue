@@ -40,6 +40,9 @@ import { defineComponent } from "vue";
 import axios from "@/router/axios";
 
 export default defineComponent({
+  props: {
+    token: { type: String, required: true },
+  },
   data: () => {
     return {
       isLoading: false,
@@ -52,15 +55,22 @@ export default defineComponent({
     isLogin(): boolean {
       return true;
     },
+    axiosAuthConfig(): object {
+      return { headers: { Authorization: `Bearer ${this.token}` } };
+    },
   },
   methods: {
     addParcour(): void {
       axios
-        .post("parcour/addparcour", {
-          name: this.parcourName,
-          location: this.location,
-          animalNumber: this.animalCount,
-        })
+        .post(
+          "parcour/addparcour",
+          {
+            name: this.parcourName,
+            location: this.location,
+            animalNumber: this.animalCount,
+          },
+          this.axiosAuthConfig
+        )
         .then(() => {
           this.parcourName = "";
           this.location = "";
