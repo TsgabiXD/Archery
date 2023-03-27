@@ -2,6 +2,7 @@
 
 using Archery.Model;
 using Archery.Repository;
+using Archery.Model.ApiHelper;
 
 namespace Archery.Api.Controllers;
 
@@ -30,7 +31,7 @@ public class EventController : ArcheryController
     [HttpPost]
     [Route("StartEvent")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult StartEvent(Event startEvent)
+    public IActionResult StartEvent(NewEvent startEvent)
     {
 
         return Ok(_repository.StartEvent(startEvent));
