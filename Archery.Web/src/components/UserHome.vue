@@ -17,10 +17,11 @@
       bottom
       right
       @click="addingTarget = !addingTarget"
+      v-if="!addingTarget"
     >
       <v-icon>mdi-plus</v-icon>
     </v-btn>
-    <new-target :show="addingTarget" @hide="hideNewTarget"></new-target>
+    <new-target :show="addingTarget" @cancel="hideNewTarget"></new-target>
   </div>
 </template>
 
