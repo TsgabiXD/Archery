@@ -3,6 +3,7 @@ using System;
 using Archery.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Archery.Api.Migrations
 {
     [DbContext(typeof(ArcheryContext))]
-    partial class ArcheryContextModelSnapshot : ModelSnapshot
+    [Migration("20230327130908_mirgationsfix")]
+    partial class mirgationsfix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.4");
@@ -49,12 +52,17 @@ namespace Archery.Api.Migrations
                     b.Property<int>("EventId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("TargetId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int?>("UserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.HasIndex("EventId");
+
+                    b.HasIndex("TargetId");
 
                     b.HasIndex("UserId");
 
@@ -104,12 +112,7 @@ namespace Archery.Api.Migrations
                     b.Property<int>("HitArea")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("MappingId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("MappingId");
 
                     b.ToTable("Target");
                 });
@@ -186,25 +189,19 @@ namespace Archery.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Archery.Model.Target", "Target")
+                        .WithMany()
+                        .HasForeignKey("TargetId");
+
                     b.HasOne("Archery.Model.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
                     b.Navigation("Event");
 
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Archery.Model.Target", b =>
-                {
-                    b.HasOne("Archery.Model.Mapping", null)
-                        .WithMany("Target")
-                        .HasForeignKey("MappingId");
-                });
-
-            modelBuilder.Entity("Archery.Model.Mapping", b =>
-                {
                     b.Navigation("Target");
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }
