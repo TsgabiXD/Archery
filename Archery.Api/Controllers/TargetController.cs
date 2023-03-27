@@ -22,18 +22,32 @@ public class TargetController : ArcheryController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult Get()
     {
-        return Ok(_repository.GetAllTargets());
+        try
+        {
+            return Ok(_repository.GetAllTargets());
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpPost]
     [Route("AddTarget")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public IActionResult Target(int arrowCount,int hitArea)
+    public IActionResult Target(int arrowCount, int hitArea)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        return Ok(_repository.AddTarget(arrowCount, hitArea));
+        try
+        {
+            return Ok(_repository.AddTarget(arrowCount, hitArea));
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }

@@ -11,19 +11,22 @@ public class ParcourRepository : AbstractRepository
 
     public IEnumerable<Parcour> GetAllParcours()
     {
-        return Context.Parcour.AsNoTracking().ToList();
+        var parcourFound = Context.Parcour.AsNoTracking().ToList();
+
+        if (parcourFound == null)
+            throw new InvalidOperationException("Fehler beim Suchen des Parcours");
+
+        return parcourFound;
     }
 
     public Parcour GetParcour(int id)
     {
-        try
-        {
-            return Context.Parcour.AsNoTracking().SingleOrDefault(p => p.Id == id);
-        }
-        catch (InvalidOperationException ex)
-        {
-            throw new InvalidOperationException("Fehler beim Suchden der ID", ex);
-        }
+        var parcourFound = Context.Parcour.AsNoTracking().SingleOrDefault(p => p.Id == id);
+
+        if (parcourFound == null)
+            throw new InvalidOperationException("Fehler beim Suchden der ID");
+
+        return parcourFound;
     }
 
     public string AddParcour(Parcour parcour)

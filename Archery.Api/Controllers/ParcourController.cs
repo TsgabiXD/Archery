@@ -11,7 +11,7 @@ public class ParcourController : ArcheryController
     private readonly ILogger<ParcourController> _logger;
     private readonly ParcourRepository _repository;
 
-    public  ParcourController(ILogger<ParcourController> logger, ParcourRepository repository) : base(logger)
+    public ParcourController(ILogger<ParcourController> logger, ParcourRepository repository) : base(logger)
     {
         _logger = logger;
         _repository = repository;
@@ -22,7 +22,14 @@ public class ParcourController : ArcheryController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult Get()
     {
-        return Ok(_repository.GetAllParcours());
+        try
+        {
+            return Ok(_repository.GetAllParcours());
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpGet]
@@ -30,7 +37,15 @@ public class ParcourController : ArcheryController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult GetParcour(int id)
     {
-        return Ok(_repository.GetParcour(id));
+        try
+        {
+            return Ok(_repository.GetParcour(id));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
     }
 
 
@@ -43,7 +58,14 @@ public class ParcourController : ArcheryController
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        return Ok(_repository.AddParcour(parcour));
+        try
+        {
+            return Ok(_repository.AddParcour(parcour));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
 }
