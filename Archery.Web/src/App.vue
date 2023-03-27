@@ -10,13 +10,18 @@
         </template>
         <v-list>
           <v-list-item>
-            <v-list-item-title v-if="token" @click="clearToken"> Logout </v-list-item-title>
+            <v-list-item-title class="title"> {{ username }} </v-list-item-title>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-title @click="clearTokenAndUser">
+              Logout
+            </v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
     </v-app-bar>
     <v-main>
-      <router-view :bearerToken="token" @login="setToken" />
+      <router-view :resetToken="token" @login="setTokenAndUser" />
     </v-main>
   </v-app>
 </template>
@@ -30,14 +35,17 @@ export default Vue.extend({
     return {
       token: "",
       isAdmin: false,
+      username: "",
     };
   },
   methods: {
-    setToken(token: string) {
-      this.token = token;
+    setTokenAndUser(e: { token: string; username: string }) {
+      this.token = e.token;
+      this.username = e.username;
     },
-    clearToken() {
+    clearTokenAndUser() {
       this.token = "";
+      this.username = "";
     },
   },
 });

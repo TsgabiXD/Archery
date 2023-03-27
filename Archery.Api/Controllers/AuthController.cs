@@ -48,7 +48,8 @@ public class AuthController : ArcheryController
 
             var accessToken = _tokenService.CreateToken(userInDb);
 
-            _repository.AddUser(new() { FirstName = request.FirstName, LastName = request.LastName, NickName = request.Username });
+            if (request.FirstName != null && request.LastName != null)
+                _repository.AddUser(new() { FirstName = request.FirstName, LastName = request.LastName, NickName = request.Username });
 
             _context.SaveChanges();
 
