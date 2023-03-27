@@ -53,10 +53,16 @@ public class AuthController : ArcheryController
 
             _context.SaveChanges();
 
+            var currentUser = _context.User.FirstOrDefault(u => u.NickName == request.Username);
+
+            if (currentUser is null)
+                return BadRequest("Angelegter User ist defekt");
+
             return Ok(new AuthResponse
             {
                 Username = userInDb.UserName,
                 Token = accessToken,
+                Role = currentUser.Role
             });
         }
 

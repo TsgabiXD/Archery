@@ -39,6 +39,7 @@ export default Vue.extend({
       this.username = e.username;
 
       if (e.role === "Admin") this.isAdmin = true;
+      else this.isAdmin = false;
 
       this.$emit("login", {
         token: e.token,

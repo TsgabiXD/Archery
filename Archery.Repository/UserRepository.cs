@@ -21,6 +21,11 @@ public class UserRepository : AbstractRepository
     {
         if (user.FirstName.Length <= 150 && user.LastName.Length <= 150 && user.NickName.Length <= 150)
         {
+            // TODO möglicher Exploit
+            if (Context.User.FirstOrDefault(u => u.FirstName == user.FirstName
+                                                && u.LastName == user.LastName
+                                                && u.NickName == user.NickName) is null)
+                Context.User.Add(user);
 
             if (!(string.IsNullOrEmpty(user.FirstName) && string.IsNullOrEmpty(user.LastName) && string.IsNullOrEmpty(user.NickName)))
             {
