@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using Archery.Api.Helper;
 using Archery.Model;
+using Archery.Repository;
 
 namespace Archery.Api.Controllers;
 
@@ -12,15 +13,18 @@ public class AuthController : ArcheryController
     private readonly UserManager<IdentityUser> _userManager;
     private readonly ArcheryContext _context;
     private readonly TokenService _tokenService;
+    private readonly UserRepository _repository;
 
     public AuthController(ILogger<EventController> logger,
                           UserManager<IdentityUser> userManager,
                           ArcheryContext context,
-                          TokenService tokenService) : base(logger)
+                          TokenService tokenService,
+                          UserRepository repository) : base(logger)
     {
         _userManager = userManager;
         _context = context;
         _tokenService = tokenService;
+        _repository = repository;
     }
 
     [HttpPost]
@@ -38,7 +42,21 @@ public class AuthController : ArcheryController
         if (result.Succeeded)
         {
             request.Password = "";
-            return CreatedAtAction(nameof(Register), request);
+            // return CreatedAtAction(nameof(Register), request);
+
+            var userInDb = _context.IdentityUser.First(u => u.UserName == request.Username);
+
+            var accessToken = _tokenService.CreateToken(userInDb);
+
+            _repository.AddUser(new() { FirstName = request.FirstName, LastName = request.LastName, NickName = request.Username });
+
+            _context.SaveChanges();
+
+            return Ok(new AuthResponse
+            {
+                Username = userInDb.UserName,
+                Token = accessToken,
+            });
         }
 
         foreach (var error in result.Errors)
@@ -51,17 +69,17 @@ public class AuthController : ArcheryController
     [Route("Login")]
     public async Task<ActionResult<AuthResponse>> Authenticate([FromBody] AuthRequest request)
     {
-        if (!ModelState.IsValid)        
-            return BadRequest(ModelState);        
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
 
         var managedUser = await _userManager.FindByNameAsync(request.Username);
 
-        if (managedUser == null)        
+        if (managedUser == null)
             return BadRequest("Bad credentials");
-        
+
         var isPasswordValid = await _userManager.CheckPasswordAsync(managedUser, request.Password);
 
-        if (!isPasswordValid)        
+        if (!isPasswordValid)
             return BadRequest("Bad credentials");
 
         var userInDb = _context.IdentityUser.FirstOrDefault(u => u.UserName == request.Username);
