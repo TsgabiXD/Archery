@@ -31,7 +31,8 @@ namespace Archery.Repository
 
                     var e = Context.Event.Add(new() { Name = newEvent.Name, Parcour = eventParcour, IsRunning = true }).Entity;
 
-                    Context.Mapping.Add(new() { Event = e, User = eventUser });
+                    foreach (var user in eventUser)
+                        Context.Mapping.Add(new() { Event = e, User = user });
 
                     if (e == null)
                     {

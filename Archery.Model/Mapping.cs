@@ -11,7 +11,7 @@ namespace Archery.Model
     {
         public int Id { get; set; }
         public Event Event { set; get; } = null!;
-        public List<User> User { set; get; } = new();
+        public User? User { set; get; }
         public List<Target> Target { set; get; } = new();
-    }
+    } 
 }
