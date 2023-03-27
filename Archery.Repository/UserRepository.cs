@@ -21,7 +21,11 @@ public class UserRepository : AbstractRepository
     {
         if (!(string.IsNullOrEmpty(user.FirstName) && string.IsNullOrEmpty(user.LastName) && string.IsNullOrEmpty(user.NickName)))
         {
-            Context.User.Add(user);
+            // TODO möglicher Exploit
+            if (Context.User.FirstOrDefault(u => u.FirstName == user.FirstName
+                                                && u.LastName == user.LastName
+                                                && u.NickName == user.NickName) is null)
+                Context.User.Add(user);
 
             Context.SaveChanges();
             return "success";
