@@ -23,16 +23,25 @@ export default Vue.extend({
     UserHome,
     StartEventForm,
   },
+  props: {
+    bearerToken: { type: String, required: true },
+  },
   data: () => {
     return {
       token: "",
       isAdmin: false,
     };
   },
-  methods:{
-    setToken(token: string){
+  methods: {
+    setToken(token: string) {
       this.token = token;
-    }
-  }
+      this.$emit("login", token);
+    },
+  },
+  watch: {
+    bearerToken(newVal: string) {
+      this.token = newVal;
+    },
+  },
 });
 </script>
