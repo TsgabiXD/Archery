@@ -1,11 +1,11 @@
 <template>
   <div>
-    <v-container v-if="!token">
-      <login-register-form @login="setToken" />
+    <v-container v-if="!bearerToken">
+      <login-register-form @login="setTokenAndUser" />
     </v-container>
-    <user-home v-else-if="!isAdmin" :token="token" />
+    <user-home v-else-if="!isAdmin" :token="bearerToken" />
     <v-container v-else>
-      <start-event-form :token="token" />
+      <start-event-form :token="bearerToken" />
     </v-container>
   </div>
 </template>
@@ -24,23 +24,31 @@ export default Vue.extend({
     StartEventForm,
   },
   props: {
-    bearerToken: { type: String, required: true },
+    resetToken: { type: String, required: true },
   },
   data: () => {
     return {
       token: "",
+      username: "",
       isAdmin: false,
     };
   },
   methods: {
-    setToken(token: string) {
-      this.token = token;
-      this.$emit("login", token);
+    setTokenAndUser(e: { token: string; username: string }) {
+      this.token = e.token;
+      this.username = e.username;
+      this.$emit("login", {
+        token: e.token,
+        username: e.username,
+      });
     },
   },
-  watch: {
-    bearerToken(newVal: string) {
-      this.token = newVal;
+  computed: {
+    bearerToken: {
+      get(): string {
+        if (this.resetToken !== this.token) return this.resetToken;
+        else return this.token;
+      },
     },
   },
 });

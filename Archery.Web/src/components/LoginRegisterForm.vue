@@ -27,7 +27,12 @@
         </v-row>
         <v-row dense>
           <v-col>
-            <v-text-field label="Passwort" type="password" outlined v-model="password">
+            <v-text-field
+              label="Passwort"
+              type="password"
+              outlined
+              v-model="password"
+            >
             </v-text-field>
           </v-col>
         </v-row>
@@ -55,7 +60,7 @@ export default defineComponent({
       firstname: "",
       lastname: "",
       nickname: "",
-      password: ""
+      password: "",
     };
   },
   computed: {
@@ -83,7 +88,10 @@ export default defineComponent({
             password: this.password,
           }) // TODO login
           .then((response) => {
-            this.$emit("login", response.data.token);
+            this.$emit("login", {
+              token: response.data.token,
+              username: response.data.username,
+            });
           })
           .catch((err) => console.log(err))
           .finally(() => {
@@ -95,10 +103,13 @@ export default defineComponent({
             firstName: this.firstname,
             lastName: this.lastname,
             username: this.nickname,
-            password: this.password
+            password: this.password,
           })
           .then((response) => {
-            this.$emit("login", response.data.token);
+            this.$emit("login", {
+              token: response.data.token,
+              username: response.data.username,
+            });
           })
           .catch((err) => console.log(err))
           .finally(() => {
