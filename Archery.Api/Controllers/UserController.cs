@@ -25,16 +25,16 @@ public class UserController : ArcheryController
         return Ok(_repository.GetAllUsers());
     }
 
-    [HttpPost]
-    [Route("AddUser")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public IActionResult AddUser(User user)
-    {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+    // [HttpPost]
+    // [Route("AddUser")]
+    // [ProducesResponseType(StatusCodes.Status200OK)]
+    // [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    // public IActionResult AddUser(User user)
+    // {
+    //     if (!ModelState.IsValid)
+    //         return BadRequest(ModelState);
 
-        return Ok(_repository.AddUser(user));
-    }
+    //     return Ok(_repository.AddUser(user));
+    // }
 
 }
