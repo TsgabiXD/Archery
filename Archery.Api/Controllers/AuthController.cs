@@ -84,8 +84,9 @@ public class AuthController : ArcheryController
             return BadRequest("Bad credentials");
 
         var userInDb = _context.IdentityUser.FirstOrDefault(u => u.UserName == request.Username);
+        var currentUser = _context.User.FirstOrDefault(u => u.NickName == request.Username);
 
-        if (userInDb is null)
+        if (userInDb is null || currentUser is null)
             return Unauthorized();
 
         var accessToken = _tokenService.CreateToken(userInDb);
@@ -96,6 +97,7 @@ public class AuthController : ArcheryController
         {
             Username = userInDb.UserName,
             Token = accessToken,
+            Role = currentUser.Role
         });
     }
 }

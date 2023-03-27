@@ -91,6 +91,7 @@ export default defineComponent({
             this.$emit("login", {
               token: response.data.token,
               username: response.data.username,
+              role: response.data.role,
             });
           })
           .catch((err) => console.log(err))
@@ -109,6 +110,7 @@ export default defineComponent({
             this.$emit("login", {
               token: response.data.token,
               username: response.data.username,
+              role: response.data.role,
             });
           })
           .catch((err) => console.log(err))
