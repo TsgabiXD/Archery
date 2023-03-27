@@ -49,12 +49,17 @@ export default defineComponent({
   },
   mounted() {
     axios
-      .get("target/gettargets")
+      .get("target/gettargets", this.axiosAuthConfig)
       .then((response) => {
         // TODO prüfen
         this.targets = response.data;
       })
       .catch((err) => console.log(err));
+  },
+  computed: {
+    axiosAuthConfig(): object {
+      return { headers: { Authorization: `Bearer ${this.token}` } };
+    },
   },
   methods: {
     calcPunkte(target: any): number {
@@ -68,9 +73,9 @@ export default defineComponent({
         return 0;
       return this.countingResults[target.arrowCount - 1][target.hitArea - 1];
     },
-    hideNewTarget(): void{
+    hideNewTarget(): void {
       this.addingTarget = false;
-    }
+    },
   },
 });
 </script>

@@ -34,9 +34,12 @@ export default Vue.extend({
     };
   },
   methods: {
-    setTokenAndUser(e: { token: string; username: string }) {
+    setTokenAndUser(e: { token: string; username: string; role: string }) {
       this.token = e.token;
       this.username = e.username;
+
+      if (e.role === "Admin") this.isAdmin = true;
+
       this.$emit("login", {
         token: e.token,
         username: e.username,
