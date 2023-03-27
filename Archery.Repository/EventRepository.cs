@@ -1,4 +1,5 @@
 ﻿using Archery.Model;
+using Archery.Model.ApiHelper;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -14,26 +15,23 @@ namespace Archery.Repository
         {
         }
 
-        public string StartEvent(Event newEvent)
+        public string StartEvent(NewEvent newEvent)
         {
             try
             {
                 if (newEvent != null)
                 {
-                    var eventParcour = Context.Parcour.Single(p => p.Id == newEvent.Parcour.Id);
-
-                    List<int> ids = new();
-
-                    foreach (var user in newEvent.User)
-                        foreach (var dbUser in Context.User)
-                            if (dbUser.Id == user.Id)
-                                ids.Add(dbUser.Id);
 
                     var eventUser = Context.User
-                        .Where(u => ids.Contains(u.Id))
+                        .Where(u => newEvent.UserIds.Contains(u.Id))
                         .ToList();
 
-                    var e = Context.Event.Add(new() { Name = newEvent.Name, Parcour = eventParcour, User = eventUser, IsRunning = true }).Entity;
+                    var eventParcour = Context.Parcour
+                        .SingleOrDefault(u => newEvent.ParcourId == u.Id);
+
+                    var e = Context.Event.Add(new() { Name = newEvent.Name, Parcour = eventParcour, IsRunning = true }).Entity;
+
+                    Context.Mapping.Add(new() { Event = e, User = eventUser });
 
                     if (e == null)
                     {
@@ -62,16 +60,6 @@ namespace Archery.Repository
                 {
                     return "Fail: stopEvent ist Null";
                 }
-
-                List<int> eventIds = new();
-
-                foreach(var user in stopEvent.User)
-                    foreach(var dbUser in Context.User)
-                        if(dbUser.Id == user.Id) eventIds.Add(dbUser.Id);
-
-                var filterUser = Context.User
-                    .Where(t => eventIds.Contains(t.Id))
-                    .ToList();
 
 
                 stopEvent.IsRunning = false;
