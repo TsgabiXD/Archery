@@ -91,11 +91,11 @@ export default defineComponent({
           });
       else
         axios
-          .post("user/adduser", {
+          .post("auth/register", {
             firstName: this.firstname,
             lastName: this.lastname,
-            nickName: this.nickname,
-            role: "User"
+            username: this.nickname,
+            password: this.password
           })
           .then((response) => {
             this.$emit("login", response.data.token);
