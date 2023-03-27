@@ -27,7 +27,7 @@ static async Task CreateDbAsync(IServiceProvider serviceProvider, IWebHostEnviro
 var pcName = Environment.MachineName;
 var conection = pcName.Contains("03302") ? "DB" :
                 pcName == "P3643" ? "DBLukaPC" :
-                "DBTobiPC";
+                pcName.Contains("F186T1U") ? "DBTobiPCDaheim" : "DBTobiPC";
 
 var builder = WebApplication.CreateBuilder(args);
 
