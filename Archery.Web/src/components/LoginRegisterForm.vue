@@ -21,7 +21,12 @@
         </v-row>
         <v-row dense>
           <v-col>
-            <v-text-field label="Nickname" outlined v-model="nickname">
+            <v-text-field
+              label="Nickname"
+              outlined
+              v-model="nickname"
+              @blur="checkNickName"
+            >
             </v-text-field>
           </v-col>
         </v-row>
@@ -117,6 +122,9 @@ export default defineComponent({
           .finally(() => {
             this.isLoading = false; // TODO authenticate
           });
+    },
+    checkNickName(): void {
+      axios.get(`user/checkuser/${this.nickname}`);
     },
   },
 });
