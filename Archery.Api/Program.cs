@@ -28,6 +28,7 @@ var pcName = Environment.MachineName;
 var conection = pcName.Contains("03302") ? "DB" :
                 pcName == "P3643" ? "DBLukaPC" :
                 pcName.Contains("AGVGCQH") ? "DBTobiPC" :
+                pcName.Contains("F186T1U") ? "DBTobiPCDaheim" :
                 throw new Exception("No Specified PC!!!");
 
 var builder = WebApplication.CreateBuilder(args);
