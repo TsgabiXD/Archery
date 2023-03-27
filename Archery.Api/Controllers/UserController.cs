@@ -6,7 +6,6 @@ using Archery.Repository;
 
 namespace Archery.Api.Controllers;
 
-[Authorize]
 [Route("api/[controller]")]
 public class UserController : ArcheryController
 {
@@ -17,12 +16,22 @@ public class UserController : ArcheryController
         _repository = repository;
     }
 
+    [Authorize]
     [HttpGet]
     [Route("GetUsers")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult Get()
     {
         return Ok(_repository.GetAllUsers());
+    }
+
+    
+    [HttpGet]
+    [Route("CheckUser/{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult CheckUser(string id)
+    {
+        return Ok(_repository.CheckUser(id));
     }
 
     // [HttpPost]

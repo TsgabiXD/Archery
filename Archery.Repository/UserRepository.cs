@@ -10,7 +10,11 @@ public class UserRepository : AbstractRepository
     public IEnumerable<User> GetAllUsers()
     {
         return Context.User.AsNoTracking().ToList();
-        
+    }
+
+    public bool CheckUser(string nickName)
+    {
+        return Context.User.ToList().FirstOrDefault(u => u.NickName == nickName) is not null;
     }
 
     public string AddUser(User user)
@@ -24,9 +28,4 @@ public class UserRepository : AbstractRepository
         }
         return "fail";
     }
-
-    
-
-
-    
 }
