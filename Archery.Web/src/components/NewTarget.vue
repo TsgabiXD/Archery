@@ -30,7 +30,7 @@
         </v-stepper-content>
         <v-stepper-content step="3">
           <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card>
-          <v-btn color="primary" @click="step = 1"> Weiter </v-btn>
+          <v-btn color="primary"> Speichern </v-btn>
           <v-btn text @click="cancel"> Abbrechen </v-btn>
         </v-stepper-content>
       </v-stepper-items>
