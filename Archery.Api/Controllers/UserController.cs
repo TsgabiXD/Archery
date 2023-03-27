@@ -25,12 +25,11 @@ public class UserController : ArcheryController
         return Ok(_repository.GetAllUsers());
     }
 
-    [HttpPost]
-    [Route("AddUser")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult AddUser(User user)
-    {
-        return Ok(_repository.AddUser(user));
-    }
-
+    // [HttpPost]
+    // [Route("AddUser")]
+    // [ProducesResponseType(StatusCodes.Status200OK)]
+    // public IActionResult AddUser(User user)
+    // {
+    //     return Ok(_repository.AddUser(user));
+    // }
 }
