@@ -9,7 +9,14 @@ namespace Archery.Repository
 
         public IEnumerable<Target> GetAllTargets()
         {
-            return Context.Target.AsNoTracking().ToList();
+            try
+            {
+                return Context.Target.AsNoTracking().ToList();
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException("Fehler beim Suchden der Ziele", ex);
+            }
         }
 
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
 using Archery.Model;
+using Microsoft.Extensions.Logging;
 
 namespace Archery.Repository;
 
@@ -15,7 +16,14 @@ public class ParcourRepository : AbstractRepository
 
     public Parcour GetParcour(int id)
     {
-        return Context.Parcour.AsNoTracking().Single(p => p.Id == id);
+        try
+        {
+            return Context.Parcour.AsNoTracking().SingleOrDefault(p => p.Id == id);
+        }
+        catch (InvalidOperationException ex)
+        {
+            throw new InvalidOperationException("Fehler beim Suchden der ID", ex);
+        }
     }
 
     public string AddParcour(Parcour parcour)
