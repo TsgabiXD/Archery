@@ -26,6 +26,16 @@
               outlined
               v-model="nickname"
               @blur="checkNickName"
+              :success-messages="
+                !login && !nickIsValid && nickname !== ''
+                  ? 'Benutzername ist frei'
+                  : ''
+              "
+              :error-messages="
+                !login && nickIsValid && nickname !== ''
+                  ? 'Benutzername ist vergeben'
+                  : ''
+              "
             >
             </v-text-field>
           </v-col>
@@ -66,6 +76,7 @@ export default defineComponent({
       lastname: "",
       nickname: "",
       password: "",
+      nickIsValid: "" as string | boolean,
     };
   },
   computed: {
@@ -124,7 +135,13 @@ export default defineComponent({
           });
     },
     checkNickName(): void {
-      axios.get(`user/checkuser/${this.nickname}`);
+      if (!this.login && this.nickname !== "")
+        axios
+          .get(`user/checkuser/${this.nickname}`)
+          .then((response) => {
+            this.nickIsValid = response.data;
+          })
+          .catch((err) => console.log(err));
     },
   },
 });
