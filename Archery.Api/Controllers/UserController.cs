@@ -6,7 +6,6 @@ using Archery.Repository;
 
 namespace Archery.Api.Controllers;
 
-[Authorize]
 [Route("api/[controller]")]
 public class UserController : ArcheryController
 {
