@@ -2,6 +2,7 @@
 
 using Archery.Model;
 using Archery.Repository;
+using Archery.Model.ApiHelper;
 
 namespace Archery.Api.Controllers;
 
@@ -29,11 +30,11 @@ public class TargetController : ArcheryController
     [Route("AddTarget")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public IActionResult Target(int arrowCount,int hitArea)
+    public IActionResult Target(NewTarget newTarget)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        return Ok(_repository.AddTarget(arrowCount, hitArea));
+        return Ok(_repository.AddTarget(newTarget));
     }
 }
