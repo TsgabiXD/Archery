@@ -76,7 +76,10 @@ export default defineComponent({
       lastname: "",
       nickname: "",
       password: "",
+<<<<<<< HEAD
       nickIsValid: "" as string | boolean,
+=======
+>>>>>>> 2a3c12e91e675b0f6ba5957a6905ed50cf979226
     };
   },
   computed: {
@@ -135,6 +138,7 @@ export default defineComponent({
           });
     },
     checkNickName(): void {
+<<<<<<< HEAD
       if (!this.login && this.nickname !== "")
         axios
           .get(`user/checkuser/${this.nickname}`)
@@ -142,6 +146,9 @@ export default defineComponent({
             this.nickIsValid = response.data;
           })
           .catch((err) => console.log(err));
+=======
+      axios.get(`user/checkuser/${this.nickname}`);
+>>>>>>> 2a3c12e91e675b0f6ba5957a6905ed50cf979226
     },
   },
 });
