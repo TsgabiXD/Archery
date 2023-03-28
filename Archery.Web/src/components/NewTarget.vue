@@ -5,33 +5,30 @@
     hide-overlay
     transition="dialog-bottom-transition"
   >
-    <v-stepper v-model="step">
+    <v-stepper v-model="step" flat>
       <v-stepper-header>
-        <v-stepper-step :complete="step > 1" step="1">
-          Name of step 1
-        </v-stepper-step>
-        <v-divider></v-divider>
-        <v-stepper-step :complete="step > 2" step="2">
-          Name of step 2
-        </v-stepper-step>
-        <v-divider></v-divider>
-        <v-stepper-step step="3"> Name of step 3 </v-stepper-step>
+        <v-spacer></v-spacer>
+        <v-stepper-step :complete="step > 1" step="1"> </v-stepper-step>
+        <v-stepper-step :complete="step > 2" step="2"> </v-stepper-step>
+        <v-spacer></v-spacer>
       </v-stepper-header>
       <v-stepper-items>
         <v-stepper-content step="1">
-          <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card>
+          <v-card class="mb-6 mx-3 mt-2" height="65vh" elevation="4">
+            <v-card-title>Pfeil</v-card-title>
+          </v-card>
+          <v-btn color="error" class="mx-2" @click="cancel"> Abbrechen </v-btn>
           <v-btn color="primary" @click="step = 2"> Weiter </v-btn>
-          <v-btn text @click="cancel"> Abbrechen </v-btn>
         </v-stepper-content>
         <v-stepper-content step="2">
-          <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card>
-          <v-btn color="primary" @click="step = 3"> Weiter </v-btn>
-          <v-btn text @click="cancel"> Abbrechen </v-btn>
-        </v-stepper-content>
-        <v-stepper-content step="3">
-          <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card>
-          <v-btn color="primary"> Speichern </v-btn>
-          <v-btn text @click="cancel"> Abbrechen </v-btn>
+          <v-card class="mb-6 mx-3 mt-2" height="65vh" elevation="4">
+            <v-card-title>Trefferfläche</v-card-title>
+          </v-card>
+          <v-btn color="secondary" class="mx-2" @click="step = 1">
+            Zurück
+          </v-btn>
+          <v-btn color="error" class="mx-2" @click="cancel"> Abbrechen </v-btn>
+          <v-btn color="primary" class="mx-2" @click="save"> Speichern </v-btn>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -51,6 +48,10 @@ export default defineComponent({
     };
   },
   methods: {
+    save() {
+      this.step = 1; // TODO <-- fix this
+      this.$emit("save");
+    },
     cancel() {
       this.$emit("cancel");
     },

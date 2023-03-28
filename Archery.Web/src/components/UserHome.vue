@@ -21,7 +21,11 @@
     >
       <v-icon>mdi-plus</v-icon>
     </v-btn>
-    <new-target :show="addingTarget" @cancel="hideNewTarget"></new-target>
+    <new-target
+      :show="addingTarget"
+      @save="loadTargets"
+      @cancel="hideNewTarget"
+    ></new-target>
   </div>
 </template>
 
@@ -49,13 +53,7 @@ export default defineComponent({
     };
   },
   mounted() {
-    axios
-      .get("target/gettargets", this.axiosAuthConfig)
-      .then((response) => {
-        // TODO prüfen
-        this.targets = response.data;
-      })
-      .catch((err) => console.log(err));
+    this.loadTargets();
   },
   computed: {
     axiosAuthConfig(): object {
@@ -76,6 +74,17 @@ export default defineComponent({
     },
     hideNewTarget(): void {
       this.addingTarget = false;
+    },
+    loadTargets(): void {
+      this.hideNewTarget();
+
+      axios
+        .get("target/gettargets", this.axiosAuthConfig)
+        .then((response) => {
+          // TODO prüfen
+          this.targets = response.data;
+        })
+        .catch((err) => console.log(err));
     },
   },
 });
