@@ -49,7 +49,12 @@ public class AuthController : ArcheryController
             var accessToken = _tokenService.CreateToken(userInDb);
 
             if (request.FirstName != null && request.LastName != null)
-                _repository.AddUser(new() { FirstName = request.FirstName, LastName = request.LastName, NickName = request.Username });
+                _repository.AddUser(new()
+                {
+                    FirstName = request.FirstName,
+                    LastName = request.LastName,
+                    NickName = request.Username
+                });
 
             _context.SaveChanges();
 
@@ -60,6 +65,7 @@ public class AuthController : ArcheryController
 
             return Ok(new AuthResponse
             {
+                Id = currentUser.Id,
                 Username = userInDb.UserName,
                 Token = accessToken,
                 Role = currentUser.Role
@@ -101,6 +107,7 @@ public class AuthController : ArcheryController
 
         return Ok(new AuthResponse
         {
+            Id = currentUser.Id,
             Username = userInDb.UserName,
             Token = accessToken,
             Role = currentUser.Role

@@ -108,6 +108,7 @@ export default defineComponent({
               token: response.data.token,
               username: response.data.username,
               role: response.data.role,
+              userId: response.data.id,
             });
           })
           .catch((err) => console.log(err))
@@ -127,6 +128,7 @@ export default defineComponent({
               token: response.data.token,
               username: response.data.username,
               role: response.data.role,
+              userId: response.data.id,
             });
           })
           .catch((err) => console.log(err))

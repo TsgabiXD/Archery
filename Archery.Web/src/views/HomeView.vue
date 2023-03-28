@@ -3,7 +3,7 @@
     <v-container v-if="!bearerToken">
       <login-register-form @login="setTokenAndUser" />
     </v-container>
-    <user-home v-else-if="!isAdmin" :token="bearerToken" />
+    <user-home v-else-if="!isAdmin" :userId="userId" :token="bearerToken" />
     <v-container v-else>
       <start-event-form :token="bearerToken" />
     </v-container>
@@ -31,12 +31,19 @@ export default Vue.extend({
       token: "",
       username: "",
       isAdmin: false,
+      userId: -1,
     };
   },
   methods: {
-    setTokenAndUser(e: { token: string; username: string; role: string }) {
+    setTokenAndUser(e: {
+      token: string;
+      username: string;
+      role: string;
+      userId: number;
+    }) {
       this.token = e.token;
       this.username = e.username;
+      this.userId = e.userId;
 
       if (e.role === "Admin") this.isAdmin = true;
       else this.isAdmin = false;
@@ -44,6 +51,7 @@ export default Vue.extend({
       this.$emit("login", {
         token: e.token,
         username: e.username,
+        userId: e.userId,
       });
     },
   },

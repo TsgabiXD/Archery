@@ -10,7 +10,9 @@
         </template>
         <v-list>
           <v-list-item>
-            <v-list-item-title class="title"> {{ username }} </v-list-item-title>
+            <v-list-item-title class="title">
+              {{ username }}
+            </v-list-item-title>
           </v-list-item>
           <v-list-item>
             <v-list-item-title @click="clearTokenAndUser">
@@ -36,16 +38,19 @@ export default Vue.extend({
       token: "",
       isAdmin: false,
       username: "",
+      userId: -1,
     };
   },
   methods: {
-    setTokenAndUser(e: { token: string; username: string }) {
+    setTokenAndUser(e: { token: string; username: string; userId: number }) {
       this.token = e.token;
       this.username = e.username;
+      this.userId = e.userId;
     },
     clearTokenAndUser() {
       this.token = "";
       this.username = "";
+      this.userId = -1;
     },
   },
 });

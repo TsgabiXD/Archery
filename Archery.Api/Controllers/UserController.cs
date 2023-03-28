@@ -24,14 +24,29 @@ public class UserController : ArcheryController
     {
         return Ok(_repository.GetAllUsers());
     }
-
     
     [HttpGet]
     [Route("CheckUser/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public IActionResult CheckUser(string id)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         return Ok(_repository.CheckUser(id));
+    }
+    
+    [HttpGet]
+    [Route("GetUsersRunningEvents/{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public IActionResult GetUsersRunningEvents(int id)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        return Ok(_repository.GetUsersRunningEvents(id));
     }
 
     // [HttpPost]

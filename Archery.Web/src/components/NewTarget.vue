@@ -37,23 +37,45 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import axios from "@/router/axios";
 
 export default defineComponent({
   props: {
     show: { type: Boolean, required: true },
+    token: { type: String, required: true },
   },
   data() {
     return {
       step: 1,
+      target: {
+        arrowCount: 0,
+        hitArea: 0,
+        eventId: 0,
+        userId: 0,
+      },
     };
   },
   methods: {
-    save() {
-      this.step = 1; // TODO <-- fix this
-      this.$emit("save");
+    save(): void {
+      axios
+        .post("target/addtarget", this.target, this.axiosAuthConfig)
+        .then(() => {
+          this.clearData();
+          this.$emit("save");
+        })
+        .catch((err) => console.log(err));
     },
-    cancel() {
+    cancel(): void {
+      this.clearData();
       this.$emit("cancel");
+    },
+    clearData(): void {
+      this.step = 1;
+    },
+  },
+  computed: {
+    axiosAuthConfig(): object {
+      return { headers: { Authorization: `Bearer ${this.token}` } };
     },
   },
 });
