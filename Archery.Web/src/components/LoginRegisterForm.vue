@@ -142,6 +142,7 @@ export default defineComponent({
             this.nickIsValid = response.data;
           })
           .catch((err) => console.log(err));
+>>>>>>> 2a3c12e91e675b0f6ba5957a6905ed50cf979226
     },
   },
 });
