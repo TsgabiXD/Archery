@@ -90,8 +90,39 @@ builder.Services.AddControllers()
     .AddScoped<ParcourRepository>()
     .AddScoped<TargetRepository>()
     .AddScoped<EventRepository>()
-
     .AddScoped<TokenService, TokenService>();
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ClockSkew = TimeSpan.Zero,
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = "apiWithAuthBackend",
+            ValidAudience = "apiWithAuthBackend",
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes("!SomethingSecret!")
+            ),
+        };
+    }); // TODO hinterfragen
+
+builder.Services
+    .AddIdentityCore<IdentityUser>(options =>
+    {
+        options.SignIn.RequireConfirmedAccount = false;
+        options.User.RequireUniqueEmail = false; // no email
+        options.Password.RequireDigit = false;
+        options.Password.RequiredLength = 6;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequireLowercase = false;
+    })
+    .AddEntityFrameworkStores<ArcheryContext>(); // TODO hinterfragen
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
