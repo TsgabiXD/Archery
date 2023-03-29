@@ -22,7 +22,14 @@ public class UserController : ArcheryController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult Get()
     {
-        return Ok(_repository.GetAllUsers());
+        try
+        {
+            return Ok(_repository.GetAllUsers());
+        }
+        catch (Exception ex)
+        {
+            BadRequest(ex.Message);
+        }
     }
 
     [HttpPost]
@@ -34,7 +41,14 @@ public class UserController : ArcheryController
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        return Ok(_repository.AddUser(user));
+        try
+        {
+            return Ok(_repository.AddUser(user));
+        }
+        catch (Exception ex)
+        {
+            BadRequest(ex.Message);
+        }
     }
 
 }

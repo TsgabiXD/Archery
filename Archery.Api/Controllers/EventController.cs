@@ -33,16 +33,32 @@ public class EventController : ArcheryController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult StartEvent(NewEvent startEvent)
     {
+        try
+        {
+            return Ok(_repository.StartEvent(startEvent));
+        }
+        catch (Exception ex)
+        {
+            BadRequest(ex.Message);
+        }
 
-        return Ok(_repository.StartEvent(startEvent));
+
+
     }
 
     [HttpPost]
     [Route("EndEvent")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult EndEvent(int stopEvent)
-    { 
-        return Ok(_repository.EndEvent(stopEvent));
+    {
+        try
+        {
+            return Ok(_repository.EndEvent(stopEvent));
+        }
+        catch (Exception ex)
+        {
+            BadRequest(ex.Message);
+        }
     }
 
 }
