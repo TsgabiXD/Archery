@@ -51,6 +51,14 @@ namespace Archery.Repository
             }
         }
 
+        public IEnumerable<Event> GetRunningEvents()
+        {
+            return Context.Event
+                        .Where(e => e.IsRunning)
+                        .AsNoTracking()
+                        .ToArray();
+        }
+
         public string EndEvent(int eventToStop)
         {
             try

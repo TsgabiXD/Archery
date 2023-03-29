@@ -30,6 +30,7 @@ public class EventController : ArcheryController
     [HttpPost]
     [Route("StartEvent")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public IActionResult StartEvent(NewEvent startEvent)
     {
         try
@@ -43,14 +44,31 @@ public class EventController : ArcheryController
         {
             return BadRequest(ex.Message);
         }
+    }
 
+    [HttpGet]
+    [Route("GetRunningEvents")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public IActionResult GetRunningEvents()
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-
+            return Ok(_repository.GetRunningEvents());
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message); // TODO BadRequest durch richtige funktion ersaetzen
+        }
     }
 
     [HttpPost]
     [Route("EndEvent")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public IActionResult EndEvent(int stopEvent)
     {
         try
