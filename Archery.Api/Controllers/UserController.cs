@@ -24,11 +24,14 @@ public class UserController : ArcheryController
     {
         try
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             return Ok(_repository.GetAllUsers());
         }
         catch (Exception ex)
         {
-            BadRequest(ex.Message);
+            return BadRequest(ex.Message);
         }
     }
 
@@ -49,7 +52,7 @@ public class UserController : ArcheryController
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public IActionResult GetUsersRunningEvents(int id)
-    {       
+    {
         try
         {
             if (!ModelState.IsValid)
@@ -59,7 +62,7 @@ public class UserController : ArcheryController
         }
         catch (Exception ex)
         {
-            BadRequest(ex.Message);
+           return BadRequest(ex.Message);
         }
     }
 

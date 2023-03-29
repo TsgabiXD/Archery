@@ -34,11 +34,14 @@ public class EventController : ArcheryController
     {
         try
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             return Ok(_repository.StartEvent(startEvent));
         }
         catch (Exception ex)
         {
-            BadRequest(ex.Message);
+            return BadRequest(ex.Message);
         }
 
 
@@ -52,11 +55,14 @@ public class EventController : ArcheryController
     {
         try
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             return Ok(_repository.EndEvent(stopEvent));
         }
         catch (Exception ex)
         {
-            BadRequest(ex.Message);
+            return BadRequest(ex.Message);
         }
     }
 
