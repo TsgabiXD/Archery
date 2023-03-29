@@ -17,7 +17,6 @@ public class User
     [Column(TypeName = "nvarchar(150)")]
     public string NickName { set; get; } = null!;
 
-    // TODO Add Authorisation
     public string Role { set; get; } = "User";
 
 }

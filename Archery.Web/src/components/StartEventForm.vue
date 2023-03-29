@@ -79,6 +79,7 @@ export default defineComponent({
   },
   props: {
     token: { type: String, required: true },
+    userId: { type: Number, required: true },
   },
   data: () => {
     return {
@@ -86,7 +87,9 @@ export default defineComponent({
       isAddParcour: false,
       parcours: [], // TODO add Type
       users: [], // TODO add Type
-      selectedParcour: "" as string, // TODO add Type
+      selectedParcour: "" as
+        | string
+        | { animalNumber: number; id: number; location: string; name: string }, // TODO add Type
       eventName: "",
       eventUser: [], // TODO add Type
     };
@@ -112,24 +115,29 @@ export default defineComponent({
     startEvent(): void {
       this.isLoading = true;
 
-      axios
-        .post(
-          "event/startevent",
-          {
-            name: this.eventName,
-            parcour: this.selectedParcour,
-            user: this.eventUser,
-            isRunning: true,
-          },
-          this.axiosAuthConfig
-        ) // TODO add Type
-        .then(() => {
-          // TODO implement
-        })
-        .catch((err) => console.log(err))
-        .finally(() => {
-          this.isLoading = false;
-        });
+      if (typeof this.selectedParcour === "object")
+        // TODO add Type
+        axios
+          .post(
+            "event/startevent",
+            {
+              name: this.eventName,
+              parcourId: this.selectedParcour.id,
+              userIds: this.eventUserIds,
+            },
+            this.axiosAuthConfig
+          ) // TODO add Type
+          .then((response) => {
+            this.$emit("new-event", response); // TODO implement
+            
+            this.selectedParcour = "";
+            this.eventUser = [];
+            this.eventName = "";
+          })
+          .catch((err) => console.log(err))
+          .finally(() => {
+            this.isLoading = false;
+          });
     },
     addParcour(): void {
       this.isAddParcour = true;
@@ -147,6 +155,20 @@ export default defineComponent({
   computed: {
     axiosAuthConfig(): object {
       return { headers: { Authorization: `Bearer ${this.token}` } };
+    },
+    eventUserIds(): number[] {
+      let result = [] as number[];
+
+      this.eventUser.forEach(
+        (e: {
+          animalNumber: number;
+          id: number;
+          location: string;
+          name: string;
+        }) => result.push(e.id)
+      );
+
+      return result;
     },
   },
   watch: {

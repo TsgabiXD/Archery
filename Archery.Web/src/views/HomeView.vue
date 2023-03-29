@@ -5,7 +5,12 @@
     </v-container>
     <user-home v-else-if="!isAdmin" :userId="userId" :token="bearerToken" />
     <v-container v-else>
-      <start-event-form :token="bearerToken" />
+      <start-event-form
+        :token="bearerToken"
+        :userId="userId"
+        @new-event="newEvent"
+      />
+      <running-events :newEventId="newEventId" :token="bearerToken" />
     </v-container>
   </div>
 </template>
@@ -15,6 +20,7 @@ import Vue from "vue";
 import LoginRegisterForm from "../components/LoginRegisterForm.vue";
 import UserHome from "../components/UserHome.vue";
 import StartEventForm from "../components/StartEventForm.vue";
+import RunningEvents from "../components/RunningEvents.vue";
 
 export default Vue.extend({
   name: "HomeView",
@@ -22,6 +28,7 @@ export default Vue.extend({
     LoginRegisterForm,
     UserHome,
     StartEventForm,
+    RunningEvents,
   },
   props: {
     resetToken: { type: String, required: true },
@@ -32,6 +39,7 @@ export default Vue.extend({
       username: "",
       isAdmin: false,
       userId: -1,
+      newEventId: -1,
     };
   },
   methods: {
@@ -40,7 +48,7 @@ export default Vue.extend({
       username: string;
       role: string;
       userId: number;
-    }) {
+    }): void {
       this.token = e.token;
       this.username = e.username;
       this.userId = e.userId;
@@ -53,6 +61,9 @@ export default Vue.extend({
         username: e.username,
         userId: e.userId,
       });
+    },
+    newEvent(eventId: number): void {
+      this.newEventId = eventId;
     },
   },
   computed: {
