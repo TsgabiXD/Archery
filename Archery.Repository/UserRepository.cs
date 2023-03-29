@@ -19,7 +19,9 @@ public class UserRepository : AbstractRepository
 
     public IEnumerable<int> GetUsersRunningEvents(int id)
     {
-        var mappings = Context.Mapping.Where(m => m.User != null && m.User.Id == id);
+        var mappings = Context.Mapping.Where(m => m.User != null && m.User.Id == id)
+                                      .AsNoTracking()
+                                      .ToList();
         List<int> result = new();
 
         foreach (var mapping in mappings)
@@ -31,29 +33,29 @@ public class UserRepository : AbstractRepository
 
     public string AddUser(User user)
     {
-        if (user.FirstName.Length <= 150 && user.LastName.Length <= 150 && user.NickName.Length <= 150)
+        try
         {
-            // TODO möglicher Exploit
-            if ((!(string.IsNullOrEmpty(user.FirstName) &&
-                    string.IsNullOrEmpty(user.LastName) &&
-                    string.IsNullOrEmpty(user.NickName))) &&
-                    Context.User.FirstOrDefault(u => u.FirstName == user.FirstName
-                                                    && u.LastName == user.LastName
-                                                    && u.NickName == user.NickName) is null)
+            if (user.FirstName.Length <= 150 && user.LastName.Length <= 150 && user.NickName.Length <= 150)
             {
-                try
+                // TODO möglicher Exploit
+                if ((!(string.IsNullOrEmpty(user.FirstName) &&
+                        string.IsNullOrEmpty(user.LastName) &&
+                        string.IsNullOrEmpty(user.NickName))) &&
+                        Context.User.FirstOrDefault(u => u.FirstName == user.FirstName
+                                                        && u.LastName == user.LastName
+                                                        && u.NickName == user.NickName) is null)
                 {
                     Context.User.Add(user);
                     Context.SaveChanges();
                     return "Benutzer hinzugefügt";
                 }
-                catch (Exception ex)
-                {
-                    return "Fail: " + ex.Message;
-                }
+                return "Ungültige Werte!";
             }
-            return "Ungültige Werte!";
+            return "Parcourname zu lang!";
         }
-        return "Parcourname zu lang!";
+        catch (Exception ex)
+        {
+            return "Fail: " + ex.Message;
+        }
     }
 }

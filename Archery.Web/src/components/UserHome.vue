@@ -66,15 +66,19 @@ export default defineComponent({
       addingTarget: false,
       isUserInEvent: false,
       events: [] as number[],
+      checkIntervalId: 0,
     };
   },
   mounted() {
-    setInterval(() => {
-      if (this.userId) {
+    this.checkIntervalId = setInterval(() => {
+      if (this.userId && this.events.length === 0) {
         this.loadTargets();
         this.checkUserInEvent();
       }
     }, 10000);
+  },
+  beforeUnmount(){    
+    clearInterval(this.checkIntervalId); // TODO fix this
   },
   computed: {
     axiosAuthConfig(): object {
@@ -115,7 +119,7 @@ export default defineComponent({
             this.axiosAuthConfig
           )
           .then((response) => {
-            this.isUserInEvent = response.data[0] !== undefined;
+            this.isUserInEvent = response.data.length !== 0;
             if (this.isUserInEvent) this.events = response.data;
           })
           .catch((err) => console.log(err));
