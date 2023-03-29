@@ -17,6 +17,20 @@ public class UserRepository : AbstractRepository
         return Context.User.ToList().FirstOrDefault(u => u.NickName == nickName) is not null;
     }
 
+    public IEnumerable<Mapping> GetUserWithTargets(int eventId)
+    {
+        var mapping = Context.Mapping
+                                .Include(m => m.Event)
+                                .Include(m => m.Target)
+                                .Include(m => m.User)
+                                .SingleOrDefault(m => m.Event != null && m.Event.Id == eventId);
+
+        if (mapping is null)
+            throw new Exception();
+
+        return mapping;
+    }
+
     public IEnumerable<int> GetUsersRunningEvents(int id)
     {
         var mappings = Context.Mapping.Where(m => m.User != null && m.User.Id == id)

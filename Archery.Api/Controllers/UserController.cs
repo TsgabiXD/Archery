@@ -48,6 +48,18 @@ public class UserController : ArcheryController
     }
 
     [HttpGet]
+    [Route("GetUserWithTargets/{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public IActionResult GetUserWithTargets(int id)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        return Ok(_repository.GetUserWithTargets(id));
+    }
+
+    [HttpGet]
     [Route("GetUsersRunningEvents/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

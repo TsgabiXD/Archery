@@ -40,19 +40,20 @@ export default defineComponent({
             });
           });
         })
-        .catch((err) => console.log(err));
-
-      this.events.forEach((e: { id: number; name: string }) => {
-        axios
-          .get("user/", { params: { userid: e.id } })
-          .then((response) => {
-            response.data.forEach((u: { nickname: string }) => {
-              // TODO add Type
-              this.user.push({ eventId: e.id, nickname: u.nickname });
-            });
-          })
-          .catch((err) => console.log(err));
-      });
+        .catch((err) => console.log(err))
+        .finally(() => {
+          this.events.forEach((e: { id: number; name: string }) => {
+            axios
+              .get(`user/getuserwithtargets/${e.id}`, this.axiosAuthConfig)
+              .then((response) => {
+                response.data.forEach((u: { nickname: string }) => {
+                  // TODO add Type
+                  this.user.push({ eventId: e.id, nickname: u.nickname });
+                });
+              })
+              .catch((err) => console.log(err));
+          });
+        });
     },
   },
   computed: {
