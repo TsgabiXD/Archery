@@ -6,7 +6,7 @@
         <v-container class="grey lighten-5" rounded>
           <v-row dense>
             <v-col cols="12" md="6">
-              <v-text-field label="Parcourname" outlined v-model="eventName">
+              <v-text-field label="Eventname" outlined v-model="eventName">
               </v-text-field>
             </v-col>
             <v-col cols="12" md="6">
@@ -60,7 +60,11 @@
         <v-spacer></v-spacer>
       </v-card-actions>
     </v-card>
-    <new-parcour v-if="isAddParcour" @parcour-added="isAddParcour = false" />
+    <new-parcour
+      v-if="isAddParcour"
+      @parcour-added="isAddParcour = false"
+      :token="token"
+    />
   </div>
 </template>
 
@@ -72,6 +76,9 @@ import axios from "@/router/axios";
 export default defineComponent({
   components: {
     NewParcour,
+  },
+  props: {
+    token: { type: String, required: true },
   },
   data: () => {
     return {
@@ -88,11 +95,16 @@ export default defineComponent({
     this.getParcours();
 
     axios
-      .get("user/getusers")
+      .get("user/getusers", this.axiosAuthConfig)
       .then((response) => {
         // TODO prüfen
         this.users = response.data;
-        this.eventUser = response.data;
+
+        response.data.forEach((e: never) => {
+          // TODO add Type
+          // TODO implementieren if(e.EventId)
+          this.eventUser.push(e);
+        });
       })
       .catch((err) => console.log(err));
   },
@@ -101,12 +113,16 @@ export default defineComponent({
       this.isLoading = true;
 
       axios
-        .post("event/startevent", {
-          name: this.eventName,
-          parcour: this.selectedParcour,
-          user: this.eventUser,
-          isRunning: true,
-        }) // TODO add Type
+        .post(
+          "event/startevent",
+          {
+            name: this.eventName,
+            parcour: this.selectedParcour,
+            user: this.eventUser,
+            isRunning: true,
+          },
+          this.axiosAuthConfig
+        ) // TODO add Type
         .then(() => {
           // TODO implement
         })
@@ -120,12 +136,17 @@ export default defineComponent({
     },
     getParcours(): void {
       axios
-        .get("parcour/getparcours")
+        .get("parcour/getparcours", this.axiosAuthConfig)
         .then((response) => {
           // TODO prüfen
           this.parcours = response.data;
         })
         .catch((err) => console.log(err));
+    },
+  },
+  computed: {
+    axiosAuthConfig(): object {
+      return { headers: { Authorization: `Bearer ${this.token}` } };
     },
   },
   watch: {

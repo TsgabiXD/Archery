@@ -2,18 +2,18 @@ using Microsoft.AspNetCore.Mvc;
 
 using Archery.Model;
 using Archery.Repository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Archery.Api.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 public class ParcourController : ArcheryController
 {
-    private readonly ILogger<ParcourController> _logger;
     private readonly ParcourRepository _repository;
 
     public ParcourController(ILogger<ParcourController> logger, ParcourRepository repository) : base(logger)
     {
-        _logger = logger;
         _repository = repository;
     }
 

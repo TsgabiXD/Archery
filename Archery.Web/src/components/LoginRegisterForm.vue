@@ -21,7 +21,33 @@
         </v-row>
         <v-row dense>
           <v-col>
-            <v-text-field label="Nickname" outlined v-model="nickname">
+            <v-text-field
+              label="Nickname"
+              outlined
+              v-model="nickname"
+              @blur="checkNickName"
+              :success-messages="
+                !login && !nickIsValid && nickname !== ''
+                  ? 'Benutzername ist frei'
+                  : ''
+              "
+              :error-messages="
+                !login && nickIsValid && nickname !== ''
+                  ? 'Benutzername ist vergeben'
+                  : ''
+              "
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
+        <v-row dense>
+          <v-col>
+            <v-text-field
+              label="Passwort"
+              type="password"
+              outlined
+              v-model="password"
+            >
             </v-text-field>
           </v-col>
         </v-row>
@@ -49,6 +75,8 @@ export default defineComponent({
       firstname: "",
       lastname: "",
       nickname: "",
+      password: "",
+      nickIsValid: "" as string | boolean,
     };
   },
   computed: {
@@ -71,11 +99,17 @@ export default defineComponent({
 
       if (this.isLogin)
         axios
-          .post("user/loginuser", {
-            nickName: this.nickname,
+          .post("auth/login", {
+            username: this.nickname,
+            password: this.password,
           }) // TODO login
           .then((response) => {
-            response.data.Token; // TODO save Token and use it this.$emit()
+            this.$emit("login", {
+              token: response.data.token,
+              username: response.data.username,
+              role: response.data.role,
+              userId: response.data.id,
+            });
           })
           .catch((err) => console.log(err))
           .finally(() => {
@@ -83,19 +117,33 @@ export default defineComponent({
           });
       else
         axios
-          .post("user/adduser", {
+          .post("auth/register", {
             firstName: this.firstname,
             lastName: this.lastname,
-            nickName: this.nickname,
-            role: "User"
+            username: this.nickname,
+            password: this.password,
           })
           .then((response) => {
-            response.data.Token; // TODO save Token and use it this.$emit()
+            this.$emit("login", {
+              token: response.data.token,
+              username: response.data.username,
+              role: response.data.role,
+              userId: response.data.id,
+            });
           })
           .catch((err) => console.log(err))
           .finally(() => {
             this.isLoading = false; // TODO authenticate
           });
+    },
+    checkNickName(): void {
+      if (!this.login && this.nickname !== "")
+        axios
+          .get(`user/checkuser/${this.nickname}`)
+          .then((response) => {
+            this.nickIsValid = response.data;
+          })
+          .catch((err) => console.log(err));
     },
   },
 });

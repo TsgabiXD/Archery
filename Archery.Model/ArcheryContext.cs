@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Archery.Model;
@@ -9,6 +10,9 @@ public class ArcheryContext : DbContext
     public DbSet<Target> Target { set; get; } = null!;
     public DbSet<Event> Event { set; get; } = null!;
     public DbSet<Mapping> Mapping { set; get; } = null!;
+
+    
+    public DbSet<IdentityUser> IdentityUser { set; get; } = null!;
 
     public ArcheryContext(DbContextOptions<ArcheryContext> options) : base(options) { }
 

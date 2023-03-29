@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 using Archery.Model;
 using Archery.Repository;
@@ -6,16 +7,14 @@ using Archery.Model.ApiHelper;
 
 namespace Archery.Api.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 public class EventController : ArcheryController
 {
-
-    private readonly ILogger<EventController> _logger;
     private readonly EventRepository _repository;
 
     public EventController(ILogger<EventController> logger, EventRepository repository) : base(logger)
     {
-        _logger = logger;
         _repository = repository;
     }
 

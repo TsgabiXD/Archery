@@ -10,15 +10,36 @@ public class UserRepository : AbstractRepository
     public IEnumerable<User> GetAllUsers()
     {
         return Context.User.AsNoTracking().ToList();
+    }
 
+    public bool CheckUser(string nickName)
+    {
+        return Context.User.ToList().FirstOrDefault(u => u.NickName == nickName) is not null;
+    }
+
+    public IEnumerable<int> GetUsersRunningEvents(int id)
+    {
+        var mappings = Context.Mapping.Where(m => m.User != null && m.User.Id == id);
+        List<int> result = new();
+
+        foreach (var mapping in mappings)
+            if (!result.Contains(mapping.Event.Id) && mapping.Event.IsRunning == true)
+                result.Add(mapping.Event.Id);
+
+        return result;
     }
 
     public string AddUser(User user)
     {
         if (user.FirstName.Length <= 150 && user.LastName.Length <= 150 && user.NickName.Length <= 150)
         {
-
-            if (!(string.IsNullOrEmpty(user.FirstName) && string.IsNullOrEmpty(user.LastName) && string.IsNullOrEmpty(user.NickName)))
+            // TODO möglicher Exploit
+            if ((!(string.IsNullOrEmpty(user.FirstName) &&
+                    string.IsNullOrEmpty(user.LastName) &&
+                    string.IsNullOrEmpty(user.NickName))) &&
+                    Context.User.FirstOrDefault(u => u.FirstName == user.FirstName
+                                                    && u.LastName == user.LastName
+                                                    && u.NickName == user.NickName) is null)
             {
                 try
                 {

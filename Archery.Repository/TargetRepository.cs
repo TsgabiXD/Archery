@@ -1,4 +1,5 @@
 ﻿using Archery.Model;
+using Archery.Model.ApiHelper;
 using Microsoft.EntityFrameworkCore;
 
 namespace Archery.Repository
@@ -18,13 +19,16 @@ namespace Archery.Repository
         }
 
 
-        public string AddTarget(int arrowCount, int hitArea)
+        public string AddTarget(NewTarget newTarget)
         {
-            if (!((arrowCount < 0 && arrowCount > 3) || (hitArea < 1 && hitArea > 3)))
+            if (!((newTarget.ArrowCount < 0 && newTarget.ArrowCount > 3) || (newTarget.HitArea < 1 && newTarget.HitArea > 3)))
             {
                 try
                 {
-                    Context.Target.Add(new() { ArrowCount = arrowCount, HitArea = hitArea });
+                    var eventfilter = Context.Mapping.FirstOrDefault(x => x.Event.Id == newTarget.EventId && x.User.Id == newTarget.UserId);
+                    var currentTarget = Context.Target.Add(new() { ArrowCount = newTarget.ArrowCount, HitArea = newTarget.HitArea, });
+                    eventfilter.Target.Add(currentTarget.Entity);
+
                     Context.SaveChanges();
                     return "Ziel hinzugefügt";
                 }

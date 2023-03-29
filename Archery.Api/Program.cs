@@ -2,6 +2,12 @@ global using System;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.DependencyInjection;
+global using System.Text;
+global using ApiWithAuth;
+global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 using Archery.Model;
 using Archery.Repository;
@@ -22,6 +28,7 @@ var pcName = Environment.MachineName;
 var conection = pcName.Contains("03302") ? "DB" :
                 pcName == "P3643" ? "DBLukaPC" :
                 pcName.Contains("AGVGCQH") ? "DBTobiPC" :
+                pcName.Contains("F186T1U") ? "DBTobiPCDaheim" :
                 throw new Exception("No Specified PC!!!");
 
 var builder = WebApplication.CreateBuilder(args);
@@ -48,7 +55,33 @@ builder.Services.AddControllers()
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     .Services.AddEndpointsApiExplorer()
 
-    .AddSwaggerGen()
+    .AddSwaggerGen(option =>
+        {
+            option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
+            option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Please enter a valid token",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "Bearer"
+            });
+            option.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type=ReferenceType.SecurityScheme,
+                            Id="Bearer"
+                        }
+                    },
+                    new string[]{}
+                }
+            });
+        })
 
     .AddDbContext<ArcheryContext>(options =>
         options.UseSqlite(builder.Configuration.GetConnectionString(conection), b => b.MigrationsAssembly("Archery.Api")))
@@ -56,8 +89,40 @@ builder.Services.AddControllers()
     .AddScoped<UserRepository>()
     .AddScoped<ParcourRepository>()
     .AddScoped<TargetRepository>()
-    .AddScoped<EventRepository>();
+    .AddScoped<EventRepository>()
+    .AddScoped<TokenService, TokenService>();
 
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ClockSkew = TimeSpan.Zero,
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = "apiWithAuthBackend",
+            ValidAudience = "apiWithAuthBackend",
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes("!SomethingSecret!")
+            ),
+        };
+    }); // TODO hinterfragen
+
+builder.Services
+    .AddIdentityCore<IdentityUser>(options =>
+    {
+        options.SignIn.RequireConfirmedAccount = false;
+        options.User.RequireUniqueEmail = false; // no email
+        options.Password.RequireDigit = false;
+        options.Password.RequiredLength = 6;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequireLowercase = false;
+    })
+    .AddEntityFrameworkStores<ArcheryContext>(); // TODO hinterfragen
 
 var app = builder.Build();
 
@@ -69,11 +134,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseCors();
-
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 await CreateDbAsync(app.Services, app.Environment);

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 using Archery.Model;
 using Archery.Repository;
@@ -8,15 +9,14 @@ namespace Archery.Api.Controllers;
 [Route("api/[controller]")]
 public class UserController : ArcheryController
 {
-    private readonly ILogger<UserController> _logger;
     private readonly UserRepository _repository;
 
     public UserController(ILogger<UserController> logger, UserRepository repository) : base(logger)
     {
-        _logger = logger;
         _repository = repository;
     }
 
+    [Authorize]
     [HttpGet]
     [Route("GetUsers")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -32,23 +32,47 @@ public class UserController : ArcheryController
         }
     }
 
-    [HttpPost]
-    [Route("AddUser")]
+    [HttpGet]
+    [Route("CheckUser/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public IActionResult AddUser(User user)
+    public IActionResult CheckUser(string id)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
+        return Ok(_repository.CheckUser(id));
+    }
+
+    [HttpGet]
+    [Route("GetUsersRunningEvents/{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public IActionResult GetUsersRunningEvents(int id)
+    {       
         try
         {
-            return Ok(_repository.AddUser(user));
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(_repository.GetUsersRunningEvents(id));
         }
         catch (Exception ex)
         {
             BadRequest(ex.Message);
         }
     }
+
+    // [HttpPost]
+    // [Route("AddUser")]
+    // [ProducesResponseType(StatusCodes.Status200OK)]
+    // [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    // public IActionResult AddUser(User user)
+    // {
+    //     if (!ModelState.IsValid)
+    //         return BadRequest(ModelState);
+
+    //     return Ok(_repository.AddUser(user));
+    // }
 
 }

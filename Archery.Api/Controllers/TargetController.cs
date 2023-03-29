@@ -1,19 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 using Archery.Model;
 using Archery.Repository;
+using Archery.Model.ApiHelper;
 
 namespace Archery.Api.Controllers;
 
+
+[Authorize]
 [Route("api/[controller]")]
 public class TargetController : ArcheryController
 {
-    private readonly ILogger<TargetController> _logger;
     private readonly TargetRepository _repository;
 
     public TargetController(ILogger<TargetController> logger, TargetRepository repository) : base(logger)
     {
-        _logger = logger;
         _repository = repository;
     }
 
@@ -36,14 +38,14 @@ public class TargetController : ArcheryController
     [Route("AddTarget")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public IActionResult Target(int arrowCount, int hitArea)
+    public IActionResult Target(NewTarget newTarget)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
         try
         {
-            return Ok(_repository.AddTarget(arrowCount, hitArea));
+            return Ok(_repository.AddTarget(newTarget));
         }
         catch(Exception ex)
         {
