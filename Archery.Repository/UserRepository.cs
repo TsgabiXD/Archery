@@ -19,9 +19,12 @@ public class UserRepository : AbstractRepository
 
     public IEnumerable<int> GetUsersRunningEvents(int id)
     {
-        var mappings = Context.Mapping.Where(m => m.User != null && m.User.Id == id)
-                                      .AsNoTracking()
-                                      .ToList();
+        var mappings = Context.Mapping
+                                .Include(m => m.User)
+                                .Include(m => m.Event)
+                                .Where(m => m.User != null && m.User.Id == id)
+                                .AsNoTracking()
+                                .ToList();
         List<int> result = new();
 
         foreach (var mapping in mappings)

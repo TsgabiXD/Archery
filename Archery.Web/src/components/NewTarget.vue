@@ -60,8 +60,8 @@ export default defineComponent({
       axios
         .post("target/addtarget", this.target, this.axiosAuthConfig)
         .then(() => {
-          this.clearData();
           this.$emit("save");
+          this.clearData();
         })
         .catch((err) => console.log(err));
     },
@@ -71,6 +71,10 @@ export default defineComponent({
     },
     clearData(): void {
       this.step = 1;
+      this.target.arrowCount = 0;
+      this.target.hitArea = 0;
+      this.target.eventId = 0;
+      this.target.userId = 0;
     },
   },
   computed: {

@@ -47,17 +47,17 @@ public class EventController : ArcheryController
     }
 
     [HttpGet]
-    [Route("GetRunningEvents")]
+    [Route("GetAdminViewElements")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public IActionResult GetRunningEvents()
+    public IActionResult GetAdminViewElements()
     {
         try
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(_repository.GetRunningEvents());
+            return Ok(_repository.GetAdminViewElements());
         }
         catch (Exception ex)
         {

@@ -1,6 +1,4 @@
-﻿using Archery.Model;
-
-namespace Archery.Model.ApiHelper
+﻿namespace Archery.Model.ApiHelper
 {
     public class NewEvent
     {

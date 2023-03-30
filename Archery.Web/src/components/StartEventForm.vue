@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card elevation="7" :loading="isLoading" v-if="!isAddParcour">
+    <v-card elevation="7" :loading="isLoading" v-if="!isAddParcour" class="mb-5">
       <v-card-title> Neues Parcour-Event </v-card-title>
       <v-card-text>
         <v-container class="grey lighten-5" rounded>
@@ -128,7 +128,7 @@ export default defineComponent({
             this.axiosAuthConfig
           ) // TODO add Type
           .then((response) => {
-            this.$emit("new-event", response); // TODO implement
+            this.$emit("new-event", response.data); // TODO implement
             
             this.selectedParcour = "";
             this.eventUser = [];

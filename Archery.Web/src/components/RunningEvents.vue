@@ -2,10 +2,16 @@
   <v-card v-if="newEventId > 1">
     <v-card-text>
       <v-container class="grey lighten-5" rounded>
-        <v-card v-for="event in events" :key="event.id">
-          <v-card-title>{{ event.name }}</v-card-title>
+        <v-card
+          v-for="event in events"
+          :key="event.id"
+          :title="event.name"
+          class="mb-2"
+        >
           <v-card-text>
-            <v-card v-for="u in user.filter" flat :key="u.id"></v-card>
+            <v-card v-for="u in user" flat :key="'u' + u.id">
+              <v-card-title>{{ u.nickname }}</v-card-title>
+            </v-card>
           </v-card-text>
         </v-card>
       </v-container>
@@ -24,36 +30,30 @@ export default defineComponent({
   },
   data() {
     return {
-      events: [] as { id: number; name: string }[], // TODO add Type
-      user: [] as { eventId: number; nickname: string }[], // TODO add Type
+      events: [] as {
+        name: string;
+        user: { nickName: string; score: number };
+      }[], // TODO add Type
     };
   },
   watch: {
     newEventId() {
       axios
-        .get("event/getrunningevents", this.axiosAuthConfig)
+        .get("event/getadminviewelements", this.axiosAuthConfig)
         .then((response) => {
-          response.data.forEach((e: { id: number; name: string }) => {
-            this.events.push({
-              id: e.id,
-              name: e.name,
-            });
-          });
+          response.data.forEach(
+            (e: {
+              eventName: string;
+              user: { nickName: string; score: number };
+            }) => {
+              this.events.push({
+                name: e.eventName,
+                user: e.user,
+              });
+            }
+          );
         })
-        .catch((err) => console.log(err))
-        .finally(() => {
-          this.events.forEach((e: { id: number; name: string }) => {
-            axios
-              .get(`user/getuserwithtargets/${e.id}`, this.axiosAuthConfig)
-              .then((response) => {
-                response.data.forEach((u: { nickname: string }) => {
-                  // TODO add Type
-                  this.user.push({ eventId: e.id, nickname: u.nickname });
-                });
-              })
-              .catch((err) => console.log(err));
-          });
-        });
+        .catch((err) => console.log(err));
     },
   },
   computed: {

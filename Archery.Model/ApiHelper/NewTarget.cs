@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Archery.Model.ApiHelper
+﻿namespace Archery.Model.ApiHelper
 {
     public class NewTarget
     {

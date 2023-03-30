@@ -18,16 +18,24 @@ namespace Archery.Repository
             return targetFound;
         }
 
-
         public string AddTarget(NewTarget newTarget)
         {
             if (!((newTarget.ArrowCount < 0 && newTarget.ArrowCount > 3) || (newTarget.HitArea < 1 && newTarget.HitArea > 3)))
             {
                 try
                 {
-                    var eventfilter = Context.Mapping.FirstOrDefault(x => x.Event.Id == newTarget.EventId && x.User.Id == newTarget.UserId);
-                    var currentTarget = Context.Target.Add(new() { ArrowCount = newTarget.ArrowCount, HitArea = newTarget.HitArea, });
-                    eventfilter.Target.Add(currentTarget.Entity);
+                    var eventfilter = Context.Mapping
+                                                .Include(m => m.Event)
+                                                .Include(m => m.User)
+                                                .Include(m => m.Target)
+                                                .FirstOrDefault(m => m.Event.Id == newTarget.EventId &&
+                                                                        m.User != null &&
+                                                                        m.User.Id == newTarget.UserId);
+
+                    if (eventfilter is null)
+                        throw new Exception();
+
+                    eventfilter.Target.Add(new() { ArrowCount = newTarget.ArrowCount, HitArea = newTarget.HitArea, });
 
                     Context.SaveChanges();
                     return "Ziel hinzugefügt";
