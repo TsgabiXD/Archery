@@ -36,7 +36,7 @@ public class UserRepository : AbstractRepository
 
     public string AddUser(User user)
     {
-        try
+        if (user != null)
         {
             if (user.FirstName.Length <= 150 && user.LastName.Length <= 150 && user.NickName.Length <= 150)
             {
@@ -56,9 +56,6 @@ public class UserRepository : AbstractRepository
             }
             return "Parcourname zu lang!";
         }
-        catch (Exception ex)
-        {
-            return "Fail: " + ex.Message;
-        }
+        throw new InvalidOperationException("Fehler beim Hinzufügen des Users");
     }
 }

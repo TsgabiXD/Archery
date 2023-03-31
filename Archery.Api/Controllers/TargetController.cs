@@ -38,14 +38,14 @@ public class TargetController : ArcheryController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public IActionResult Target(NewTarget newTarget)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
 
         try
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             return Ok(_repository.AddTarget(newTarget));
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }

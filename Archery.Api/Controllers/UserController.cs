@@ -41,10 +41,17 @@ public class UserController : ArcheryController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public IActionResult CheckUser(string id)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        try
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-        return Ok(_repository.CheckUser(id));
+            return Ok(_repository.CheckUser(id));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpGet]
@@ -62,7 +69,7 @@ public class UserController : ArcheryController
         }
         catch (Exception ex)
         {
-           return BadRequest(ex.Message);
+            return BadRequest(ex.Message);
         }
     }
 

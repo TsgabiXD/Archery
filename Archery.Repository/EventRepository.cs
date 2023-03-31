@@ -17,42 +17,36 @@ namespace Archery.Repository
 
         public string StartEvent(NewEvent newEvent)
         {
-            try
+            if (newEvent != null)
             {
-                if (newEvent != null)
+
+                var eventUser = Context.User
+                    .Where(u => newEvent.UserIds.Contains(u.Id))
+                    .ToList();
+
+                var eventParcour = Context.Parcour
+                    .SingleOrDefault(u => newEvent.ParcourId == u.Id);
+
+                if (eventParcour is null)
+                    throw new Exception();
+
+                var e = Context.Event.Add(new() { Name = newEvent.Name, Parcour = eventParcour, IsRunning = true }).Entity;
+
+                foreach (var user in eventUser)
+                    Context.Mapping.Add(new() { Event = e, User = user });
+
+                if (e == null)
                 {
-
-                    var eventUser = Context.User
-                        .Where(u => newEvent.UserIds.Contains(u.Id))
-                        .ToList();
-
-                    var eventParcour = Context.Parcour
-                        .SingleOrDefault(u => newEvent.ParcourId == u.Id);
-
-                    if (eventParcour is null)
-                        throw new Exception();
-
-                    var e = Context.Event.Add(new() { Name = newEvent.Name, Parcour = eventParcour, IsRunning = true }).Entity;
-
-                    foreach (var user in eventUser)
-                        Context.Mapping.Add(new() { Event = e, User = user });
-
-                    if (e == null)
-                    {
-                        return "Event not found";
-                    }
-
-                    Context.SaveChanges();
-
-                    return e.Id.ToString();
+                    return "Event not found";
                 }
-                throw new Exception();
+
+                Context.SaveChanges();
+
+                return e.Id.ToString();
             }
-            catch (Exception ex)
-            {
-                return "Fail: " + ex.Message;
-            }
+            throw new InvalidOperationException("Fehler beim Starten des Events");
         }
+
 
         public IEnumerable<AdminViewElement> GetAdminViewElements()
         {
@@ -103,7 +97,7 @@ namespace Archery.Repository
 
         public string EndEvent(int eventToStop)
         {
-            try
+            if (eventToStop != null)
             {
                 var stopEvent = Context.Event.SingleOrDefault(e => e.Id == eventToStop);
 
@@ -119,10 +113,8 @@ namespace Archery.Repository
 
                 return " Event beendet";
             }
-            catch (Exception ex)
-            {
-                return "Fail: " + ex.Message;
-            }
+            throw new InvalidOperationException("Fehler beim Beenden des Events");
+
         }
     }
 }
