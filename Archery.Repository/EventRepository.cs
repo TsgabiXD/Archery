@@ -56,40 +56,46 @@ namespace Archery.Repository
 
         public IEnumerable<AdminViewElement> GetAdminViewElements()
         {
-            var userEventMapping = Context.Mapping
+            var userEventMappings = Context.Mapping
                                     .Include(m => m.User)
                                     .Include(m => m.Event)
                                     .Where(m => m.Event.IsRunning)
                                     .AsNoTracking()
                                     .ToArray();
 
-            var targetEventMapping = Context.Mapping
+            var mappings = Context.Mapping
                                         .Include(m => m.Target)
                                         .Include(m => m.Event)
+                                        .Include(m => m.User)
                                         .Where(m => m.Event.IsRunning)
                                         .AsNoTracking()
                                         .ToArray();
 
-            if (userEventMapping is null)
+            if (userEventMappings is null)
                 throw new Exception();
 
             List<AdminViewElement> result = new();
 
-            foreach (var uem in userEventMapping)
+            foreach (var uem in userEventMappings)
             {
                 result.Add(new() { EventName = uem.Event.Name });
 
-                int score = 0;
-                int[,] countingResults = new int[3, 3]{
+                var countingResults = new int[3, 3]{
                                                     {20, 18, 16},
                                                     {14, 12, 10},
                                                     {8, 6, 4},
                                                 };
-                // TODO implementieren
-                // foreach (var targetEvent in targetEventMapping.Where(m => m.Event.Id == uem.Event.Id))
-                //     targetEvent.Target
 
-                result.Last().User.Add(new() { NickName = uem.User.NickName, Score = score });
+                foreach (var m in mappings.Where(m => m.Event.Id == uem.Event.Id && m.User?.Id == uem.User?.Id))
+                {
+                    var score = 0;
+                    var targetsOfUser = m.Target;
+
+                    foreach (var target in targetsOfUser)
+                        score += countingResults[target.ArrowCount, target.HitArea];
+
+                    result.Last().User.Add(new() { NickName = uem.User.NickName, Score = score });
+                }
             }
 
             return result;
