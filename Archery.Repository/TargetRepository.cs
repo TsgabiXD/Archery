@@ -13,7 +13,7 @@ namespace Archery.Repository
             var targetFound = Context.Target.AsNoTracking().ToList();
 
             if (targetFound == null)
-                throw new InvalidOperationException("Fehler beim Suchen des Ziels");
+                throw new InvalidOperationException("Fehler beim Suchen der Ziele");
 
             return targetFound;
         }
@@ -22,9 +22,7 @@ namespace Archery.Repository
         {
             if (!((newTarget.ArrowCount < 0 && newTarget.ArrowCount > 3) || (newTarget.HitArea < 1 && newTarget.HitArea > 3)))
             {
-                try
-                {
-                    var eventfilter = Context.Mapping
+                var eventfilter = Context.Mapping
                                                 .Include(m => m.Event)
                                                 .Include(m => m.User)
                                                 .Include(m => m.Target)
@@ -32,18 +30,17 @@ namespace Archery.Repository
                                                                         m.User != null &&
                                                                         m.User.Id == newTarget.UserId);
 
-                    if (eventfilter is null)
-                        throw new Exception();
+                if (eventfilter is null)
+                    throw new Exception();
 
-                    eventfilter.Target.Add(new() { ArrowCount = newTarget.ArrowCount, HitArea = newTarget.HitArea, });
+                eventfilter.Target.Add(new() { ArrowCount = newTarget.ArrowCount, HitArea = newTarget.HitArea, });
 
-                    Context.SaveChanges();
-                    return "Ziel hinzugefügt";
-                }
-                catch (Exception ex)
-                {
-                    return "Fail: " + ex.Message;
-                }
+                if (newTarget.ArrowCount == null  || newTarget.HitArea == null)
+                    throw new InvalidOperationException("Fehler beim Hinzufügen des Ziels");
+
+                Context.SaveChanges();
+                return "Ziel hinzugefügt";
+
             }
             return "Ungültige Werte!";
         }

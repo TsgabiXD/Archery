@@ -31,7 +31,7 @@ public class ParcourRepository : AbstractRepository
 
     public string AddParcour(Parcour parcour)
     {
-        try
+        if (parcour != null)
         {
             if (!(parcour.Name.Length <= 150))
                 return "Vorname, Nachname oder Nickname zu lang!";
@@ -45,14 +45,12 @@ public class ParcourRepository : AbstractRepository
                 Name = parcour.Name,
                 Location = parcour.Location,
             });
+
             Context.SaveChanges();
 
-            return "success";
+            return "Gespeichert";
         }
-        catch (Exception ex)
-        {
-            return "Fail: " + ex.Message;
-        }
+        throw new InvalidOperationException("Fehler beim Hinzufügen des Parcours");
     }
 }
 
