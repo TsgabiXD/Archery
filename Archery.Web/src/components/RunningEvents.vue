@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="newEventId > 1">
+  <v-card v-if="newEventId > 0">
     <v-card-text>
       <v-container class="grey lighten-5" rounded>
         <v-card
@@ -32,19 +32,30 @@ export default defineComponent({
     return {
       events: [] as {
         name: string;
-        user: { nickName: string; score: number };
+        user: { nickName: string; score: number }[];
       }[], // TODO add Type
+      checkIntervalId: 0,
     };
   },
-  watch: {
-    newEventId() {
+  mounted() {
+    this.checkIntervalId = setInterval(() => {
+      if (this.events.length > 0) {
+        this.getAdminViewElements();
+      }
+    }, 10000);
+  },
+  beforeUnmount() {
+    clearInterval(this.checkIntervalId); // TODO fix this
+  },
+  methods: {
+    getAdminViewElements(): void {
       axios
         .get("event/getadminviewelements", this.axiosAuthConfig)
         .then((response) => {
           response.data.forEach(
             (e: {
               eventName: string;
-              user: { nickName: string; score: number };
+              user: { nickName: string; score: number }[];
             }) => {
               this.events.push({
                 name: e.eventName,
@@ -54,6 +65,11 @@ export default defineComponent({
           );
         })
         .catch((err) => console.log(err));
+    },
+  },
+  watch: {
+    newEventId() {
+      this.getAdminViewElements();
     },
   },
   computed: {

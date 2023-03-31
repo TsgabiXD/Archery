@@ -70,6 +70,8 @@ export default defineComponent({
     };
   },
   mounted() {
+    this.loadTargets();
+
     this.checkIntervalId = setInterval(() => {
       if (this.userId && this.events.length === 0) {
         this.loadTargets();
@@ -77,7 +79,7 @@ export default defineComponent({
       }
     }, 10000);
   },
-  beforeUnmount(){    
+  beforeUnmount() {
     clearInterval(this.checkIntervalId); // TODO fix this
   },
   computed: {
