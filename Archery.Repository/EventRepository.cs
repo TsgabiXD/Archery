@@ -46,69 +46,69 @@ namespace Archery.Repository
             }
             throw new InvalidOperationException("Fehler beim Starten des Events");
         }
-    }
 
-    public IEnumerable<AdminViewElement> GetAdminViewElements()
-    {
-        var userEventMapping = Context.Mapping
-                                .Include(m => m.User)
-                                .Include(m => m.Event)
-                                .Where(m => m.Event.IsRunning)
-                                .AsNoTracking()
-                                .ToArray();
 
-        var targetEventMapping = Context.Mapping
-                                    .Include(m => m.Target)
+        public IEnumerable<AdminViewElement> GetAdminViewElements()
+        {
+            var userEventMapping = Context.Mapping
+                                    .Include(m => m.User)
                                     .Include(m => m.Event)
                                     .Where(m => m.Event.IsRunning)
                                     .AsNoTracking()
                                     .ToArray();
 
-        if (userEventMapping is null)
-            throw new Exception();
+            var targetEventMapping = Context.Mapping
+                                        .Include(m => m.Target)
+                                        .Include(m => m.Event)
+                                        .Where(m => m.Event.IsRunning)
+                                        .AsNoTracking()
+                                        .ToArray();
 
-        List<AdminViewElement> result = new();
+            if (userEventMapping is null)
+                throw new Exception();
 
-        foreach (var uem in userEventMapping)
-        {
-            result.Add(new() { EventName = uem.Event.Name });
+            List<AdminViewElement> result = new();
 
-            int score = 0;
-            int[,] countingResults = new int[3, 3]{
+            foreach (var uem in userEventMapping)
+            {
+                result.Add(new() { EventName = uem.Event.Name });
+
+                int score = 0;
+                int[,] countingResults = new int[3, 3]{
                                                     {20, 18, 16},
                                                     {14, 12, 10},
                                                     {8, 6, 4},
                                                 };
-            // TODO implementieren
-            // foreach (var targetEvent in targetEventMapping.Where(m => m.Event.Id == uem.Event.Id))
-            //     targetEvent.Target
+                // TODO implementieren
+                // foreach (var targetEvent in targetEventMapping.Where(m => m.Event.Id == uem.Event.Id))
+                //     targetEvent.Target
 
-            result.Last().User.Add(new() { NickName = uem.User.NickName, Score = score });
-        }
-
-        return result;
-    }
-
-    public string EndEvent(int eventToStop)
-    {
-        if (eventToStop != null)
-        {
-            var stopEvent = Context.Event.SingleOrDefault(e => e.Id == eventToStop);
-
-            if (stopEvent == null)
-            {
-                return "Fail: stopEvent ist Null";
+                result.Last().User.Add(new() { NickName = uem.User.NickName, Score = score });
             }
 
-
-            stopEvent.IsRunning = false;
-
-            Context.SaveChanges();
-
-            return " Event beendet";
+            return result;
         }
-        throw new InvalidOperationException("Fehler beim Beenden des Events");
-    }
-}
+
+        public string EndEvent(int eventToStop)
+        {
+            if (eventToStop != null)
+            {
+                var stopEvent = Context.Event.SingleOrDefault(e => e.Id == eventToStop);
+
+                if (stopEvent == null)
+                {
+                    return "Fail: stopEvent ist Null";
+                }
+
+
+                stopEvent.IsRunning = false;
+
+                Context.SaveChanges();
+
+                return " Event beendet";
+            }
+            throw new InvalidOperationException("Fehler beim Beenden des Events");
+
+        }
     }
 }
