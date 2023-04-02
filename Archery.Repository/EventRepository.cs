@@ -65,7 +65,7 @@ namespace Archery.Repository
                                         .AsNoTracking()
                                         .ToArray();
 
-            // TODO nur mappings & 
+            // TODO nur mappings & groupbyevent noetig
 
             if (userEventMappings is null)
                 throw new Exception();
