@@ -65,6 +65,8 @@ namespace Archery.Repository
                                         .AsNoTracking()
                                         .ToArray();
 
+            // TODO nur mappings & 
+
             if (userEventMappings is null)
                 throw new Exception();
 
@@ -86,7 +88,7 @@ namespace Archery.Repository
                     var targetsOfUser = m.Target;
 
                     foreach (var target in targetsOfUser)
-                        score += countingResults[target.ArrowCount, target.HitArea];
+                        score += countingResults[target.ArrowCount - 1, target.HitArea - 1];
 
                     result.Last().User.Add(new() { NickName = uem.User.NickName, Score = score });
                 }

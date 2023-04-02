@@ -1,16 +1,14 @@
 <template>
   <v-card v-if="newEventId > 0">
+    <v-card-title>Laufende Events</v-card-title>
     <v-card-text>
       <v-container class="grey lighten-5" rounded>
-        <v-card
-          v-for="event in events"
-          :key="event.id"
-          :title="event.name"
-          class="mb-2"
-        >
+        <v-card v-for="event in events" :key="event.id" class="mb-2">
+          <v-card-title>{{ event.name }}</v-card-title>
           <v-card-text>
-            <v-card v-for="u in user" flat :key="'u' + u.id">
-              <v-card-title>{{ u.nickname }}</v-card-title>
+            <v-card v-for="u in event.user" flat :key="u.nickName">
+              <v-card-title class="subtitle-1">{{ u.nickName }}</v-card-title>
+              <v-card-text>{{ u.score }}</v-card-text>
             </v-card>
           </v-card-text>
         </v-card>
@@ -52,6 +50,8 @@ export default defineComponent({
       axios
         .get("event/getadminviewelements", this.axiosAuthConfig)
         .then((response) => {
+          this.events = [];
+
           response.data.forEach(
             (e: {
               eventName: string;
