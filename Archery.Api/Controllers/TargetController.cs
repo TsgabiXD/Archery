@@ -18,13 +18,13 @@ public class TargetController : ArcheryController
     }
 
     [HttpGet]
-    [Route("GetTargets")]
+    [Route("[action]/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult Get()
+    public IActionResult GetMyTargets(int id)
     {
         try
         {
-            return Ok(_repository.GetAllTargets());
+            return Ok(_repository.GetMyTargets(id));
         }
         catch (Exception ex)
         {

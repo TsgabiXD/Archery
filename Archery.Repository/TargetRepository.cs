@@ -8,8 +8,16 @@ namespace Archery.Repository
     {
         public TargetRepository(ArcheryContext context) : base(context) { }
 
-        public IEnumerable<Target> GetAllTargets()
+        public IEnumerable<Target> GetMyTargets(int userId)
         {
+            var mapping = Context.Mapping
+                .Include(m => m.Event)
+                .Include(m => m.User)
+                .Include(m => m.Target)
+                .Where(m => m.Event.IsRunning)
+                .AsNoTracking()
+                .ToList();
+                // TODO Implementieren @TsgabiXD
             var targetFound = Context.Target.AsNoTracking().ToList();
 
             if (targetFound == null)
@@ -35,7 +43,9 @@ namespace Archery.Repository
 
                 eventfilter.Target.Add(new() { ArrowCount = newTarget.ArrowCount, HitArea = newTarget.HitArea, });
 
-                if (newTarget.ArrowCount == null  || newTarget.HitArea == null)
+                // TODO richtiges error handling @JoRole
+                if (newTarget.ArrowCount == null || newTarget.HitArea == null)
+                    // TODO assagekraeftige Errormeldung @JoRole
                     throw new InvalidOperationException("Fehler beim Hinzufügen des Ziels");
 
                 Context.SaveChanges();
