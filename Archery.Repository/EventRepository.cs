@@ -51,36 +51,39 @@ namespace Archery.Repository
         public IEnumerable<AdminViewElement> GetAdminViewElements()
         {
             var userEventMappings = Context.Mapping
-                                    .Include(m => m.User)
-                                    .Include(m => m.Event)
-                                    .Where(m => m.Event.IsRunning)
-                                    .AsNoTracking()
-                                    .ToArray();
+                .Include(m => m.User)
+                .Include(m => m.Event)
+                .Where(m => m.Event.IsRunning)
+                .AsNoTracking()
+                .ToArray();
 
             var mappings = Context.Mapping
-                                        .Include(m => m.Target)
-                                        .Include(m => m.Event)
-                                        .Include(m => m.User)
-                                        .Where(m => m.Event.IsRunning)
-                                        .AsNoTracking()
-                                        .ToArray();
+                .Include(m => m.Target)
+                .Include(m => m.Event)
+                .Include(m => m.User)
+                .Where(m => m.Event.IsRunning)
+                .AsNoTracking()
+                .ToArray();
 
-            // TODO nur mappings & groupbyevent noetig
+            var events = Context.Event
+                .Where(e => e.IsRunning)
+                .AsNoTracking()
+                .ToArray();
 
             if (userEventMappings is null)
                 throw new Exception();
 
-            List<AdminViewElement> result = new();
+            List<AdminViewElement> results = new();
 
             foreach (var uem in userEventMappings)
             {
-                result.Add(new() { EventName = uem.Event.Name });
+                results.Add(new() { EventName = uem.Event.Name });
 
                 var countingResults = new int[3, 3]{
-                                                    {20, 18, 16},
-                                                    {14, 12, 10},
-                                                    {8, 6, 4},
-                                                };
+                    {20, 18, 16},
+                    {14, 12, 10},
+                    {8, 6, 4},
+                };
 
                 foreach (var m in mappings.Where(m => m.Event.Id == uem.Event.Id && m.User?.Id == uem.User?.Id))
                 {
@@ -90,11 +93,25 @@ namespace Archery.Repository
                     foreach (var target in targetsOfUser)
                         score += countingResults[target.ArrowCount - 1, target.HitArea - 1];
 
-                    result.Last().User.Add(new() { NickName = uem.User.NickName, Score = score });
+                    results.Last().User.Add(new() { NickName = uem.User.NickName, Score = score });
                 }
             }
 
-            return result;
+            List<AdminViewElement> groupedByEvents = new();
+
+            foreach (var e in events)
+            {
+                List<AdminViewUser> user = new();
+
+                var singleEventWithAllUsers = results.Where(r => r.EventName == e.Name);
+
+                foreach (var ewu in singleEventWithAllUsers)
+                    user.Add(new() { NickName = ewu.User[0].NickName, Score = ewu.User[0].Score });
+
+                groupedByEvents.Add(new() { EventName = e.Name, User = user });
+            }
+
+            return groupedByEvents;
         }
 
         public string EndEvent(int eventToStop)
