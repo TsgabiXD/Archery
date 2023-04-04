@@ -59,9 +59,7 @@ export default defineComponent({
   },
   mounted() {
     this.checkIntervalId = setInterval(() => {
-      if (this.events.length > 0) {
-        this.getAdminViewElements();
-      }
+      this.getAdminViewElements();
     }, 10000);
   },
   beforeUnmount() {
@@ -104,8 +102,10 @@ export default defineComponent({
     },
   },
   watch: {
-    newEventId() {
+    newEventId(newVal: number) {
       this.getAdminViewElements();
+
+      if (newVal <= 0) clearInterval(this.checkIntervalId);
     },
   },
   computed: {
