@@ -3,7 +3,6 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.DependencyInjection;
 global using System.Text;
-global using ApiWithAuth;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.AspNetCore.Identity;
 global using Microsoft.IdentityModel.Tokens;
@@ -11,6 +10,7 @@ using Microsoft.OpenApi.Models;
 
 using Archery.Model;
 using Archery.Repository;
+using Archery.Api.Auth;
 
 static async Task CreateDbAsync(IServiceProvider serviceProvider, IWebHostEnvironment env)
 {
@@ -104,8 +104,8 @@ builder.Services
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = "apiWithAuthBackend",
-            ValidAudience = "apiWithAuthBackend",
+            ValidIssuer = "https://www.ArcheryWebsite.com", // TODO Get issuer value from your configuration
+            ValidAudience = "https://www.ArcheryWebsite.com", // TODO Get audience value from your configuration
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes("!SomethingSecret!")
             ),
@@ -137,6 +137,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors();
 app.UseAuthentication();
+app.UseMiddleware<AuthMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 

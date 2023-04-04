@@ -11,19 +11,17 @@
         <v-list>
           <v-list-item>
             <v-list-item-title class="title">
-              {{ username }}
+              {{ tokenData?.username }}
             </v-list-item-title>
           </v-list-item>
           <v-list-item>
-            <v-list-item-title @click="clearTokenAndUser">
-              Logout
-            </v-list-item-title>
+            <v-list-item-title @click="clearToken"> Logout </v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
     </v-app-bar>
     <v-main>
-      <router-view :resetToken="token" @login="setTokenAndUser" />
+      <router-view :resetToken="token" @login="setToken" />
     </v-main>
   </v-app>
 </template>
@@ -36,21 +34,35 @@ export default Vue.extend({
   data: () => {
     return {
       token: "",
-      isAdmin: false,
-      username: "",
-      userId: -1,
     };
   },
   methods: {
-    setTokenAndUser(e: { token: string; username: string; userId: number }) {
-      this.token = e.token;
-      this.username = e.username;
-      this.userId = e.userId;
+    setToken(token: string) {
+      this.token = token;
     },
-    clearTokenAndUser() {
+    clearToken() {
       this.token = "";
-      this.username = "";
-      this.userId = -1;
+    },
+  },
+  computed: {
+    tokenData() {
+      if (this.token === "") return undefined;
+
+      let base64Url = this.token.split(".")[1];
+      let base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      let jsonPayload = decodeURIComponent(
+        window
+          .atob(base64)
+          .split("")
+          .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+          .join("")
+      );
+
+      let result = JSON.parse(jsonPayload);
+
+      result.username = result['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
+
+      return result;
     },
   },
 });

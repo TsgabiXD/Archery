@@ -6,7 +6,7 @@ using Archery.Model.ApiHelper;
 namespace Archery.Api.Controllers;
 
 
-[Authorize]
+[Authorize("User")] // TODO check this
 [Route("api/[controller]")]
 public class TargetController : ArcheryController
 {

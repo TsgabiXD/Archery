@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-using Archery.Api.Helper;
+using Archery.Api.Auth;
 using Archery.Model;
 using Archery.Repository;
 

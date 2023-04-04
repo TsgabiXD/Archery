@@ -53,7 +53,6 @@ export default defineComponent({
   },
   props: {
     token: { type: String, required: true },
-    userId: { type: Number, required: true },
   },
   data: () => {
     return {
@@ -73,9 +72,9 @@ export default defineComponent({
     this.checkUserInEvent();
     this.loadTargets();
 
-    if (this.userId && this.events.length === 0)
+    if (this.tokenData.userId && this.events.length === 0)
       this.checkIntervalId = setInterval(() => {
-        if (this.userId && this.events.length === 0) {
+        if (this.tokenData.userId && this.events.length === 0) {
           this.loadTargets();
           this.checkUserInEvent();
         }
@@ -87,6 +86,28 @@ export default defineComponent({
   computed: {
     axiosAuthConfig(): object {
       return { headers: { Authorization: `Bearer ${this.token}` } };
+    },
+    tokenData() {
+      if (this.token === "") return undefined;
+
+      var base64Url = this.token.split(".")[1];
+      var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      var jsonPayload = decodeURIComponent(
+        window
+          .atob(base64)
+          .split("")
+          .map(function (c) {
+            return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join("")
+      );
+
+      let result = JSON.parse(jsonPayload);
+
+      result.username =
+        result["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
+
+      return result;
     },
   },
   methods: {
@@ -105,27 +126,22 @@ export default defineComponent({
       this.addingTarget = false;
     },
     loadTargets(): void {
-      if (this.userId !== -1)
-        axios
-          .get(`target/getmytargets/${this.userId}`, this.axiosAuthConfig)
-          .then((response) => {
-            // TODO prüfen
-            this.targets = response.data;
-          })
-          .catch((err) => console.log(err));
+      axios
+        .get("target/getmytargets", this.axiosAuthConfig)
+        .then((response) => {
+          // TODO prüfen
+          this.targets = response.data;
+        })
+        .catch((err) => console.log(err));
     },
     checkUserInEvent(): void {
-      if (this.userId !== -1)
-        axios
-          .get(
-            `user/getusersrunningevents/${this.userId}`,
-            this.axiosAuthConfig
-          )
-          .then((response) => {
-            this.isUserInEvent = response.data.length !== 0;
-            if (this.isUserInEvent) this.events = response.data;
-          })
-          .catch((err) => console.log(err));
+      axios
+        .get("user/getusersrunningevents", this.axiosAuthConfig)
+        .then((response) => {
+          this.isUserInEvent = response.data.length !== 0;
+          if (this.isUserInEvent) this.events = response.data;
+        })
+        .catch((err) => console.log(err));
     },
   },
 });
