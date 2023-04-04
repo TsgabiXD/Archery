@@ -17,7 +17,7 @@ namespace Archery.Repository
                 .Where(m => m.Event.IsRunning && m.User != null && m.User.Id == userId)
                 .AsNoTracking()
                 .ToList();
-            // TODO Implementieren @TsgabiXD
+
             List<Target> targetFound = new();
 
             foreach (var m in mapping)

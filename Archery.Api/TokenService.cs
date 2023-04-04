@@ -5,17 +5,19 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
+using Archery.Model;
+
 namespace ApiWithAuth
 {
     public class TokenService
     {
         private const int ExpirationMinutes = 30;
         
-        public string CreateToken(IdentityUser user)
+        public string CreateToken(IdentityUser user, User simpleUser)
         {
             var expiration = DateTime.UtcNow.AddMinutes(ExpirationMinutes);
             var token = CreateJwtToken(
-                CreateClaims(user),
+                CreateClaims(user, simpleUser),
                 CreateSigningCredentials(),
                 expiration
             );
@@ -33,9 +35,9 @@ namespace ApiWithAuth
                 claims,
                 expires: expiration,
                 signingCredentials: credentials
-            );
+            );// TODO strings pruefen!!!
 
-        private List<Claim> CreateClaims(IdentityUser user)
+        private List<Claim> CreateClaims(IdentityUser user, User simpleUser)
         {
             try
             {
@@ -45,8 +47,9 @@ namespace ApiWithAuth
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)),
                     new Claim(ClaimTypes.NameIdentifier, user.Id),
-                    new Claim(ClaimTypes.Name, user.UserName)
-                    // new Claim(ClaimTypes.Email, user.Email)
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Role, simpleUser.Role),
+                    new Claim("id", simpleUser.Id.ToString())
                 };
                 return claims;
             }
@@ -62,7 +65,7 @@ namespace ApiWithAuth
             return new SigningCredentials(
                 new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes("!SomethingSecret!")
-                ),
+                ),// TODO key aendern!!!
                 SecurityAlgorithms.HmacSha256
             );
         }

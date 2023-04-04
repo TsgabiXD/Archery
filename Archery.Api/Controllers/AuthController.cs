@@ -42,11 +42,11 @@ public class AuthController : ArcheryController
         if (result.Succeeded)
         {
             request.Password = "";
-            // return CreatedAtAction(nameof(Register), request);
 
             var userInDb = _context.IdentityUser.First(u => u.UserName == request.Username);
+            var simpleUser = _context.User.First(u => u.NickName == request.Username);
 
-            var accessToken = _tokenService.CreateToken(userInDb);
+            var accessToken = _tokenService.CreateToken(userInDb, simpleUser);
 
             if (request.FirstName != null && request.LastName != null)
                 _repository.AddUser(new()
@@ -101,7 +101,7 @@ public class AuthController : ArcheryController
         if (userInDb is null || currentUser is null)
             return Unauthorized();
 
-        var accessToken = _tokenService.CreateToken(userInDb);
+        var accessToken = _tokenService.CreateToken(userInDb, currentUser);
 
         await _context.SaveChangesAsync();
 
