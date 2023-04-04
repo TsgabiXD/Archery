@@ -77,7 +77,7 @@ namespace Archery.Repository
 
             foreach (var uem in userEventMappings)
             {
-                results.Add(new() { EventName = uem.Event.Name });
+                results.Add(new() { Id = uem.Event.Id, EventName = uem.Event.Name });
 
                 var countingResults = new int[3, 3]{
                     {20, 18, 16},
@@ -108,7 +108,7 @@ namespace Archery.Repository
                 foreach (var ewu in singleEventWithAllUsers)
                     user.Add(new() { NickName = ewu.User[0].NickName, Score = ewu.User[0].Score });
 
-                groupedByEvents.Add(new() { EventName = e.Name, User = user });
+                groupedByEvents.Add(new() { Id = e.Id, EventName = e.Name, User = user });
             }
 
             return groupedByEvents;

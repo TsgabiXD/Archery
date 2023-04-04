@@ -14,11 +14,15 @@ namespace Archery.Repository
                 .Include(m => m.Event)
                 .Include(m => m.User)
                 .Include(m => m.Target)
-                .Where(m => m.Event.IsRunning)
+                .Where(m => m.Event.IsRunning && m.User != null && m.User.Id == userId)
                 .AsNoTracking()
                 .ToList();
-                // TODO Implementieren @TsgabiXD
-            var targetFound = Context.Target.AsNoTracking().ToList();
+            // TODO Implementieren @TsgabiXD
+            List<Target> targetFound = new();
+
+            foreach (var m in mapping)
+                foreach (var t in m.Target)
+                    targetFound.Add(t);
 
             if (targetFound == null)
                 throw new InvalidOperationException("Fehler beim Suchen der Ziele");
@@ -31,12 +35,12 @@ namespace Archery.Repository
             if (!((newTarget.ArrowCount < 0 && newTarget.ArrowCount > 3) || (newTarget.HitArea < 1 && newTarget.HitArea > 3)))
             {
                 var eventfilter = Context.Mapping
-                                                .Include(m => m.Event)
-                                                .Include(m => m.User)
-                                                .Include(m => m.Target)
-                                                .FirstOrDefault(m => m.Event.Id == newTarget.EventId &&
-                                                                        m.User != null &&
-                                                                        m.User.Id == newTarget.UserId);
+                    .Include(m => m.Event)
+                    .Include(m => m.User)
+                    .Include(m => m.Target)
+                    .FirstOrDefault(m => m.Event.Id == newTarget.EventId &&
+                                    m.User != null &&
+                                    m.User.Id == newTarget.UserId);
 
                 if (eventfilter is null)
                     throw new Exception();

@@ -8,7 +8,7 @@
       </v-card>
     </div>
     <div v-else>
-      <v-card v-for="(target, i) of targets" :key="i">
+      <v-card v-for="(target, i) of targets" :key="i" class="ma-1">
         <v-card-title> Ziel {{ i + 1 }} </v-card-title>
         <v-card-text class="my-1">
           <span class="ml-2"> Pfeile: {{ target.arrowCount }} </span> <br />
@@ -70,14 +70,16 @@ export default defineComponent({
     };
   },
   mounted() {
+    this.checkUserInEvent();
     this.loadTargets();
 
-    this.checkIntervalId = setInterval(() => {
-      if (this.userId && this.events.length === 0) {
-        this.loadTargets();
-        this.checkUserInEvent();
-      }
-    }, 10000);
+    if (this.userId && this.events.length === 0)
+      this.checkIntervalId = setInterval(() => {
+        if (this.userId && this.events.length === 0) {
+          this.loadTargets();
+          this.checkUserInEvent();
+        }
+      }, 10000);
   },
   beforeUnmount() {
     clearInterval(this.checkIntervalId); // TODO fix this
@@ -103,15 +105,14 @@ export default defineComponent({
       this.addingTarget = false;
     },
     loadTargets(): void {
-      this.hideNewTarget();
-
-      axios
-        .get("target/gettargets", this.axiosAuthConfig)
-        .then((response) => {
-          // TODO prüfen
-          this.targets = response.data;
-        })
-        .catch((err) => console.log(err));
+      if (this.userId !== -1)
+        axios
+          .get(`target/getmytargets/${this.userId}`, this.axiosAuthConfig)
+          .then((response) => {
+            // TODO prüfen
+            this.targets = response.data;
+          })
+          .catch((err) => console.log(err));
     },
     checkUserInEvent(): void {
       if (this.userId !== -1)

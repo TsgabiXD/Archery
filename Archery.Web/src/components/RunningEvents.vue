@@ -4,10 +4,31 @@
     <v-card-text>
       <v-container class="grey lighten-5" rounded>
         <v-card v-for="event in events" :key="event.id" class="mb-2">
-          <v-card-title>{{ event.name }}</v-card-title>
+          <v-card-title>
+            {{ event.name }}
+            <v-spacer></v-spacer>
+            <v-chip
+              class="ma-2"
+              close
+              color="red"
+              @click="endEvent(event.id)"
+              outlined
+              small
+            >
+              Event Beenden
+            </v-chip>
+          </v-card-title>
           <v-card-text>
-            <v-card v-for="u in event.user" flat :key="u.nickName">
-              <v-card-title class="subtitle-1">{{ u.nickName }}</v-card-title>
+            <v-card
+              v-for="u in event.user"
+              flat
+              :key="u.nickName"
+              outlined
+              class="mt-1"
+            >
+              <v-card-title class="subtitle-1">
+                {{ u.nickName }}
+              </v-card-title>
               <v-card-text>{{ u.score }}</v-card-text>
             </v-card>
           </v-card-text>
@@ -29,6 +50,7 @@ export default defineComponent({
   data() {
     return {
       events: [] as {
+        id: number;
         name: string;
         user: { nickName: string; score: number }[];
       }[], // TODO add Type
@@ -54,15 +76,29 @@ export default defineComponent({
 
           response.data.forEach(
             (e: {
+              id: number;
               eventName: string;
               user: { nickName: string; score: number }[];
             }) => {
               this.events.push({
+                id: e.id,
                 name: e.eventName,
                 user: e.user,
               });
             }
           );
+        })
+        .catch((err) => console.log(err));
+    },
+    endEvent(event: number): void {
+      axios
+        .post(
+          `event/endevent?stopEvent=${event}`,
+          undefined,
+          this.axiosAuthConfig
+        )
+        .then(() => {
+          this.getAdminViewElements();
         })
         .catch((err) => console.log(err));
     },
