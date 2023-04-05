@@ -30,7 +30,7 @@ namespace Archery.Repository
             return targetFound;
         }
 
-        public string AddTarget(NewTarget newTarget)
+        public string AddTarget(NewTarget newTarget, int userId)
         {
             if (!((newTarget.ArrowCount < 0 && newTarget.ArrowCount > 3) || (newTarget.HitArea < 1 && newTarget.HitArea > 3)))
             {
@@ -40,7 +40,7 @@ namespace Archery.Repository
                     .Include(m => m.Target)
                     .FirstOrDefault(m => m.Event.Id == newTarget.EventId &&
                                     m.User != null &&
-                                    m.User.Id == newTarget.UserId);
+                                    m.User.Id == userId);
 
                 if (eventfilter is null)
                     throw new Exception();

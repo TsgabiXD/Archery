@@ -51,7 +51,6 @@ export default defineComponent({
         arrowCount: 0,
         hitArea: 0,
         eventId: 0,
-        userId: 0,
       },
     };
   },
@@ -74,7 +73,6 @@ export default defineComponent({
       this.target.arrowCount = 0;
       this.target.hitArea = 0;
       this.target.eventId = 0;
-      this.target.userId = 0;
     },
   },
   computed: {

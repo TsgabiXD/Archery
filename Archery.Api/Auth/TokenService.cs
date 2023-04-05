@@ -1,9 +1,6 @@
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
 
 using Archery.Model;
 
@@ -11,11 +8,9 @@ namespace Archery.Api.Auth;
 
 public class TokenService
 {
-    private const int ExpirationMinutes = 30;
-
     public string CreateToken(IdentityUser user, User simpleUser)
     {
-        var expiration = DateTime.UtcNow.AddMinutes(ExpirationMinutes);
+        var expiration = DateTime.UtcNow.AddDays(1);
         var token = CreateJwtToken(
             CreateClaims(user, simpleUser),
             CreateSigningCredentials(),
@@ -26,24 +21,24 @@ public class TokenService
         return tokenHandler.WriteToken(token);
     }
 
-    private JwtSecurityToken CreateJwtToken(List<Claim> claims,
+    private static JwtSecurityToken CreateJwtToken(List<Claim> claims,
                                             SigningCredentials credentials,
                                             DateTime expiration) =>
         new(
-            "https://www.ArcheryWebsite.com",
-            "https://www.ArcheryWebsite.com",
+            null,
+            null,
             claims,
             expires: expiration,
             signingCredentials: credentials
-        );// TODO strings pruefen!!!
+        );
 
-    private List<Claim> CreateClaims(IdentityUser user, User simpleUser)
+    private static List<Claim> CreateClaims(IdentityUser user, User simpleUser)
     {
         try
         {
             var claims = new List<Claim>
                 {
-                    new Claim(JwtRegisteredClaimNames.Sub, "TokenForTheApiWithAuth"),
+                    new Claim(JwtRegisteredClaimNames.Sub, "UserAuthentication"),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)),
                     new Claim(ClaimTypes.NameIdentifier, user.Id),
@@ -60,12 +55,14 @@ public class TokenService
         }
     }
 
-    private SigningCredentials CreateSigningCredentials()
+    private static SigningCredentials CreateSigningCredentials()
     {
         return new SigningCredentials(
             new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes("!SomethingSecret!")
-            ),// TODO key aendern!!!
+                Encoding.UTF8.GetBytes(
+                    "sdl lajhödlakä-öasefGashaösiehfla.ishleuiagwkebfa,jksbngl.ailw.,jk.JKHL:KUJ:LJHBFALJUHÖ:OIh.igH:ILHG-ÖOJAÖ-POjöihR-GLAKENLGHABS;BDAJSERFILUABJRGJK:SDFN:YKLDNLXJ:FBN-Y:"
+                )
+            ),
             SecurityAlgorithms.HmacSha256
         );
     }

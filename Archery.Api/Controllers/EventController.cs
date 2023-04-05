@@ -7,7 +7,6 @@ using Archery.Model.ApiHelper;
 
 namespace Archery.Api.Controllers;
 
-[Authorize]
 [Route("api/[controller]")]
 public class EventController : ArcheryController
 {

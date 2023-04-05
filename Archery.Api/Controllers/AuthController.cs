@@ -65,10 +65,7 @@ public class AuthController : ArcheryController
 
             return Ok(new AuthResponse
             {
-                Id = currentUser.Id,
-                Username = userInDb.UserName,
-                Token = accessToken,
-                Role = currentUser.Role
+                Token = accessToken
             });
         }
 
@@ -107,10 +104,7 @@ public class AuthController : ArcheryController
 
         return Ok(new AuthResponse
         {
-            Id = currentUser.Id,
-            Username = userInDb.UserName,
-            Token = accessToken,
-            Role = currentUser.Role
+            Token = accessToken
         });
     }
 }

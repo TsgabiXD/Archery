@@ -7,7 +7,5 @@
         public int HitArea { get; set; }
 
         public int EventId { get; set; }
-
-        public int UserId { get; set; }
     }
 }

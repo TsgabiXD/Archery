@@ -6,7 +6,9 @@ global using System.Text;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.AspNetCore.Identity;
 global using Microsoft.IdentityModel.Tokens;
+
 using Microsoft.OpenApi.Models;
+using System.Security.Claims;
 
 using Archery.Model;
 using Archery.Repository;
@@ -25,7 +27,7 @@ static async Task CreateDbAsync(IServiceProvider serviceProvider, IWebHostEnviro
 }
 
 var pcName = Environment.MachineName;
-var conection = pcName.Contains("03302") ? "DB" :
+var connection = pcName.Contains("03302") ? "DB" :
                 pcName == "P3643" ? "DBLukaPC" :
                 pcName.Contains("AGVGCQH") ? "DBTobiPC" :
                 pcName.Contains("F186T1U") ? "DBTobiPCDaheim" :
@@ -50,6 +52,8 @@ builder.Services.AddCors(options =>
             .AllowCredentials();
     });
 });
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddControllers()
 
@@ -85,7 +89,7 @@ builder.Services.AddControllers()
         })
 
     .AddDbContext<ArcheryContext>(options =>
-        options.UseSqlite(builder.Configuration.GetConnectionString(conection), b => b.MigrationsAssembly("Archery.Api")))
+        options.UseSqlite(builder.Configuration.GetConnectionString(connection), b => b.MigrationsAssembly("Archery.Api")))
 
     .AddScoped<UserRepository>()
     .AddScoped<ParcourRepository>()
@@ -97,33 +101,74 @@ builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.TokenValidationParameters = new TokenValidationParameters()
+        options.RequireHttpsMetadata = true;
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters
         {
-            ClockSkew = TimeSpan.Zero,
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = "https://www.ArcheryWebsite.com", // TODO Get issuer value from your configuration
-            ValidAudience = "https://www.ArcheryWebsite.com", // TODO Get audience value from your configuration
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes("!SomethingSecret!")
-            ),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                "sdl lajhödlakä-öasefGashaösiehfla.ishleuiagwkebfa,jksbngl.ailw.,jk.JKHL:KUJ:LJHBFALJUHÖ:OIh.igH:ILHG-ÖOJAÖ-POjöihR-GLAKENLGHABS;BDAJSERFILUABJRGJK:SDFN:YKLDNLXJ:FBN-Y:"
+            )),
+            ValidateIssuer = false,
+            ValidateAudience = false
         };
-    }); // TODO hinterfragen
+        options.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = tokenCtx =>
+            {
+                var tokenElements = tokenCtx.SecurityToken.ToString()?.Split("}.{")[1].Split(new string[] { "\",\"", "\":\"", "\":", "\"", "}" }, StringSplitOptions.None);
+                var name = tokenElements[Array.FindIndex(tokenElements, e => e == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name") + 1].ToString();
+                var role = tokenElements[Array.FindIndex(tokenElements, e => e == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role") + 1].ToString();
+                var uId = tokenElements[Array.FindIndex(tokenElements, e => e == "userId") + 1].ToString();
+
+                if (name == null) throw new Exception("Something is wrong with your Token and its Claims");
+
+                Console.WriteLine();
+                Console.WriteLine("name: " + name); // TODO remove
+                Console.WriteLine("role: " + role); // TODO remove
+                Console.WriteLine();
+
+                if (tokenCtx.HttpContext.User.Identity is ClaimsIdentity ctxIdentity)
+                {
+                    Console.WriteLine("X: " + ctxIdentity);
+
+                    var validationClaimsPrincipal =
+                        new ClaimsPrincipal(
+                            new ClaimsIdentity(ctxIdentity,
+                                ctxIdentity.Claims,
+                                "Password",
+                                ClaimTypes.Name,
+                                ClaimTypes.Role)
+                        );
+
+                    (validationClaimsPrincipal?.Identity as ClaimsIdentity)?.AddClaims(
+                        new List<Claim>(){
+                            new (ClaimTypes.Role, role),
+                            new ("name", name),
+                            new ("userId", uId)
+                        }
+                    );
+
+                    tokenCtx.HttpContext.User = validationClaimsPrincipal!;
+                }
+
+                return Task.CompletedTask;
+            }
+        };
+    });
 
 builder.Services
     .AddIdentityCore<IdentityUser>(options =>
     {
         options.SignIn.RequireConfirmedAccount = false;
-        options.User.RequireUniqueEmail = false; // no email
+        options.User.RequireUniqueEmail = false;
         options.Password.RequireDigit = false;
         options.Password.RequiredLength = 6;
         options.Password.RequireNonAlphanumeric = false;
         options.Password.RequireUppercase = false;
         options.Password.RequireLowercase = false;
     })
-    .AddEntityFrameworkStores<ArcheryContext>(); // TODO hinterfragen
+    .AddEntityFrameworkStores<ArcheryContext>();
 
 var app = builder.Build();
 
@@ -137,7 +182,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors();
 app.UseAuthentication();
-app.UseMiddleware<AuthMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 
