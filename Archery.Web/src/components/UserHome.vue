@@ -46,6 +46,7 @@
 import { defineComponent } from "vue";
 import axios from "@/router/axios";
 import NewTarget from "@/components/NewTarget.vue";
+import ErrorMessage from "@/components/ErrorMessage.vue";
 
 export default defineComponent({
   components: {
