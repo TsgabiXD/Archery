@@ -2,7 +2,6 @@
   <v-dialog
     :value="show"
     fullscreen
-    hide-overlay
     transition="dialog-bottom-transition"
   >
     <v-stepper v-model="step" flat>
@@ -17,7 +16,7 @@
           <v-card class="mb-6 mx-3 mt-2" height="65vh" elevation="4">
             <v-card-title>Pfeil</v-card-title>
           </v-card>
-          <v-btn color="error" class="mx-2" @click="cancel"> Abbrechen </v-btn>
+          <v-btn color="error" class="mx-2" @click="close"> Abbrechen </v-btn>
           <v-btn color="primary" @click="step = 2"> Weiter </v-btn>
         </v-stepper-content>
         <v-stepper-content step="2">
@@ -27,7 +26,7 @@
           <v-btn color="secondary" class="mx-2" @click="step = 1">
             Zurück
           </v-btn>
-          <v-btn color="error" class="mx-2" @click="cancel"> Abbrechen </v-btn>
+          <v-btn color="error" class="mx-2" @click="close"> Abbrechen </v-btn>
           <v-btn color="primary" class="mx-2" @click="save"> Speichern </v-btn>
         </v-stepper-content>
       </v-stepper-items>
@@ -43,6 +42,7 @@ export default defineComponent({
   props: {
     show: { type: Boolean, required: true },
     token: { type: String, required: true },
+    eventId: { type: Number, required: true },
   },
   data() {
     return {
@@ -50,7 +50,7 @@ export default defineComponent({
       target: {
         arrowCount: 0,
         hitArea: 0,
-        eventId: 0,
+        eventId: this.eventId,
       },
     };
   },
@@ -60,19 +60,18 @@ export default defineComponent({
         .post("target/addtarget", this.target, this.axiosAuthConfig)
         .then(() => {
           this.$emit("save");
-          this.clearData();
+          this.close();
         })
         .catch((err) => console.log(err));
     },
-    cancel(): void {
+    close(): void {
       this.clearData();
-      this.$emit("cancel");
+      this.$emit("close");
     },
     clearData(): void {
       this.step = 1;
       this.target.arrowCount = 0;
       this.target.hitArea = 0;
-      this.target.eventId = 0;
     },
   },
   computed: {

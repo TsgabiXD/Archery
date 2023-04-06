@@ -18,16 +18,34 @@ namespace Archery.Repository
                 .AsNoTracking()
                 .ToList();
 
+            if (mapping is null)
+                throw new Exception("Ein Mappingfehler ist passiert!");
+
             List<Target> targetFound = new();
+            var eventId = mapping.First().Event.Id;
 
             foreach (var m in mapping)
-                foreach (var t in m.Target)
-                    targetFound.Add(t);
+                if (m.Event.Id == eventId)
+                    foreach (var t in m.Target)
+                        targetFound.Add(t);
+
+            var animalCount = Context.Event
+                .Include(e => e.Parcour)
+                .Single(e => e.Id == eventId)
+                .Parcour.AnimalNumber;
 
             if (targetFound == null)
                 throw new Exception("Kein Ziel gefunden!");
 
-            return targetFound;
+            var results = new Target[animalCount];
+
+            if (targetFound.Count > animalCount)
+                throw new Exception($"Too much Targets for one Event! \nTargets found: {targetFound.Count} \nMax Animals:{animalCount}");
+
+            for (var i = 0; i < targetFound.Count; i++)
+                results[i] = targetFound.ElementAt(i);
+
+            return results;
         }
 
         public string AddTarget(NewTarget newTarget, int userId)

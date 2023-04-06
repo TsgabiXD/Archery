@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="!isUserInEvent">
+    <div v-if="events.length === 0">
       <v-card>
         <v-card-title class="display-1 ma-12">
           Zur Zeit in keinem Event eingetragen
@@ -22,7 +22,6 @@
         fab
         large
         elevation="10"
-        icon
         fixed
         bottom
         right
@@ -33,9 +32,10 @@
       </v-btn>
       <new-target
         :show="addingTarget"
-        @save="loadTargets"
-        @cancel="hideNewTarget"
         :token="token"
+        :eventId="events[0]"
+        @save="loadTargets"
+        @close="hideNewTarget"
       >
       </new-target>
     </div>
@@ -46,7 +46,6 @@
 import { defineComponent } from "vue";
 import axios from "@/router/axios";
 import NewTarget from "@/components/NewTarget.vue";
-import ErrorMessage from "@/components/ErrorMessage.vue";
 
 export default defineComponent({
   components: {
@@ -64,7 +63,6 @@ export default defineComponent({
       ],
       targets: [], // TODO add Type
       addingTarget: false,
-      isUserInEvent: false,
       events: [] as number[],
       checkIntervalId: 0,
     };
@@ -112,6 +110,8 @@ export default defineComponent({
     },
   },
   methods: {
+    // TODO remove
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     calcPunkte(target: any): number {
       // TODO add Type
       if (
@@ -139,8 +139,7 @@ export default defineComponent({
       axios
         .get("user/getusersrunningevents", this.axiosAuthConfig)
         .then((response) => {
-          this.isUserInEvent = response.data.length !== 0;
-          if (this.isUserInEvent) this.events = response.data;
+          if (response.data.length !== 0) this.events = response.data;
         })
         .catch((err) => console.log(err));
     },
