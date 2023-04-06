@@ -78,6 +78,7 @@ export default Vue.extend({
 
       let result = JSON.parse(jsonPayload);
 
+      result.role = result['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
       result.username = result['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
 
       return result;
