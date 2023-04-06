@@ -1,7 +1,7 @@
 <template>
   <form>
     <!-- TODO add submit event -->
-    <v-card elevation="7" :loading="isLoading">
+    <v-card elevation="7" :loading="isLoading" v-focus>
       <v-card-title>
         {{ isLogin ? "Login" : "Registrieren" }}
         <v-spacer></v-spacer>
@@ -142,6 +142,22 @@ export default defineComponent({
             this.nickIsValid = response.data;
           })
           .catch((err) => console.log(err));
+    },
+  },
+  directives: {
+    focus: {
+      inserted: function (el) {
+        window.setTimeout(() => {
+          let childData = el.querySelectorAll("input")[0];
+          childData.focus();
+        }, 500);
+      },
+      update: function (el) {
+        window.setTimeout(() => {
+          let childData = el.querySelectorAll("input")[0];
+          if ((childData as HTMLInputElement).value === "") childData.focus();
+        }, 500);
+      },
     },
   },
 });

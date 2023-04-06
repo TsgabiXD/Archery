@@ -1,5 +1,5 @@
 <template>
-  <v-card elevation="7" :loading="isLoading">
+  <v-card elevation="7" :loading="isLoading" v-focus>
     <v-card-title> Neuer Parcour </v-card-title>
     <v-card-text>
       <v-container class="grey lighten-5" rounded>
@@ -78,6 +78,22 @@ export default defineComponent({
           this.$emit("parcour-added");
         })
         .catch((err) => console.log(err));
+    },
+  },
+  directives: {
+    focus: {
+      inserted: function (el) {
+        window.setTimeout(() => {
+          let childData = el.querySelectorAll("input")[0];
+          childData.focus();
+        }, 500);
+      },
+      update: function (el) {
+        window.setTimeout(() => {
+          let childData = el.querySelectorAll("input")[0];
+          if ((childData as HTMLInputElement).value === "") childData.focus();
+        }, 500);
+      },
     },
   },
 });

@@ -1,6 +1,12 @@
 <template>
   <div>
-    <v-card elevation="7" :loading="isLoading" v-if="!isAddParcour" class="mb-5">
+    <v-card
+      elevation="7"
+      :loading="isLoading"
+      v-if="!isAddParcour"
+      class="mb-5"
+      v-focus
+    >
       <v-card-title> Neues Event </v-card-title>
       <v-card-text>
         <v-container class="grey lighten-5" rounded>
@@ -128,7 +134,7 @@ export default defineComponent({
           ) // TODO add Type
           .then((response) => {
             this.$emit("new-event", response.data); // TODO implement
-            
+
             this.selectedParcour = "";
             this.eventUser = [];
             this.eventName = "";
@@ -173,6 +179,22 @@ export default defineComponent({
   watch: {
     isAddParcour(newValue: boolean) {
       if (newValue !== true) this.getParcours();
+    },
+  },
+  directives: {
+    focus: {
+      inserted: function (el) {
+        window.setTimeout(() => {
+          let childData = el.querySelectorAll("input")[0];
+          childData.focus();
+        }, 500);
+      },
+      update: function (el) {
+        window.setTimeout(() => {
+          let childData = el.querySelectorAll("input")[0];
+          if ((childData as HTMLInputElement).value === "") childData.focus();
+        }, 500);
+      },
     },
   },
 });
