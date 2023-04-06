@@ -25,14 +25,16 @@ namespace Archery.Repository
                     targetFound.Add(t);
 
             if (targetFound == null)
-                throw new InvalidOperationException("Fehler beim Suchen der Ziele");
+                throw new Exception("Kein Ziel gefunden!");
 
             return targetFound;
         }
 
         public string AddTarget(NewTarget newTarget, int userId)
         {
-            if (!((newTarget.ArrowCount < 0 && newTarget.ArrowCount > 3) || (newTarget.HitArea < 1 && newTarget.HitArea > 3)))
+            if (newTarget.ArrowCount > 0 && newTarget.ArrowCount < 4 &&
+                newTarget.HitArea > 0 && newTarget.HitArea < 4 &&
+                newTarget.EventId > 0)
             {
                 var eventfilter = Context.Mapping
                     .Include(m => m.Event)
@@ -43,7 +45,7 @@ namespace Archery.Repository
                                     m.User.Id == userId);
 
                 if (eventfilter is null)
-                    throw new Exception();
+                    throw new Exception("Ein Mappingfehler ist passiert!");
 
                 eventfilter.Target.Add(new() { ArrowCount = newTarget.ArrowCount, HitArea = newTarget.HitArea, });
 
@@ -51,7 +53,7 @@ namespace Archery.Repository
                 return "Ziel hinzugefügt";
 
             }
-            return "Ungültige Werte!";
+            throw new ArgumentException("Ungültige Werte!");
         }
     }
 }
