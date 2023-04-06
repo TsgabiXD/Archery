@@ -34,10 +34,10 @@ public class ParcourRepository : AbstractRepository
         if (parcour != null)
         {
             if (!(parcour.Name.Length <= 150))
-                return "Vorname, Nachname oder Nickname zu lang!";
+                throw new ArgumentException("Vorname, Nachname oder Nickname zu lang!");
 
             if (string.IsNullOrEmpty(parcour.Name) || string.IsNullOrEmpty(parcour.Location) || parcour.AnimalNumber <= 0)
-                return "Ungültige Werte!";
+                throw new ArgumentException("Ungültige Werte!");
 
             Context.Parcour.Add(new()
             {
