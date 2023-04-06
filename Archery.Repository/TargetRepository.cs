@@ -47,11 +47,6 @@ namespace Archery.Repository
 
                 eventfilter.Target.Add(new() { ArrowCount = newTarget.ArrowCount, HitArea = newTarget.HitArea, });
 
-                // TODO richtiges error handling @JoRole
-                if (newTarget.ArrowCount == null || newTarget.HitArea == null)
-                    // TODO assagekraeftige Errormeldung @JoRole
-                    throw new InvalidOperationException("Fehler beim Hinzufügen des Ziels");
-
                 Context.SaveChanges();
                 return "Ziel hinzugefügt";
 

@@ -83,7 +83,7 @@ builder.Services.AddControllers()
                             Id="Bearer"
                         }
                     },
-                    new string[]{}
+                    new List<string>()
                 }
             });
         })

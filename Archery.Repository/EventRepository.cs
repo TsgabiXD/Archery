@@ -93,7 +93,7 @@ namespace Archery.Repository
                     foreach (var target in targetsOfUser)
                         score += countingResults[target.ArrowCount - 1, target.HitArea - 1];
 
-                    results.Last().User.Add(new() { NickName = uem.User.NickName, Score = score });
+                    results.Last().User.Add(new() { NickName = uem.User!.NickName, Score = score });
                 }
             }
 
@@ -116,7 +116,7 @@ namespace Archery.Repository
 
         public string EndEvent(int eventToStop)
         {
-            if (eventToStop != null)
+            if (eventToStop > 0)
             {
                 var stopEvent = Context.Event.SingleOrDefault(e => e.Id == eventToStop);
 
@@ -132,7 +132,7 @@ namespace Archery.Repository
 
                 return " Event beendet";
             }
-            throw new InvalidOperationException("Fehler beim Beenden des Events");
+            throw new InvalidOperationException("Invalid EventId");
 
         }
     }
