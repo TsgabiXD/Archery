@@ -68,8 +68,9 @@
     </v-card>
     <new-parcour
       v-if="isAddParcour"
-      @parcour-added="isAddParcour = false"
       :token="token"
+      @parcour-added="isAddParcour = false"
+      @canceled="isAddParcour = false"
     />
   </div>
 </template>

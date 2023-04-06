@@ -27,6 +27,7 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
+      <v-btn color="error" elevation="2" @click="cancel"> Abbrechen </v-btn>
       <v-btn color="primary" elevation="2" @click="addParcour">
         Hinzufügen
       </v-btn>
@@ -72,12 +73,19 @@ export default defineComponent({
           this.axiosAuthConfig
         )
         .then(() => {
-          this.parcourName = "";
-          this.location = "";
-          this.animalCount = 0;
+          this.clearData();
           this.$emit("parcour-added");
         })
         .catch((err) => console.log(err));
+    },
+    cancel(): void {
+      this.clearData();
+      this.$emit("canceled");
+    },
+    clearData(): void {
+      this.parcourName = "";
+      this.location = "";
+      this.animalCount = 0;
     },
   },
   directives: {
