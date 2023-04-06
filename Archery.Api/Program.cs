@@ -117,21 +117,18 @@ builder.Services
             OnTokenValidated = tokenCtx =>
             {
                 var tokenElements = tokenCtx.SecurityToken.ToString()?.Split("}.{")[1].Split(new string[] { "\",\"", "\":\"", "\":", "\"", "}" }, StringSplitOptions.None);
+
+                if (tokenElements == null) throw new Exception("Something is wrong with your Token and its Claims");
+
                 var name = tokenElements[Array.FindIndex(tokenElements, e => e == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name") + 1].ToString();
                 var role = tokenElements[Array.FindIndex(tokenElements, e => e == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role") + 1].ToString();
                 var uId = tokenElements[Array.FindIndex(tokenElements, e => e == "userId") + 1].ToString();
 
-                if (name == null) throw new Exception("Something is wrong with your Token and its Claims");
-
-                Console.WriteLine();
-                Console.WriteLine("name: " + name); // TODO remove
-                Console.WriteLine("role: " + role); // TODO remove
-                Console.WriteLine();
+                if (name == null || role == null || uId == null)
+                    throw new Exception("Something is wrong with your Token and its Claims");
 
                 if (tokenCtx.HttpContext.User.Identity is ClaimsIdentity ctxIdentity)
                 {
-                    Console.WriteLine("X: " + ctxIdentity);
-
                     var validationClaimsPrincipal =
                         new ClaimsPrincipal(
                             new ClaimsIdentity(ctxIdentity,

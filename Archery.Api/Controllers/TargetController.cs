@@ -6,7 +6,7 @@ using Archery.Model.ApiHelper;
 
 namespace Archery.Api.Controllers;
 
-
+[Authorize(Roles = "User,Admin")]
 [Route("api/[controller]")]
 public class TargetController : ArcheryController
 {
@@ -27,10 +27,6 @@ public class TargetController : ArcheryController
         try
         {
             var claims = _httpContextAccessor?.HttpContext?.User.Claims;
-            var role = claims?.Single(c => c.Type == ClaimTypes.Role).Value!;
-
-            if (role != "Admin" && role != "User")
-                return Unauthorized();
 
             return Ok(_repository.GetMyTargets(int.Parse(claims?.Single(c => c.Type == "userId").Value!)));
         }
@@ -53,12 +49,8 @@ public class TargetController : ArcheryController
                 return BadRequest(ModelState);
 
             var claims = _httpContextAccessor?.HttpContext?.User.Claims;
-            var role = claims?.Single(c => c.Type == ClaimTypes.Role).Value!;
 
-            if (role != "Admin" && role != "User")
-                return Unauthorized();
-
-            return Ok(_repository.AddTarget(newTarget, int.Parse(claims.Single(c => c.Type == "userId").Value!)));
+            return Ok(_repository.AddTarget(newTarget, int.Parse(claims?.Single(c => c.Type == "userId").Value!)));
         }
         catch (Exception ex)
         {

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Archery.Api.Controllers;
 
-[Authorize]
+[Authorize(Roles = "Admin")]
 [Route("api/[controller]")]
 public class ParcourController : ArcheryController
 {
