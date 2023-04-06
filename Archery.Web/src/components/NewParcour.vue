@@ -5,11 +5,21 @@
       <v-container class="grey lighten-5" rounded>
         <v-row dense>
           <v-col cols="12" md="6">
-            <v-text-field label="Parcourname" outlined v-model="parcourName">
+            <v-text-field
+              label="Parcourname"
+              outlined
+              v-model="parcourName"
+              @keypress.native.enter="addParcour"
+            >
             </v-text-field>
           </v-col>
           <v-col cols="12" md="6">
-            <v-text-field label="Ort" outlined v-model="location">
+            <v-text-field
+              label="Ort"
+              outlined
+              v-model="location"
+              @keypress.native.enter="addParcour"
+            >
             </v-text-field>
           </v-col>
         </v-row>
@@ -19,6 +29,7 @@
               label="Anzahl der 3D-Tiere"
               outlined
               v-model="animalCount"
+              @keypress.native.enter="addParcour"
             >
             </v-text-field>
           </v-col>

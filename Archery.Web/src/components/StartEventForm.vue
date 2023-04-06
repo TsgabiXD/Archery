@@ -12,7 +12,12 @@
         <v-container class="grey lighten-5" rounded>
           <v-row dense>
             <v-col cols="12" md="6">
-              <v-text-field label="Eventname" outlined v-model="eventName">
+              <v-text-field
+                label="Eventname"
+                outlined
+                v-model="eventName"
+                @keypress.native.enter="startEvent"
+              >
               </v-text-field>
             </v-col>
             <v-col cols="12" md="6">
@@ -134,7 +139,7 @@ export default defineComponent({
             this.axiosAuthConfig
           ) // TODO add Type
           .then((response) => {
-            this.$emit("new-event", response.data); // TODO implement
+            this.$emit("new-event", response.data);
 
             this.selectedParcour = "";
             this.eventUser = [];
