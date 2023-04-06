@@ -7,10 +7,8 @@
     <v-container v-else>
       <start-event-form
         :token="bearerToken"
-        :userId="userId"
         @new-event="newEvent"
       />
-      <!-- TODO remove :userId="userId" -->
       <running-events :newEventId="newEventId" :token="bearerToken" />
     </v-container>
   </div>

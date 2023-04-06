@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card elevation="7" :loading="isLoading" v-if="!isAddParcour" class="mb-5">
-      <v-card-title> Neues Parcour-Event </v-card-title>
+      <v-card-title> Neues Event </v-card-title>
       <v-card-text>
         <v-container class="grey lighten-5" rounded>
           <v-row dense>
@@ -79,7 +79,6 @@ export default defineComponent({
   },
   props: {
     token: { type: String, required: true },
-    userId: { type: Number, required: true },
   },
   data: () => {
     return {
