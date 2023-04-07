@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="lastNewEventId > 0 || events.length !== 0">
+  <v-card v-if="events.length !== 0">
     <v-card-title>Laufende Events</v-card-title>
     <v-card-text>
       <v-container class="grey lighten-5" rounded>

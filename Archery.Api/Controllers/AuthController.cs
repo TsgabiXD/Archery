@@ -31,48 +31,52 @@ public class AuthController : ArcheryController
     [Route("Register")]
     public async Task<IActionResult> Register(AuthRequest request)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
-        var result = await _userManager.CreateAsync(
-            new IdentityUser { UserName = request.Username },
-            request.Password
-        );
-
-        if (result.Succeeded)
+        try
         {
-            request.Password = "";
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            var userInDb = _context.IdentityUser.First(u => u.UserName == request.Username);
-            var simpleUser = _context.User.First(u => u.NickName == request.Username);
+            var result = await _userManager.CreateAsync(
+                new IdentityUser { UserName = request.Username },
+                request.Password
+            );
 
-            var accessToken = _tokenService.CreateToken(userInDb, simpleUser);
-
-            if (request.FirstName != null && request.LastName != null)
-                _repository.AddUser(new()
-                {
-                    FirstName = request.FirstName,
-                    LastName = request.LastName,
-                    NickName = request.Username
-                });
-
-            _context.SaveChanges();
-
-            var currentUser = _context.User.FirstOrDefault(u => u.NickName == request.Username);
-
-            if (currentUser is null)
-                return BadRequest("Angelegter User ist defekt");
-
-            return Ok(new AuthResponse
+            if (result.Succeeded)
             {
-                Token = accessToken
-            });
+                request.Password = "";
+
+                var userInDb = _context.IdentityUser.First(u => u.UserName == request.Username);
+                var simpleUser = _context.User.First(u => u.NickName == request.Username);
+
+                var accessToken = _tokenService.CreateToken(userInDb, simpleUser);
+
+                if (request.FirstName != null && request.LastName != null)
+                    _repository.AddUser(new()
+                    {
+                        FirstName = request.FirstName,
+                        LastName = request.LastName,
+                        NickName = request.Username
+                    });
+
+                _context.SaveChanges();
+
+                var currentUser = _context.User.FirstOrDefault(u => u.NickName == request.Username);
+
+                if (currentUser is null)
+                    throw new Exception("Angelegter User ist defekt");
+
+                return Ok(new AuthResponse { Token = accessToken });
+            }
+
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(error.Code, error.Description);
+
+            return BadRequest(ModelState);
         }
-
-        foreach (var error in result.Errors)
-            ModelState.AddModelError(error.Code, error.Description);
-
-        return BadRequest(ModelState);
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpPost]

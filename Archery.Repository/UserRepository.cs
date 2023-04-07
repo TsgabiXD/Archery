@@ -58,17 +58,24 @@ public class UserRepository : AbstractRepository
         if (!(user.FirstName.Length <= 150 && user.LastName.Length <= 150 && user.NickName.Length <= 150))
             throw new Exception("Parcourname zu lang!");
 
-        // TODO möglicher Exploit
-        if (!((!(string.IsNullOrEmpty(user.FirstName) &&
-                string.IsNullOrEmpty(user.LastName) &&
-                string.IsNullOrEmpty(user.NickName))) &&
-                Context.User.FirstOrDefault(u => u.FirstName == user.FirstName
-                                                && u.LastName == user.LastName
-                                                && u.NickName == user.NickName) is null))
+        if (string.IsNullOrEmpty(user.FirstName) &&
+            string.IsNullOrEmpty(user.LastName) &&
+            string.IsNullOrEmpty(user.NickName))
             throw new Exception("Ungültige Werte!");
 
-        Context.User.Add(user);
-        Context.SaveChanges();
-        return "Benutzer hinzugefügt";
+        // TODO möglicher Exploit
+        var existingUser = Context.User.FirstOrDefault(u =>
+            u.FirstName == user.FirstName &&
+            u.LastName == user.LastName &&
+            u.NickName == user.NickName);
+
+        if (existingUser is null)
+        {
+            Context.User.Add(user);
+            Context.SaveChanges();
+            return "Benutzer hinzugefügt!";
+        }
+        else // TODO remove after all admins has been registered
+            return "Benutzer existiert bereits!";
     }
 }
