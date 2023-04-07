@@ -2,7 +2,12 @@
   <v-app>
     <v-app-bar app color="primary" dark>
       <v-spacer></v-spacer>
-      <v-menu offset-y :disabled="!token">
+      <v-menu
+        offset-y
+        open-on-hover
+        :close-on-content-click="false"
+        :disabled="!token"
+      >
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon v-bind="attrs" v-on="on">
             <v-icon>mdi-account</v-icon>
@@ -15,7 +20,9 @@
             </v-list-item-title>
           </v-list-item>
           <v-list-item>
-            <v-list-item-title @click="clearToken"> Logout </v-list-item-title>
+            <v-list-item-title>
+              <v-btn flat tile text @click="logout"> Logout </v-btn>
+            </v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -40,7 +47,7 @@ export default Vue.extend({
     setToken(token: string) {
       this.token = token;
     },
-    clearToken() {
+    logout() {
       this.token = "";
     },
   },
@@ -60,8 +67,10 @@ export default Vue.extend({
 
       let result = JSON.parse(jsonPayload);
 
-      result.role = result['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
-      result.username = result['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
+      result.role =
+        result["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+      result.username =
+        result["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
 
       return result;
     },
