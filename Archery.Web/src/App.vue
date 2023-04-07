@@ -1,6 +1,14 @@
 <template>
   <v-app>
     <v-app-bar app color="primary" dark>
+      <v-app-bar-nav-icon>
+        <v-img
+          contain
+          max-width="65"
+          src="../public/Acherry.png"
+        >
+        </v-img>
+      </v-app-bar-nav-icon>
       <v-spacer></v-spacer>
       <v-menu
         offset-y
