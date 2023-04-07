@@ -26,7 +26,7 @@
         bottom
         right
         @click="addingTarget = !addingTarget"
-        v-if="!addingTarget"
+        v-if="!addingTarget && !isEventFinished"
       >
         <v-icon>mdi-plus</v-icon>
       </v-btn>
@@ -61,10 +61,11 @@ export default defineComponent({
         [14, 12, 10],
         [8, 6, 4],
       ],
-      targets: [], // TODO add Type
+      targets: [] as { id: number; arrowCount: number; hitArea: number }[], // TODO add Type
       addingTarget: false,
       events: [] as number[],
       checkIntervalId: 0,
+      isEventFinished: false,
     };
   },
   mounted() {
@@ -130,8 +131,24 @@ export default defineComponent({
       axios
         .get("target/getmytargets", this.axiosAuthConfig)
         .then((response) => {
-          // TODO prüfen
-          this.targets = response.data;
+          this.targets = [];
+
+          if (
+            (
+              response.data as {
+                id: number;
+                arrowCount: number;
+                hitArea: number;
+              }[]
+            ).findIndex((d) => d === null) === -1
+          )
+            this.isEventFinished = true;
+
+          response.data.forEach(
+            (t: { id: number; arrowCount: number; hitArea: number }) => {
+              if (t) this.targets.push(t);
+            }
+          );
         })
         .catch((err) => console.log(err));
     },

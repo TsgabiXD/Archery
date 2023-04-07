@@ -50,28 +50,49 @@ namespace Archery.Repository
 
         public string AddTarget(NewTarget newTarget, int userId)
         {
-            if (newTarget.ArrowCount > 0 && newTarget.ArrowCount < 4 &&
+            if (!(newTarget.ArrowCount > 0 && newTarget.ArrowCount < 4 &&
                 newTarget.HitArea > 0 && newTarget.HitArea < 4 &&
-                newTarget.EventId > 0)
-            {
-                var eventfilter = Context.Mapping
-                    .Include(m => m.Event)
-                    .Include(m => m.User)
-                    .Include(m => m.Target)
-                    .FirstOrDefault(m => m.Event.Id == newTarget.EventId &&
-                                    m.User != null &&
-                                    m.User.Id == userId);
+                newTarget.EventId > 0))
+                throw new ArgumentException("Ungültige Werte!");
 
-                if (eventfilter is null)
-                    throw new Exception("Ein Mappingfehler ist passiert!");
+            if (!Context.Event
+                .Include(e => e.Parcour)
+                .Where(e => e.Id == newTarget.EventId)
+                .Any())
+                throw new Exception("Event wurde bereits beendet!");
 
-                eventfilter.Target.Add(new() { ArrowCount = newTarget.ArrowCount, HitArea = newTarget.HitArea, });
+            var eventfilter = Context.Mapping
+                .Include(m => m.Event)
+                .Include(m => m.User)
+                .Include(m => m.Target)
+                .FirstOrDefault(m => m.Event.Id == newTarget.EventId &&
+                                m.User != null &&
+                                m.User.Id == userId);
 
-                Context.SaveChanges();
-                return "Ziel hinzugefügt";
+            if (eventfilter is null)
+                throw new Exception("Ein Mappingfehler ist passiert!");
 
-            }
-            throw new ArgumentException("Ungültige Werte!");
+            var targetsAlreadyHit = GetMyTargets(userId)
+                .Where(t => t is not null)
+                .Count();
+            var targetLimit = Context.Event
+                .Include(e => e.Parcour)
+                .Where(e => e.Id == newTarget.EventId)
+                .First()
+                .Parcour
+                .AnimalNumber;
+
+            Console.WriteLine();
+            Console.WriteLine($"\nTargets found: {targetsAlreadyHit} \nMax Animals:{targetLimit}");
+            Console.WriteLine();
+
+            if (targetsAlreadyHit >= targetLimit)
+                throw new Exception("Es wurden bereits alle Ziele notiert!");
+
+            eventfilter.Target.Add(new() { ArrowCount = newTarget.ArrowCount, HitArea = newTarget.HitArea });
+
+            Context.SaveChanges();
+            return "Ziel hinzugefügt";
         }
     }
 }

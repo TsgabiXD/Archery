@@ -21,7 +21,7 @@
           </v-list-item>
           <v-list-item>
             <v-list-item-title>
-              <v-btn flat tile text @click="logout"> Logout </v-btn>
+              <v-btn tile text @click="logout"> Logout </v-btn>
             </v-list-item-title>
           </v-list-item>
         </v-list>
