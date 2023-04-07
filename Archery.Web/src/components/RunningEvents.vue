@@ -65,7 +65,7 @@ export default defineComponent({
   mounted() {
     this.getAdminViewElements();
 
-    if (this.events.length === 0)
+    if (this.events.length !== 0)
       this.checkIntervalId = setInterval(() => {
         this.getAdminViewElements();
       }, 10000);
