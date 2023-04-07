@@ -28,7 +28,7 @@
                 :items="parcours"
                 item-text="name"
                 v-model="selectedParcour"
-                hint="Alle angmeldeten Benutzer können hier mitspielen."
+                hint="Alle hier gezeigten Benutzer können mitspielen."
                 persistent-hint
               >
                 <template v-slot:prepend-item>
@@ -41,7 +41,10 @@
           </v-row>
           <v-row dense>
             <v-col>
-              <v-simple-table dense>
+              <div v-if="users.length === 0" class="title">
+                Zur Zeit sind alle Benutzer beschäftig.
+              </div>
+              <v-simple-table dense v-else>
                 <tbody>
                   <tr v-for="user in users" :key="user.name">
                     <td>{{ user.nickName }}</td>
@@ -91,36 +94,36 @@ export default defineComponent({
   },
   props: {
     token: { type: String, required: true },
+    lastEndedEventId: Number,
   },
   data: () => {
     return {
       isLoading: false,
       isAddParcour: false,
       parcours: [], // TODO add Type
-      users: [], // TODO add Type
+      users: [] as {
+        id: number;
+        firstName: string;
+        lastName: string;
+        nickName: string;
+        role: string;
+      }[], // TODO add Type
       selectedParcour: "" as
         | string
         | { animalNumber: number; id: number; location: string; name: string }, // TODO add Type
       eventName: "",
-      eventUser: [], // TODO add Type
+      eventUser: [] as {
+        id: number;
+        firstName: string;
+        lastName: string;
+        nickName: string;
+        role: string;
+      }[], // TODO add Type
     };
   },
   mounted() {
     this.getParcours();
-
-    axios
-      .get("user/getusers", this.axiosAuthConfig)
-      .then((response) => {
-        // TODO prüfen
-        this.users = response.data;
-
-        response.data.forEach((e: never) => {
-          // TODO add Type
-          // TODO implementieren if(e.EventId)
-          this.eventUser.push(e);
-        });
-      })
-      .catch((err) => console.log(err));
+    this.getUsers();
   },
   methods: {
     startEvent(): void {
@@ -142,8 +145,10 @@ export default defineComponent({
             this.$emit("new-event", response.data);
 
             this.selectedParcour = "";
-            this.eventUser = [];
             this.eventName = "";
+            this.eventUser = [];
+            this.users = [];
+            this.getUsers();
           })
           .catch((err) => console.log(err))
           .finally(() => {
@@ -162,6 +167,28 @@ export default defineComponent({
         })
         .catch((err) => console.log(err));
     },
+    getUsers(): void {
+      axios
+        .get("user/getinactiveusers", this.axiosAuthConfig)
+        .then((response) => {
+          // TODO prüfen
+          this.users = response.data;
+
+          response.data.forEach(
+            (e: {
+              id: number;
+              firstName: string;
+              lastName: string;
+              nickName: string;
+              role: string;
+            }) => {
+              // TODO add Type
+              this.eventUser.push(e);
+            }
+          );
+        })
+        .catch((err) => console.log(err));
+    },
   },
   computed: {
     axiosAuthConfig(): object {
@@ -172,10 +199,11 @@ export default defineComponent({
 
       this.eventUser.forEach(
         (e: {
-          animalNumber: number;
           id: number;
-          location: string;
-          name: string;
+          firstName: string;
+          lastName: string;
+          nickName: string;
+          role: string;
         }) => result.push(e.id)
       );
 
@@ -185,6 +213,9 @@ export default defineComponent({
   watch: {
     isAddParcour(newValue: boolean) {
       if (newValue !== true) this.getParcours();
+    },
+    lastEndedEventId() {
+      this.getUsers();
     },
   },
   directives: {

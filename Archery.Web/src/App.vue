@@ -19,11 +19,7 @@
               {{ tokenData?.username }}
             </v-list-item-title>
           </v-list-item>
-          <v-list-item>
-            <v-list-item-title>
-              <v-btn tile text @click="logout"> Logout </v-btn>
-            </v-list-item-title>
-          </v-list-item>
+          <v-btn tile text block @click="logout"> Logout </v-btn>
         </v-list>
       </v-menu>
     </v-app-bar>

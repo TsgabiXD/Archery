@@ -11,40 +11,53 @@ namespace Archery.Repository
 {
     public class EventRepository : AbstractRepository
     {
-        public EventRepository(ArcheryContext context) : base(context)
+        private readonly UserRepository _userRepository;
+
+        public EventRepository(ArcheryContext context, UserRepository userRepository) : base(context)
         {
+            _userRepository = userRepository;
         }
 
         public string StartEvent(NewEvent newEvent)
         {
-            if (newEvent != null)
-            {
+            if (newEvent is null)
+                throw new ArgumentNullException(nameof(newEvent), "Keine Eventdaten im Request!");
 
-                var eventUser = Context.User
-                    .Where(u => newEvent.UserIds.Contains(u.Id))
-                    .ToList();
+            List<int> allUserIds = new();
+            foreach (var u in Context.User.ToArray())
+                allUserIds.Add(u.Id);
+            foreach (var userId in newEvent.UserIds)
+                if (!allUserIds.Contains(userId))
+                    throw new Exception($"User with Id {userId} does not exist!");
 
-                var eventParcour = Context.Parcour
-                    .SingleOrDefault(u => newEvent.ParcourId == u.Id);
+            var eventUser = Context.User
+                .Where(u => newEvent.UserIds.Contains(u.Id))
+                .ToList();
 
-                if (eventParcour is null)
-                    throw new Exception();
+            var inactiveUser = _userRepository.GetAllInactiveUsers().ToList();
+            var activeUser = Context.User.Where(u => !inactiveUser.Contains(u));
 
-                var e = Context.Event.Add(new() { Name = newEvent.Name, Parcour = eventParcour, IsRunning = true }).Entity;
+            foreach (var user in eventUser)
+                if (activeUser.Contains(user))
+                    throw new Exception($"User \"{user.NickName}\" is already participating in another Event!");
 
-                foreach (var user in eventUser)
-                    Context.Mapping.Add(new() { Event = e, User = user });
+            var eventParcour = Context.Parcour
+                .SingleOrDefault(u => newEvent.ParcourId == u.Id);
 
-                if (e == null)
-                {
-                    return "Event not found";
-                }
+            if (eventParcour is null)
+                throw new Exception("Parcour not found in Database!");
 
-                Context.SaveChanges();
+            var e = Context.Event.Add(new() { Name = newEvent.Name, Parcour = eventParcour, IsRunning = true }).Entity;
 
-                return e.Id.ToString();
-            }
-            throw new InvalidOperationException("Fehler beim Starten des Events");
+            foreach (var user in eventUser)
+                Context.Mapping.Add(new() { Event = e, User = user });
+
+            if (e == null)
+                throw new Exception("Error adding the Event!");
+
+            Context.SaveChanges();
+
+            return e.Id.ToString();
         }
 
 
@@ -114,26 +127,21 @@ namespace Archery.Repository
             return groupedByEvents;
         }
 
-        public string EndEvent(int eventToStop)
+        public int EndEvent(int eventToStop)
         {
-            if (eventToStop > 0)
-            {
-                var stopEvent = Context.Event.SingleOrDefault(e => e.Id == eventToStop);
+            if (eventToStop <= 0)
+                throw new InvalidOperationException("Invalid EventId");
 
-                if (stopEvent == null)
-                {
-                    return "Fail: stopEvent ist Null";
-                }
+            var stopEvent = Context.Event.SingleOrDefault(e => e.Id == eventToStop);
 
+            if (stopEvent == null)
+                throw new Exception("Fail: stopEvent ist Null");
 
-                stopEvent.IsRunning = false;
+            stopEvent.IsRunning = false;
 
-                Context.SaveChanges();
+            Context.SaveChanges();
 
-                return " Event beendet";
-            }
-            throw new InvalidOperationException("Invalid EventId");
-
+            return stopEvent.Id;
         }
     }
 }

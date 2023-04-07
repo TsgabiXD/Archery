@@ -7,9 +7,14 @@
     <v-container v-else>
       <start-event-form
         :token="bearerToken"
+        :lastEndedEventId="lastEndedEventId"
         @new-event="newEvent"
       />
-      <running-events :newEventId="newEventId" :token="bearerToken" />
+      <running-events
+        :lastNewEventId="lastNewEventId"
+        :token="bearerToken"
+        @ended-event="refreshStartEventFormUsers"
+      />
     </v-container>
   </div>
 </template>
@@ -36,7 +41,8 @@ export default Vue.extend({
     return {
       token: "",
       isAdmin: false,
-      newEventId: -1,
+      lastNewEventId: -1,
+      lastEndedEventId: 0,
     };
   },
   methods: {
@@ -49,7 +55,10 @@ export default Vue.extend({
       this.$emit("login", token);
     },
     newEvent(eventId: number): void {
-      this.newEventId = eventId;
+      this.lastNewEventId = eventId;
+    },
+    refreshStartEventFormUsers(endedEvent: number): void {
+      this.lastEndedEventId = endedEvent;
     },
   },
   computed: {
@@ -76,8 +85,10 @@ export default Vue.extend({
 
       let result = JSON.parse(jsonPayload);
 
-      result.role = result['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
-      result.username = result['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
+      result.role =
+        result["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+      result.username =
+        result["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
 
       return result;
     },

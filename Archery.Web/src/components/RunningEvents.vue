@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="newEventId > 0">
+  <v-card v-if="lastNewEventId > 0 || events.length === 0">
     <v-card-title>Laufende Events</v-card-title>
     <v-card-text>
       <v-container class="grey lighten-5" rounded>
@@ -45,7 +45,7 @@ import axios from "@/router/axios";
 export default defineComponent({
   props: {
     token: { type: String, required: true },
-    newEventId: { Type: Number, required: true },
+    lastNewEventId: { Type: Number, required: true },
   },
   data() {
     return {
@@ -58,9 +58,12 @@ export default defineComponent({
     };
   },
   mounted() {
-    this.checkIntervalId = setInterval(() => {
-      this.getAdminViewElements();
-    }, 10000);
+    this.getAdminViewElements();
+
+    if (this.events.length === 0)
+      this.checkIntervalId = setInterval(() => {
+        this.getAdminViewElements();
+      }, 10000);
   },
   beforeUnmount() {
     clearInterval(this.checkIntervalId); // TODO fix this
@@ -91,18 +94,20 @@ export default defineComponent({
     endEvent(event: number): void {
       axios
         .post(
+          // TODO data richtig mitgeben
           `event/endevent?stopEvent=${event}`,
           undefined,
           this.axiosAuthConfig
         )
-        .then(() => {
+        .then((response) => {
           this.getAdminViewElements();
+          this.$emit("ended-event", response.data);
         })
         .catch((err) => console.log(err));
     },
   },
   watch: {
-    newEventId(newVal: number) {
+    lastNewEventId(newVal: number) {
       this.getAdminViewElements();
 
       if (newVal <= 0) clearInterval(this.checkIntervalId);
