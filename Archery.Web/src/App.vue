@@ -17,7 +17,7 @@
           </v-switch>
         </template>
         <span>mitspielen</span>
-        <!-- TODO fix tooltip -->
+        <!-- TODO fix tooltip (nur on focus not on hover) -->
       </v-tooltip>
       <v-menu
         offset-y

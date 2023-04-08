@@ -21,8 +21,12 @@ namespace Archery.Repository
             if (mapping is null)
                 throw new Exception("Ein Mappingfehler ist passiert!");
 
+
+            if(mapping.FirstOrDefault() is null)
+                throw new Exception("Event nicht gefunden!");
+
             List<Target> targetFound = new();
-            var eventId = mapping.First().Event.Id;
+            var eventId = mapping.FirstOrDefault()!.Event.Id;
 
             foreach (var m in mapping)
                 if (m.Event.Id == eventId)
