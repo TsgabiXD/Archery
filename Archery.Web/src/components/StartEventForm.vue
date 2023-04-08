@@ -85,7 +85,8 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import NewParcour from "./NewParcour.vue";
+
+import NewParcour from "@/components/NewParcour.vue";
 import axios from "@/router/axios";
 
 export default defineComponent({

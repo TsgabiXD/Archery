@@ -21,6 +21,7 @@
 
 <script lang="ts">
 import Vue from "vue";
+
 import LoginRegisterForm from "../components/LoginRegisterForm.vue";
 import UserHome from "../components/UserHome.vue";
 import StartEventForm from "../components/StartEventForm.vue";
