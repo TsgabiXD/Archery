@@ -2,14 +2,21 @@
   <v-app>
     <v-app-bar app color="primary" dark>
       <v-app-bar-nav-icon>
-        <v-img
-          contain
-          max-width="65"
-          src="../public/Acherry.png"
-        >
-        </v-img>
+        <v-img contain max-width="65" src="../public/Acherry.png"> </v-img>
       </v-app-bar-nav-icon>
       <v-spacer></v-spacer>
+      <v-tooltip bottom v-if="tokenData?.role === 'Admin'">
+        <template v-slot:activator="{ on, attrs }">
+          <v-switch
+            color="#FFCA00"
+            v-bind="attrs"
+            v-on="on"
+            v-model="adminMode"
+          >
+          </v-switch>
+        </template>
+        <span>mitspielen</span>
+      </v-tooltip>
       <v-menu
         offset-y
         open-on-hover
@@ -32,7 +39,11 @@
       </v-menu>
     </v-app-bar>
     <v-main>
-      <router-view :resetToken="token" @login="setToken" />
+      <router-view
+        :resetToken="token"
+        :adminMode="adminMode"
+        @login="setToken"
+      />
     </v-main>
   </v-app>
 </template>
@@ -45,6 +56,7 @@ export default Vue.extend({
   data: () => {
     return {
       token: "",
+      adminMode: false,
     };
   },
   methods: {
@@ -77,6 +89,11 @@ export default Vue.extend({
         result["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
 
       return result;
+    },
+  },
+  watch: {
+    tokenData() {
+      this.adminMode = this.tokenData?.role === "Admin";
     },
   },
 });

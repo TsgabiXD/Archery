@@ -36,6 +36,7 @@ export default Vue.extend({
   },
   props: {
     resetToken: { type: String, required: true },
+    adminMode: Boolean,
   },
   data: () => {
     return {
@@ -91,6 +92,11 @@ export default Vue.extend({
         result["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
 
       return result;
+    },
+  },
+  watch: {
+    adminMode(newValue: boolean) {
+      this.isAdmin = newValue;
     },
   },
 });
