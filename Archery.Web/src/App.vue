@@ -5,17 +5,19 @@
         <v-img contain max-width="65" src="../public/Acherry.png"> </v-img>
       </v-app-bar-nav-icon>
       <v-spacer></v-spacer>
-      <v-tooltip bottom v-if="tokenData?.role === 'Admin'">
+      <v-tooltip v-if="tokenData?.role === 'Admin'">
         <template v-slot:activator="{ on, attrs }">
           <v-switch
-            color="#FFCA00"
+            color="amber lighten-1"
             v-bind="attrs"
             v-on="on"
             v-model="adminMode"
+            style="margin-top: auto; padding-top: 14px"
           >
           </v-switch>
         </template>
         <span>mitspielen</span>
+        <!-- TODO fix tooltip -->
       </v-tooltip>
       <v-menu
         offset-y
