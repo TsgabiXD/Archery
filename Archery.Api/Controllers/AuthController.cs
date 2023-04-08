@@ -45,33 +45,39 @@ public class AuthController : ArcheryController
             {
                 request.Password = "";
 
-                var userInDb = _context.IdentityUser.First(u => u.UserName == request.Username);
-                var simpleUser = _context.User.First(u => u.NickName == request.Username);
+                var userInDb = _context.IdentityUser.FirstOrDefault(u => u.UserName == request.Username);
+                var simpleUser = _context.User.FirstOrDefault(u => u.NickName == request.Username);
 
-                var accessToken = _tokenService.CreateToken(userInDb, simpleUser);
+                if (userInDb is null)
+                    throw new Exception("There has been some IdentityUser adding problem!");
 
-                if (request.FirstName != null && request.LastName != null)
-                    _repository.AddUser(new()
-                    {
-                        FirstName = request.FirstName,
-                        LastName = request.LastName,
-                        NickName = request.Username
-                    });
+                if (simpleUser is null)
+                {
+                    if (request.FirstName != null && request.LastName != null)
+                        _repository.AddUser(new()
+                        {
+                            FirstName = request.FirstName,
+                            LastName = request.LastName,
+                            NickName = request.Username
+                        });
 
-                _context.SaveChanges();
+                    simpleUser = _context.User.SingleOrDefault(u => u.NickName == request.Username);
 
-                var currentUser = _context.User.FirstOrDefault(u => u.NickName == request.Username);
+                    if (simpleUser is null)
+                        throw new Exception("Problems at adding the user!");
 
-                if (currentUser is null)
-                    throw new Exception("Angelegter User ist defekt");
+                    var accessToken = _tokenService.CreateToken(userInDb, simpleUser);
 
-                return Ok(new AuthResponse { Token = accessToken });
+                    _context.SaveChanges();
+                    return Ok(new AuthResponse { Token = accessToken });
+                }
             }
 
             foreach (var error in result.Errors)
                 ModelState.AddModelError(error.Code, error.Description);
 
             return BadRequest(ModelState);
+
         }
         catch (Exception ex)
         {

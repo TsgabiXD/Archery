@@ -63,8 +63,14 @@ public class UserRepository : AbstractRepository
             string.IsNullOrEmpty(user.NickName))
             throw new Exception("Ungültige Werte!");
 
+        if (Context.User.SingleOrDefault(u =>
+                    u.FirstName == user.FirstName &&
+                    u.LastName == user.LastName &&
+                    u.NickName == user.NickName) != null)
+            throw new Exception("no user found");
+
         // TODO möglicher Exploit
-        var existingUser = Context.User.FirstOrDefault(u =>
+        var existingUser = Context.User.SingleOrDefault(u =>
             u.FirstName == user.FirstName &&
             u.LastName == user.LastName &&
             u.NickName == user.NickName);
