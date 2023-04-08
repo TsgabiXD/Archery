@@ -40,7 +40,9 @@
                   <v-card-text>{{ u.score }}</v-card-text>
                 </v-card>
               </v-col>
-              <v-col cols="12" md="6"> <event-chart></event-chart> </v-col>
+              <v-col cols="12" md="6">
+                <event-chart :user="event.user"></event-chart>
+              </v-col>
             </v-row>
           </v-card-text>
         </v-card>
@@ -56,8 +58,8 @@ import axios from "@/router/axios";
 import EventChart from "@/components/EventChart.vue";
 
 export default defineComponent({
-  components:{
-    EventChart
+  components: {
+    EventChart,
   },
   props: {
     token: { type: String, required: true },
