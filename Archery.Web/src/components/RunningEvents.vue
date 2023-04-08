@@ -1,6 +1,12 @@
 <template>
   <v-card v-if="events.length !== 0">
-    <v-card-title>Laufende Events</v-card-title>
+    <v-card-title>
+      Laufende Events
+      <v-spacer></v-spacer>
+      <v-btn icon @click="getAdminViewElements">
+        <v-icon>mdi-reload</v-icon>
+      </v-btn>
+    </v-card-title>
     <v-card-text>
       <v-container class="grey lighten-5" rounded>
         <v-card v-for="event in events" :key="event.id" class="mb-2">
@@ -19,22 +25,22 @@
             </v-chip>
           </v-card-title>
           <v-card-text>
-              <v-row>
-                <v-col cols="12" md="6">
-            <v-card
-              v-for="u in event.user"
-              flat
-              :key="u.nickName"
-              outlined
-              class="mt-1"
-            >
-              <v-card-title class="subtitle-1">
-                {{ u.nickName }}
-              </v-card-title>
-              <v-card-text>{{ u.score }}</v-card-text>
-            </v-card>
-            </v-col>
-            <v-col cols="12" md="6"> ChartJs </v-col>
+            <v-row>
+              <v-col cols="12" md="6">
+                <v-card
+                  v-for="u in event.user"
+                  flat
+                  :key="u.nickName"
+                  outlined
+                  class="mt-1"
+                >
+                  <v-card-title class="subtitle-1">
+                    {{ u.nickName }}
+                  </v-card-title>
+                  <v-card-text>{{ u.score }}</v-card-text>
+                </v-card>
+              </v-col>
+              <v-col cols="12" md="6"> ChartJs </v-col>
             </v-row>
           </v-card-text>
         </v-card>
