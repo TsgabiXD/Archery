@@ -2,8 +2,8 @@
   <div>
     <div v-if="events.length === 0">
       <v-card>
-        <v-card-title class="display-1 ma-12">
-          Zur Zeit in keinem Event eingetragen
+        <v-card-title class="subtitle-1 ma-12">
+          Zur Zeit spielst du in keinem Event!
         </v-card-title>
       </v-card>
     </div>
