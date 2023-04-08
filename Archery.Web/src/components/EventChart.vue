@@ -5,7 +5,13 @@
       :options="chartOptions"
       v-if="loaded"
       :style="chartStyle"
-    />
+      aria-label="Grafik zur Veranschaulichung der Punkte"
+    >
+      <p>
+        Hier sollte eigentlich eine Grafik zur Veranschaulichung der Punkte
+        stehen.
+      </p>
+    </line-chart>
     <!-- TODO v-btn ersetzen -->
     <v-btn disabled loading text v-else> </v-btn>
   </div>
@@ -59,14 +65,24 @@ export default defineComponent({
   },
   computed: {
     chartData() {
+      let dataSets = [
+        {
+          label: "User 1",
+          borderColor: "#36A2EB",
+          backgroundColor: "#9BD0F5",
+          data: this.testdata.map((row) => row.count),
+        },
+      ];
+
+      dataSets.forEach((s) => {
+        let randColorString = Math.floor(Math.random() * 16777215).toString(16);
+        s.backgroundColor = "#" + randColorString;
+        s.borderColor = "#" + randColorString;
+      });
+
       return {
         labels: this.testdata.map((row) => row.year),
-        datasets: [
-          {
-            label: "Acquisitions by year",
-            data: this.testdata.map((row) => row.count),
-          },
-        ],
+        datasets: dataSets,
       };
     },
     chartOptions() {
