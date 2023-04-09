@@ -8,16 +8,31 @@
       </v-card>
     </div>
     <div v-else>
-      <v-card v-for="(target, i) of targets" :key="i" class="ma-1">
-        <v-card-title> Ziel {{ i + 1 }} </v-card-title>
-        <v-card-text class="my-1">
-          <span class="ml-2"> Pfeile: {{ target.arrowCount }} </span> <br />
-          <span class="ml-2"> Trefferfläche: {{ target.hitArea }} </span> <br />
-          <span class="title mt-2 ml-1">
-            Punkte: {{ calcPunkte(target) }}
-          </span>
-        </v-card-text>
-      </v-card>
+      <v-row>
+        <v-col cols="12" md="6">
+          <v-card v-for="(target, i) of targets" :key="i" class="ma-1">
+            <v-card-title> Ziel {{ i + 1 }} </v-card-title>
+            <v-card-text class="my-1">
+              <span class="ml-2"> Pfeile: {{ target.arrowCount }} </span> <br />
+              <span class="ml-2"> Trefferfläche: {{ target.hitArea }} </span>
+              <br />
+              <span class="title mt-2 ml-1">
+                Punkte: {{ calcPunkte(target) }}
+              </span>
+            </v-card-text>
+          </v-card>
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-card class="ma-1">
+            <v-card-text>
+              <user-chart
+                :data="eventChartData"
+                :bottomLabels="bottomLabels"
+              ></user-chart>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
       <v-btn
         fab
         large
@@ -43,14 +58,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import axios from "@/router/axios";
+import { defineComponent } from 'vue';
+import axios from '@/router/axios';
 
-import NewTarget from "@/components/NewTarget.vue";
+import NewTarget from '@/components/NewTarget.vue';
+import UserChart from '@/components/UserChart.vue';
 
 export default defineComponent({
   components: {
     NewTarget,
+    UserChart,
   },
   props: {
     token: { type: String, required: true },
@@ -89,25 +106,47 @@ export default defineComponent({
       return { headers: { Authorization: `Bearer ${this.token}` } };
     },
     tokenData() {
-      if (this.token === "") return undefined;
+      if (this.token === '') return {};
 
-      var base64Url = this.token.split(".")[1];
-      var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      var base64Url = this.token.split('.')[1];
+      var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
       var jsonPayload = decodeURIComponent(
         window
           .atob(base64)
-          .split("")
+          .split('')
           .map(function (c) {
-            return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
           })
-          .join("")
+          .join('')
       );
 
       let result = JSON.parse(jsonPayload);
 
       result.username =
-        result["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
+        result['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
 
+      return result;
+    },
+    eventChartData(): {
+      userName: string;
+      targets: { id: number; arrowCount: number; hitArea: number }[];
+    }[] {
+      let result = [];
+
+      if (!this.tokenData.username) return [];
+
+      result.push({
+        userName: this.tokenData.username,
+        targets: this.targets,
+      });
+
+      return result;
+    },
+    bottomLabels(): number[] {
+      let result = [] as number[];
+      this.targets.forEach((_e, i) => {
+        result.push(i + 1);
+      });
       return result;
     },
   },
@@ -130,7 +169,7 @@ export default defineComponent({
     },
     loadTargets(): void {
       axios
-        .get("target/getmytargets", this.axiosAuthConfig)
+        .get('target/getmytargets', this.axiosAuthConfig)
         .then((response) => {
           this.targets = [];
 
@@ -155,7 +194,7 @@ export default defineComponent({
     },
     checkUserInEvent(): void {
       axios
-        .get("user/getusersrunningevents", this.axiosAuthConfig)
+        .get('user/getusersrunningevents', this.axiosAuthConfig)
         .then((response) => {
           if (response.data.length !== 0) this.events = response.data;
         })
