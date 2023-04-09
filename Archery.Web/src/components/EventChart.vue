@@ -28,6 +28,8 @@ import {
   LineElement,
   CategoryScale,
   LinearScale,
+  ChartData,
+  ChartDataset,
 } from "chart.js";
 import { Line as LineChart } from "vue-chartjs";
 
@@ -64,15 +66,15 @@ export default defineComponent({
     };
   },
   computed: {
-    chartData() {
+    chartData(): ChartData {
       let dataSets = [
         {
           label: "User 1",
-          borderColor: "#36A2EB",
-          backgroundColor: "#9BD0F5",
+          backgroundColor: "",
+          borderColor: "",
           data: this.testdata.map((row) => row.count),
         },
-      ];
+      ] as ChartDataset[];
 
       dataSets.forEach((s) => {
         let randColorString = Math.floor(Math.random() * 16777215).toString(16);
