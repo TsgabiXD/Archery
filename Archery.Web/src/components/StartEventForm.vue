@@ -42,7 +42,7 @@
           <v-row dense>
             <v-col>
               <div v-if="users.length === 0" class="title">
-                Zur Zeit sind alle Benutzer beschäftig.
+                Zur Zeit sind alle Benutzer beschäftigt.
               </div>
               <v-simple-table dense v-else>
                 <tbody>

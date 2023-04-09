@@ -12,10 +12,12 @@ namespace Archery.Repository
     public class EventRepository : AbstractRepository
     {
         private readonly UserRepository _userRepository;
+        private readonly TargetRepository _targetRepository;
 
-        public EventRepository(ArcheryContext context, UserRepository userRepository) : base(context)
+        public EventRepository(ArcheryContext context, UserRepository userRepository, TargetRepository targetRepository) : base(context)
         {
             _userRepository = userRepository;
+            _targetRepository = targetRepository;
         }
 
         public string StartEvent(NewEvent newEvent)
@@ -119,7 +121,14 @@ namespace Archery.Repository
                 var singleEventWithAllUsers = results.Where(r => r.EventName == e.Name);
 
                 foreach (var ewu in singleEventWithAllUsers)
-                    user.Add(new() { NickName = ewu.User[0].NickName, Score = ewu.User[0].Score });
+                    user.Add(new()
+                    {
+                        NickName = ewu.User[0].NickName,
+                        Score = ewu.User[0].Score,
+                        Targets = _targetRepository.GetMyTargets(Context.User.SingleOrDefault(u =>
+                            u.NickName == ewu.User[0].NickName)?.Id
+                            ?? throw new Exception("User not existing!"))
+                    });
 
                 groupedByEvents.Add(new() { Id = e.Id, EventName = e.Name, User = user });
             }

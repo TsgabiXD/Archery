@@ -93,11 +93,11 @@ export default defineComponent({
             data: d.targets.map((t) => t.hitArea),
           });
           dataSets.push({
-            label: 'Gesammt',
+            label: 'Punkte',
             backgroundColor: '#8e24aa',
             borderColor: '#8e24aa',
             data: d.targets.map(
-              (t) => this.countingResults[t.hitArea-1][t.arrowCount-1]
+              (t) => this.countingResults[t.hitArea - 1][t.arrowCount - 1]
             ),
           });
         }

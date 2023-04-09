@@ -8,8 +8,8 @@
       </v-card>
     </div>
     <div v-else>
-      <v-row>
-        <v-col cols="12" md="6">
+      <v-row no-gutters>
+        <v-col cols="12" :md="targets.length > 1 ? 6 : 12">
           <v-card v-for="(target, i) of targets" :key="i" class="ma-1">
             <v-card-title> Ziel {{ i + 1 }} </v-card-title>
             <v-card-text class="my-1">
@@ -22,13 +22,11 @@
             </v-card-text>
           </v-card>
         </v-col>
-        <v-col cols="12" md="6">
+        <v-col cols="12" md="6" v-if="targets.length > 1">
           <v-card class="ma-1">
             <v-card-text>
-              <user-chart
-                :data="eventChartData"
-                :bottomLabels="bottomLabels"
-              ></user-chart>
+              <user-chart :data="eventChartData" :bottomLabels="bottomLabels">
+              </user-chart>
             </v-card-text>
           </v-card>
         </v-col>
