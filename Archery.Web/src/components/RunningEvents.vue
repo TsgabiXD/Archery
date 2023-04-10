@@ -26,7 +26,7 @@
           </v-card-title>
           <v-card-text>
             <v-row no-gutters>
-              <v-col cols="12" md="6">
+              <v-col cols="12" :md="isGraficDisplayed(event.id) ? 6 : 12">
                 <v-card
                   v-for="u in event.user"
                   flat
@@ -40,7 +40,7 @@
                   <v-card-text>{{ u.score }}</v-card-text>
                 </v-card>
               </v-col>
-              <v-col cols="12" md="6">
+              <v-col cols="12" md="6" v-if="isGraficDisplayed(event.id)">
                 <event-chart
                   :user="
                     event.user.map((u) => {
@@ -146,6 +146,18 @@ export default defineComponent({
           this.$emit('ended-event', response.data);
         })
         .catch((err) => console.log(err));
+    },
+    isGraficDisplayed(eventId: number): boolean {
+      let result = false;
+
+      this.events.forEach((e) => {
+        if (e.id === eventId)
+          e.user.forEach((u) => {
+            if (u.targets.length > 1) result = true;
+          });
+      });
+
+      return result;
     },
   },
   watch: {
