@@ -7,7 +7,13 @@
       class="mb-5"
       v-focus
     >
-      <v-card-title> Neues Event </v-card-title>
+      <v-card-title>
+        Neues Event
+        <v-spacer></v-spacer>
+        <v-btn icon @click="getUsers">
+          <v-icon>mdi-reload</v-icon>
+        </v-btn>
+      </v-card-title>
       <v-card-text>
         <v-container class="grey lighten-5" rounded>
           <v-row dense>
@@ -84,10 +90,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent } from 'vue';
 
-import NewParcour from "@/components/NewParcour.vue";
-import axios from "@/router/axios";
+import NewParcour from '@/components/NewParcour.vue';
+import axios from '@/router/axios';
 
 export default defineComponent({
   components: {
@@ -109,10 +115,10 @@ export default defineComponent({
         nickName: string;
         role: string;
       }[], // TODO add Type
-      selectedParcour: "" as
+      selectedParcour: '' as
         | string
         | { animalNumber: number; id: number; location: string; name: string }, // TODO add Type
-      eventName: "",
+      eventName: '',
       eventUser: [] as {
         id: number;
         firstName: string;
@@ -130,11 +136,11 @@ export default defineComponent({
     startEvent(): void {
       this.isLoading = true;
 
-      if (typeof this.selectedParcour === "object")
+      if (typeof this.selectedParcour === 'object')
         // TODO add Type
         axios
           .post(
-            "event/startevent",
+            'event/startevent',
             {
               name: this.eventName,
               parcourId: this.selectedParcour.id,
@@ -143,10 +149,10 @@ export default defineComponent({
             this.axiosAuthConfig
           ) // TODO add Type
           .then((response) => {
-            this.$emit("new-event", response.data);
+            this.$emit('new-event', response.data);
 
-            this.selectedParcour = "";
-            this.eventName = "";
+            this.selectedParcour = '';
+            this.eventName = '';
             this.eventUser = [];
             this.users = [];
             this.getUsers();
@@ -161,7 +167,7 @@ export default defineComponent({
     },
     getParcours(): void {
       axios
-        .get("parcour/getparcours", this.axiosAuthConfig)
+        .get('parcour/getparcours', this.axiosAuthConfig)
         .then((response) => {
           // TODO prüfen
           this.parcours = response.data;
@@ -170,7 +176,7 @@ export default defineComponent({
     },
     getUsers(): void {
       axios
-        .get("user/getinactiveusers", this.axiosAuthConfig)
+        .get('user/getinactiveusers', this.axiosAuthConfig)
         .then((response) => {
           // TODO prüfen
           this.users = response.data;
@@ -223,14 +229,14 @@ export default defineComponent({
     focus: {
       inserted: function (el) {
         window.setTimeout(() => {
-          let childData = el.querySelectorAll("input")[0];
+          let childData = el.querySelectorAll('input')[0];
           childData.focus();
         }, 500);
       },
       update: function (el) {
         window.setTimeout(() => {
-          let childData = el.querySelectorAll("input")[0];
-          if ((childData as HTMLInputElement).value === "") childData.focus();
+          let childData = el.querySelectorAll('input')[0];
+          if ((childData as HTMLInputElement).value === '') childData.focus();
         }, 500);
       },
     },
