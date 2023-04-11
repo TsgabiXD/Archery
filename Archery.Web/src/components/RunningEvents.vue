@@ -148,16 +148,18 @@ export default defineComponent({
         .catch((err) => console.log(err));
     },
     isGraficDisplayed(eventId: number): boolean {
-      let result = false;
+      let result = 0;
 
       this.events.forEach((e) => {
         if (e.id === eventId)
           e.user.forEach((u) => {
-            if (u.targets.length > 1) result = true;
+            u.targets.forEach((t) => {
+              if (t) result++;
+            });
           });
       });
 
-      return result;
+      return result > 1;
     },
   },
   watch: {
