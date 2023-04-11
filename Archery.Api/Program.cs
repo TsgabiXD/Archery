@@ -32,6 +32,7 @@ var connection = pcName.Contains("03302") ? "DB" :
                 pcName.Contains("AGVGCQH") ? "DBTobiPC" :
                 pcName.Contains("F186T1U") ? "DBTobiPCDaheim" :
                 pcName.Contains("336692") ? "DBTobiPCWork" :
+                pcName.Contains("ROELZJNB") ? "DBJohnnyPCWork" :
                 throw new Exception("No Specified PC!!!");
 
 var builder = WebApplication.CreateBuilder(args);
