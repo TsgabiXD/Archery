@@ -1,5 +1,5 @@
 <template>
-  <v-card elevation="7" :loading="isLoading" v-focus>
+  <v-card elevation="7" :loading="isLoading" v-focus class="mb-5">
     <v-card-title> Neuer Parcour </v-card-title>
     <v-card-text>
       <v-container class="grey lighten-5" rounded>
