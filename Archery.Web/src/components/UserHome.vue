@@ -39,6 +39,7 @@
       >
       </new-target>
     </div>
+    <error-message v-for="(message,i) in errorMessages" :key="i" :message="message"></error-message>
   </div>
 </template>
 
@@ -51,6 +52,7 @@ import ErrorMessage from "@/components/ErrorMessage.vue";
 export default defineComponent({
   components: {
     NewTarget,
+    ErrorMessage,
   },
   props: {
     token: { type: String, required: true },
@@ -68,6 +70,7 @@ export default defineComponent({
       isUserInEvent: false,
       events: [] as number[],
       checkIntervalId: 0,
+      errorMessages: ['test'] as string[],
     };
   },
   mounted() {

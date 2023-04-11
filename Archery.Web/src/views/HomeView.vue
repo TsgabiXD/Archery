@@ -12,6 +12,7 @@
       />
       <running-events :newEventId="newEventId" :token="bearerToken" />
     </v-container>
+    <error-message v-for="(message,i) in errorMessages" :key="i" :message="message"></error-message>
   </div>
 </template>
 
@@ -21,6 +22,7 @@ import LoginRegisterForm from "../components/LoginRegisterForm.vue";
 import UserHome from "../components/UserHome.vue";
 import StartEventForm from "../components/StartEventForm.vue";
 import RunningEvents from "../components/RunningEvents.vue";
+import ErrorMessage from "@/components/ErrorMessage.vue";
 
 export default Vue.extend({
   name: "HomeView",
@@ -29,6 +31,7 @@ export default Vue.extend({
     UserHome,
     StartEventForm,
     RunningEvents,
+    ErrorMessage,
   },
   props: {
     resetToken: { type: String, required: true },
@@ -40,6 +43,7 @@ export default Vue.extend({
       isAdmin: false,
       userId: -1,
       newEventId: -1,
+      errorMessages: ['Error', 'test',] as string[],
     };
   },
   methods: {
