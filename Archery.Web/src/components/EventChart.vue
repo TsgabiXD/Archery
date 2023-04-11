@@ -3,7 +3,6 @@
     <line-chart
       :data="chartData"
       :options="chartOptions"
-      v-if="loaded"
       :style="chartStyle"
       aria-label="Grafik zur Veranschaulichung der Punkte"
     >
@@ -12,8 +11,6 @@
         stehen.
       </p>
     </line-chart>
-    <!-- TODO v-btn ersetzen -->
-    <v-btn disabled loading text v-else> </v-btn>
   </div>
 </template>
 
@@ -58,7 +55,6 @@ export default defineComponent({
   },
   data() {
     return {
-      loaded: true,
       countingResults: [
         [20, 18, 16],
         [14, 12, 10],
