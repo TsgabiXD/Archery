@@ -83,7 +83,7 @@ export default defineComponent({
       events: [] as number[],
       checkIntervalId: 0,
       isEventFinished: false,
-    errorMessages: ['test'] as string[],
+      errorMessages: ['test'] as string[],
     };
   },
   mounted() {

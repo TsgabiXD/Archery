@@ -42,34 +42,34 @@
                   :disabled="arrowCount === 0"
                   elevation="3"
                   class="target"
-                  :color="
-                    !(hitArea === 1 || hitArea === 2)
-                      ? 'blue'
-                      : 'white'
-                  "
-                  @click.stop="hitArea = 3"
+                  :color="!(hitArea === 1 || hitArea === 2) ? 'blue' : 'white'"
+                  @click.stop="hitArea === 3 ? (hitArea = -1) : (hitArea = 3)"
                 >
                   <div class="target-mid-container">
                     <v-btn
                       :disabled="arrowCount === 0"
+                      elevation="0"
                       class="target-mid d-block"
                       :color="
-                        !(hitArea === 1 || hitArea === 3)
-                          ? 'red'
-                          : 'white'
+                        !(hitArea === 1 || hitArea === 3) ? 'red' : 'white'
                       "
-                      @click.stop="hitArea = 2"
+                      @click.stop="
+                        hitArea === 2 ? (hitArea = -1) : (hitArea = 2)
+                      "
                     >
                       <div class="target-center-container">
                         <v-btn
                           :disabled="arrowCount === 0"
+                          elevation="0"
                           class="target-center"
                           :color="
                             !(hitArea === 3 || hitArea === 2)
                               ? 'yellow'
                               : 'white'
                           "
-                          @click.stop="hitArea = 1"
+                          @click.stop="
+                            hitArea === 1 ? (hitArea = -1) : (hitArea = 1)
+                          "
                         >
                         </v-btn>
                       </div>
@@ -85,7 +85,12 @@
               <v-btn color="error" class="mx-2" @click="close">
                 Abbrechen
               </v-btn>
-              <v-btn color="primary" class="mx-2" @click="save">
+              <v-btn
+                color="primary"
+                class="mx-2"
+                @click="save"
+                :disabled="!isSaveAble"
+              >
                 Speichern
               </v-btn>
             </v-card-actions>
@@ -145,6 +150,10 @@ export default defineComponent({
     axiosAuthConfig(): object {
       return { headers: { Authorization: `Bearer ${this.token}` } };
     },
+    isSaveAble(): boolean {
+      if (this.arrowCount === 0) return true;
+      return [0, 1, 2, 3].indexOf(this.hitArea) !== -1;
+    },
   },
 });
 </script>
@@ -158,7 +167,7 @@ export default defineComponent({
 .stepper-card:after {
   content: '';
   display: block;
-  padding-bottom: 100%;
+  padding-bottom: 50px;
 }
 
 .stepper-card-actions {
