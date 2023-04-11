@@ -27,6 +27,7 @@ import {
   LinearScale,
   ChartData,
   ChartDataset,
+  Filler,
 } from 'chart.js';
 import { Line as LineChart } from 'vue-chartjs';
 
@@ -37,7 +38,8 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  Filler
 );
 
 export default defineComponent({
@@ -80,21 +82,30 @@ export default defineComponent({
             label: 'Pfeile',
             backgroundColor: '#aa7b24',
             borderColor: '#aa7b24',
-            data: d.targets.map((t) => t.arrowCount),
+            data: d.targets.map((t) =>
+              t.arrowCount === 3 ? 1 : t.arrowCount === 1 ? 3 : t.arrowCount
+            ),
+            yAxisID: 'y',
           });
           dataSets.push({
             label: 'Genauigkeit',
             backgroundColor: '#84aa24',
             borderColor: '#84aa24',
-            data: d.targets.map((t) => t.hitArea),
+            data: d.targets.map((t) =>
+              t.hitArea === 3 ? 1 : t.hitArea === 1 ? 3 : t.hitArea
+            ),
+            yAxisID: 'y',
           });
           dataSets.push({
             label: 'Punkte',
-            backgroundColor: '#8e24aa',
-            borderColor: '#8e24aa',
+            fill: true,
+            pointStyle: 'circle',
+            backgroundColor: '#8e24aa80',
+            borderColor: '#8e24aa80',
             data: d.targets.map(
               (t) => this.countingResults[t.hitArea - 1][t.arrowCount - 1]
             ),
+            yAxisID: 'y1',
           });
         }
       );
@@ -105,7 +116,30 @@ export default defineComponent({
       };
     },
     chartOptions() {
-      return { responsive: true };
+      return {
+        responsive: true,
+        scales: {
+          y: {
+            type: 'linear',
+            display: true,
+            position: 'left',
+            ticks: {
+              stepSize: 1,
+            },
+            min: 0,
+            max: 3,
+          },
+          y1: {
+            type: 'linear',
+            display: true,
+            position: 'right',
+            grid: {
+              drawOnChartArea: false,
+            },
+            min: 0,
+          },
+        },
+      };
     },
     chartStyle() {
       return {
