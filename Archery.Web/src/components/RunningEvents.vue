@@ -11,7 +11,7 @@
       <v-container class="grey lighten-5" rounded>
         <v-card v-for="event in events" :key="event.id" class="mb-2">
           <v-card-title>
-            {{ event.name }}
+            {{ event.name }} ({{ event.parcourName }})
             <v-spacer></v-spacer>
             <v-chip
               class="ma-2"
@@ -80,6 +80,7 @@ export default defineComponent({
       events: [] as {
         id: number;
         name: string;
+        parcourName: string;
         user: {
           nickName: string;
           score: number;
@@ -111,6 +112,7 @@ export default defineComponent({
             (e: {
               id: number;
               eventName: string;
+              parcourName: string;
               user: {
                 nickName: string;
                 score: number;
@@ -126,6 +128,7 @@ export default defineComponent({
               this.events.push({
                 id: e.id,
                 name: e.eventName,
+                parcourName: e.parcourName,
                 user: e.user,
               });
             }

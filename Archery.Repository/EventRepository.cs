@@ -80,11 +80,6 @@ namespace Archery.Repository
                 .AsNoTracking()
                 .ToArray();
 
-            var events = Context.Event
-                .Where(e => e.IsRunning)
-                .AsNoTracking()
-                .ToArray();
-
             if (userEventMappings is null)
                 throw new Exception();
 
@@ -114,6 +109,12 @@ namespace Archery.Repository
 
             List<AdminViewElement> groupedByEvents = new();
 
+            var events = Context.Event
+                .Include(e => e.Parcour)
+                .Where(e => e.IsRunning)
+                .AsNoTracking()
+                .ToArray();
+
             foreach (var e in events)
             {
                 List<AdminViewUser> user = new();
@@ -130,7 +131,9 @@ namespace Archery.Repository
                             ?? throw new Exception("User not existing!"))
                     });
 
-                groupedByEvents.Add(new() { Id = e.Id, EventName = e.Name, User = user });
+                var parcourName = e.Parcour.Name;
+
+                groupedByEvents.Add(new() { Id = e.Id, EventName = e.Name, User = user, ParcourName = parcourName });
             }
 
             return groupedByEvents;

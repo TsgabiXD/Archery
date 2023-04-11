@@ -52,7 +52,7 @@
       >
       </new-target>
     </div>
-    <error-message v-for="(message,i) in errorMessages" :key="i" :message="message"></error-message>
+    <!-- TODO <error-message v-for="(message,i) in errorMessages" :key="i" :message="message"></error-message> -->
   </div>
 </template>
 
@@ -67,7 +67,6 @@ export default defineComponent({
   components: {
     NewTarget,
     UserChart,
-    ErrorMessage,
   },
   props: {
     token: { type: String, required: true },
