@@ -10,24 +10,26 @@ namespace Archery.Api.Controllers;
 public class UserController : ArcheryController
 {
     private readonly UserRepository _repository;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public UserController(ILogger<UserController> logger, UserRepository repository) : base(logger)
+    public UserController(ILogger<UserController> logger, UserRepository repository, IHttpContextAccessor httpContextAccessor) : base(logger)
     {
         _repository = repository;
+        _httpContextAccessor = httpContextAccessor;
     }
 
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [HttpGet]
-    [Route("GetUsers")]
+    [Route("[action]")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult Get()
+    public IActionResult GetInactiveUsers()
     {
         try
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(_repository.GetAllUsers());
+            return Ok(_repository.GetAllInactiveUsers());
         }
         catch (Exception ex)
         {
@@ -36,7 +38,7 @@ public class UserController : ArcheryController
     }
 
     [HttpGet]
-    [Route("CheckUser/{id}")]
+    [Route("[action]/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public IActionResult CheckUser(string id)
@@ -54,35 +56,25 @@ public class UserController : ArcheryController
         }
     }
 
+    [Authorize(Roles = "User,Admin")]
     [HttpGet]
-    [Route("GetUsersRunningEvents/{id}")]
+    [Route("[action]")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public IActionResult GetUsersRunningEvents(int id)
+    public IActionResult GetUsersRunningEvents()
     {
         try
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(_repository.GetUsersRunningEvents(id));
+            var claims = _httpContextAccessor?.HttpContext?.User.Claims;
+
+            return Ok(_repository.GetUsersRunningEvents(int.Parse(claims?.Single(c => c.Type == "userId").Value!)));
         }
         catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
     }
-
-    // [HttpPost]
-    // [Route("AddUser")]
-    // [ProducesResponseType(StatusCodes.Status200OK)]
-    // [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    // public IActionResult AddUser(User user)
-    // {
-    //     if (!ModelState.IsValid)
-    //         return BadRequest(ModelState);
-
-    //     return Ok(_repository.AddUser(user));
-    // }
-
 }

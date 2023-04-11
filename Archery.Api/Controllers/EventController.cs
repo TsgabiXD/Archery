@@ -7,7 +7,7 @@ using Archery.Model.ApiHelper;
 
 namespace Archery.Api.Controllers;
 
-[Authorize]
+[Authorize(Roles = "Admin")]
 [Route("api/[controller]")]
 public class EventController : ArcheryController
 {
@@ -17,15 +17,6 @@ public class EventController : ArcheryController
     {
         _repository = repository;
     }
-
-    //[HttpGet]
-    //[Route("GetEvent")]
-    //[ProducesResponseType(StatusCodes.Status200OK)]
-    //public IActionResult GetEvent(int id)
-    //{
-    //    return Ok(_repository());
-    //}
-
 
     [HttpPost]
     [Route("StartEvent")]

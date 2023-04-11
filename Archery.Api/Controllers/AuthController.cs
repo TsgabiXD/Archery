@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-using Archery.Api.Helper;
+using Archery.Api.Auth;
 using Archery.Model;
 using Archery.Repository;
 
@@ -31,51 +31,58 @@ public class AuthController : ArcheryController
     [Route("Register")]
     public async Task<IActionResult> Register(AuthRequest request)
     {
-        if (!ModelState.IsValid)
+        try
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _userManager.CreateAsync(
+                new IdentityUser { UserName = request.Username },
+                request.Password
+            );
+
+            if (result.Succeeded)
+            {
+                request.Password = "";
+
+                var userInDb = _context.IdentityUser.FirstOrDefault(u => u.UserName == request.Username);
+                var simpleUser = _context.User.FirstOrDefault(u => u.NickName == request.Username);
+
+                if (userInDb is null)
+                    throw new Exception("There has been some IdentityUser adding problem!");
+
+                if (simpleUser is null)
+                {
+                    if (request.FirstName != null && request.LastName != null)
+                        _repository.AddUser(new()
+                        {
+                            FirstName = request.FirstName,
+                            LastName = request.LastName,
+                            NickName = request.Username
+                        });
+
+                    simpleUser = _context.User.SingleOrDefault(u => u.NickName == request.Username);
+
+                    if (simpleUser is null)
+                        throw new Exception("Problems at adding the user!");
+
+                    var accessToken = _tokenService.CreateToken(userInDb, simpleUser);
+
+                    _context.SaveChanges();
+                    return Ok(new AuthResponse { Token = accessToken });
+                }
+            }
+
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(error.Code, error.Description);
+
             return BadRequest(ModelState);
 
-        var result = await _userManager.CreateAsync(
-            new IdentityUser { UserName = request.Username },
-            request.Password
-        );
-
-        if (result.Succeeded)
-        {
-            request.Password = "";
-            // return CreatedAtAction(nameof(Register), request);
-
-            var userInDb = _context.IdentityUser.First(u => u.UserName == request.Username);
-
-            var accessToken = _tokenService.CreateToken(userInDb);
-
-            if (request.FirstName != null && request.LastName != null)
-                _repository.AddUser(new()
-                {
-                    FirstName = request.FirstName,
-                    LastName = request.LastName,
-                    NickName = request.Username
-                });
-
-            _context.SaveChanges();
-
-            var currentUser = _context.User.FirstOrDefault(u => u.NickName == request.Username);
-
-            if (currentUser is null)
-                return BadRequest("Angelegter User ist defekt");
-
-            return Ok(new AuthResponse
-            {
-                Id = currentUser.Id,
-                Username = userInDb.UserName,
-                Token = accessToken,
-                Role = currentUser.Role
-            });
         }
-
-        foreach (var error in result.Errors)
-            ModelState.AddModelError(error.Code, error.Description);
-
-        return BadRequest(ModelState);
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpPost]
@@ -101,16 +108,13 @@ public class AuthController : ArcheryController
         if (userInDb is null || currentUser is null)
             return Unauthorized();
 
-        var accessToken = _tokenService.CreateToken(userInDb);
+        var accessToken = _tokenService.CreateToken(userInDb, currentUser);
 
         await _context.SaveChangesAsync();
 
         return Ok(new AuthResponse
         {
-            Id = currentUser.Id,
-            Username = userInDb.UserName,
-            Token = accessToken,
-            Role = currentUser.Role
+            Token = accessToken
         });
     }
 }

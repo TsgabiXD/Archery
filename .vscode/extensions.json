@@ -3,7 +3,6 @@
         "formulahendry.auto-rename-tag",
         "hediet.vscode-drawio",
         "dbaeumer.vscode-eslint",
-        "eamodio.gitlens",
         "esbenp.prettier-vscode",
         "gruntfuggly.todo-tree",
         "pflannery.vscode-versionlens",
@@ -11,6 +10,6 @@
         "fernandoescolar.vscode-solution-explorer",
         "ms-dotnettools.csharp",
         "octref.vetur",
-        "DotJoshJohnson.xml"
+        "dotjoshjohnson.xml"
     ]
 }
