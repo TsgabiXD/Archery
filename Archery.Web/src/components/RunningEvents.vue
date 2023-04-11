@@ -148,6 +148,8 @@ export default defineComponent({
         .catch((err) => console.log(err));
     },
     isGraficDisplayed(eventId: number): boolean {
+      if (window.innerWidth < 350) return false;
+
       let result = 0;
 
       this.events.forEach((e) => {
