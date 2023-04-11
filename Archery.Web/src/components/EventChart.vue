@@ -71,12 +71,12 @@ export default defineComponent({
       let dataSets = [] as ChartDataset[];
 
       this.user?.forEach((u) => {
-        let data = u.targets.map(
-          (t) => this.countingResults[t.arrowCount - 1][t.hitArea - 1]
+        let data = u.targets.map((t) =>
+          t ? this.countingResults[t.arrowCount - 1][t.hitArea - 1] : t
         );
 
         data.forEach((d, i) => {
-          if (i - 1 >= 0) data[i] = d + data[i - 1];
+          if (i - 1 >= 0 && d) data[i] = d + data[i - 1];
         });
 
         dataSets.push({
