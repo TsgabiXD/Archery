@@ -78,8 +78,13 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import axios from "@/router/axios";
+import ErrorMessage from "@/components/ErrorMessage.vue";
+import { AxiosError } from "axios";
 
 export default defineComponent({
+  components: {
+    ErrorMessage,
+  },
   data: () => {
     return {
       login: true,
@@ -89,6 +94,7 @@ export default defineComponent({
       nickname: "",
       password: "",
       nickIsValid: "" as string | boolean,
+      errorMessages: ["Hello", "test"] as string[],
     };
   },
   computed: {
@@ -118,7 +124,9 @@ export default defineComponent({
           .then((response) => {
             this.$emit("login", response.data.token);
           })
-          .catch((err) => console.log(err))
+          .catch((err: AxiosError) =>
+            this.errorMessages.push(err.response?.data as string)
+          )
           .finally(() => {
             this.isLoading = false;
           });
@@ -133,7 +141,9 @@ export default defineComponent({
           .then((response) => {
             this.$emit("login", response.data.token);
           })
-          .catch((err) => console.log(err))
+          .catch((err: AxiosError) =>
+            this.errorMessages.push(err.response?.data as string)
+          )
           .finally(() => {
             this.isLoading = false;
           });
@@ -145,7 +155,9 @@ export default defineComponent({
           .then((response) => {
             this.nickIsValid = response.data;
           })
-          .catch((err) => console.log(err));
+          .catch((err: AxiosError) =>
+            this.errorMessages.push(err.response?.data as string)
+          );
     },
   },
   directives: {

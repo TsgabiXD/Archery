@@ -83,7 +83,6 @@ export default defineComponent({
       events: [] as number[],
       checkIntervalId: 0,
       isEventFinished: false,
-      errorMessages: ['test'] as string[],
     };
   },
   mounted() {
@@ -190,7 +189,7 @@ export default defineComponent({
             }
           );
         })
-        .catch((err) => console.log(err));
+        .catch((err: AxiosError ) => this.errorMessages.push(err.response?.data as string));
     },
     checkUserInEvent(): void {
       axios

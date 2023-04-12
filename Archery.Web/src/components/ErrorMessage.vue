@@ -11,6 +11,9 @@ export default defineComponent({
   props: {
     message: String,
   },
+  data() {
+    return {};
+  },
 });
 </script>
 
