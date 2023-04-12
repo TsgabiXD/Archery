@@ -8,44 +8,95 @@ namespace Archery.Repository
     {
         public TargetRepository(ArcheryContext context) : base(context) { }
 
-        public IEnumerable<Target> GetAllTargets()
+        public IEnumerable<Target> GetMyTargets(int userId)
         {
-            var targetFound = Context.Target.AsNoTracking().ToList();
+            var mapping = Context.Mapping
+                .Include(m => m.Event)
+                .Include(m => m.User)
+                .Include(m => m.Target)
+                .Where(m => m.Event.IsRunning && m.User != null && m.User.Id == userId)
+                .AsNoTracking()
+                .ToList();
+
+            if (mapping is null)
+                throw new Exception("Ein Mappingfehler ist passiert!");
+
+
+            if(mapping.FirstOrDefault() is null)
+                throw new Exception("Event nicht gefunden!");
+
+            List<Target> targetFound = new();
+            var eventId = mapping.FirstOrDefault()!.Event.Id;
+
+            foreach (var m in mapping)
+                if (m.Event.Id == eventId)
+                    foreach (var t in m.Target)
+                        targetFound.Add(t);
+
+            var animalCount = Context.Event
+                .Include(e => e.Parcour)
+                .Single(e => e.Id == eventId)
+                .Parcour.AnimalNumber;
 
             if (targetFound == null)
-                throw new InvalidOperationException("Fehler beim Suchen des Ziels");
+                throw new Exception("Kein Ziel gefunden!");
 
-            return targetFound;
+            var results = new Target[animalCount];
+
+            if (targetFound.Count > animalCount)
+                throw new Exception($"Too much Targets for one Event! \nTargets found: {targetFound.Count} \nMax Animals:{animalCount}");
+
+            for (var i = 0; i < targetFound.Count; i++)
+                results[i] = targetFound.ElementAt(i);
+
+            return results;
         }
 
-        public string AddTarget(NewTarget newTarget)
+        public string AddTarget(NewTarget newTarget, int userId)
         {
-            if (!((newTarget.ArrowCount < 0 && newTarget.ArrowCount > 3) || (newTarget.HitArea < 1 && newTarget.HitArea > 3)))
-            {
-                try
-                {
-                    var eventfilter = Context.Mapping
-                                                .Include(m => m.Event)
-                                                .Include(m => m.User)
-                                                .Include(m => m.Target)
-                                                .FirstOrDefault(m => m.Event.Id == newTarget.EventId &&
-                                                                        m.User != null &&
-                                                                        m.User.Id == newTarget.UserId);
+            if (!(newTarget.ArrowCount > 0 && newTarget.ArrowCount < 4 &&
+                newTarget.HitArea > 0 && newTarget.HitArea < 4 &&
+                newTarget.EventId > 0))
+                throw new ArgumentException("Ungültige Werte!");
 
-                    if (eventfilter is null)
-                        throw new Exception();
+            if (!Context.Event
+                .Include(e => e.Parcour)
+                .Where(e => e.Id == newTarget.EventId)
+                .Any())
+                throw new Exception("Event wurde bereits beendet!");
 
-                    eventfilter.Target.Add(new() { ArrowCount = newTarget.ArrowCount, HitArea = newTarget.HitArea, });
+            var eventfilter = Context.Mapping
+                .Include(m => m.Event)
+                .Include(m => m.User)
+                .Include(m => m.Target)
+                .FirstOrDefault(m => m.Event.Id == newTarget.EventId &&
+                                m.User != null &&
+                                m.User.Id == userId);
 
-                    Context.SaveChanges();
-                    return "Ziel hinzugefügt";
-                }
-                catch (Exception ex)
-                {
-                    return "Fail: " + ex.Message;
-                }
-            }
-            return "Ungültige Werte!";
+            if (eventfilter is null)
+                throw new Exception("Ein Mappingfehler ist passiert!");
+
+            var targetsAlreadyHit = GetMyTargets(userId)
+                .Where(t => t is not null)
+                .Count();
+            var targetLimit = Context.Event
+                .Include(e => e.Parcour)
+                .Where(e => e.Id == newTarget.EventId)
+                .First()
+                .Parcour
+                .AnimalNumber;
+
+            Console.WriteLine();
+            Console.WriteLine($"\nTargets found: {targetsAlreadyHit} \nMax Animals:{targetLimit}");
+            Console.WriteLine();
+
+            if (targetsAlreadyHit >= targetLimit)
+                throw new Exception("Es wurden bereits alle Ziele notiert!");
+
+            eventfilter.Target.Add(new() { ArrowCount = newTarget.ArrowCount, HitArea = newTarget.HitArea });
+
+            Context.SaveChanges();
+            return "Ziel hinzugefügt";
         }
     }
 }

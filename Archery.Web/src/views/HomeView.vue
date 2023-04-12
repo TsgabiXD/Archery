@@ -1,26 +1,33 @@
 <template>
   <div>
     <v-container v-if="!bearerToken">
-      <login-register-form @login="setTokenAndUser" />
+      <login-register-form @login="setToken" />
     </v-container>
-    <user-home v-else-if="!isAdmin" :userId="userId" :token="bearerToken" />
+    <user-home v-else-if="!isAdmin" :token="bearerToken" />
     <v-container v-else>
       <start-event-form
         :token="bearerToken"
-        :userId="userId"
+        :lastEndedEventId="lastEndedEventId"
         @new-event="newEvent"
       />
-      <running-events :newEventId="newEventId" :token="bearerToken" />
+      <running-events
+        :lastNewEventId="lastNewEventId"
+        :token="bearerToken"
+        @ended-event="refreshStartEventFormUsers"
+      />
     </v-container>
+    <error-message v-for="(message,i) in errorMessages" :key="i" :message="message"></error-message>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
+
 import LoginRegisterForm from "../components/LoginRegisterForm.vue";
 import UserHome from "../components/UserHome.vue";
 import StartEventForm from "../components/StartEventForm.vue";
 import RunningEvents from "../components/RunningEvents.vue";
+import ErrorMessage from "@/components/ErrorMessage.vue";
 
 export default Vue.extend({
   name: "HomeView",
@@ -29,41 +36,35 @@ export default Vue.extend({
     UserHome,
     StartEventForm,
     RunningEvents,
+    ErrorMessage,
   },
   props: {
     resetToken: { type: String, required: true },
+    adminMode: Boolean,
   },
   data: () => {
     return {
       token: "",
-      username: "",
       isAdmin: false,
-      userId: -1,
-      newEventId: -1,
+      lastNewEventId: -1,
+      lastEndedEventId: 0,
+     errorMessages: ['Error', 'test',] as string[],
     };
   },
   methods: {
-    setTokenAndUser(e: {
-      token: string;
-      username: string;
-      role: string;
-      userId: number;
-    }): void {
-      this.token = e.token;
-      this.username = e.username;
-      this.userId = e.userId;
+    setToken(token: string): void {
+      this.token = token;
 
-      if (e.role === "Admin") this.isAdmin = true;
+      if (this.tokenData.role === "Admin") this.isAdmin = true;
       else this.isAdmin = false;
 
-      this.$emit("login", {
-        token: e.token,
-        username: e.username,
-        userId: e.userId,
-      });
+      this.$emit("login", token);
     },
     newEvent(eventId: number): void {
-      this.newEventId = eventId;
+      this.lastNewEventId = eventId;
+    },
+    refreshStartEventFormUsers(endedEvent: number): void {
+      this.lastEndedEventId = endedEvent;
     },
   },
   computed: {
@@ -72,6 +73,35 @@ export default Vue.extend({
         if (this.resetToken !== this.token) return this.resetToken;
         else return this.token;
       },
+    },
+    tokenData() {
+      if (this.token === "") return undefined;
+
+      var base64Url = this.token.split(".")[1];
+      var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      var jsonPayload = decodeURIComponent(
+        window
+          .atob(base64)
+          .split("")
+          .map(function (c) {
+            return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join("")
+      );
+
+      let result = JSON.parse(jsonPayload);
+
+      result.role =
+        result["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+      result.username =
+        result["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
+
+      return result;
+    },
+  },
+  watch: {
+    adminMode(newValue: boolean) {
+      this.isAdmin = newValue;
     },
   },
 });

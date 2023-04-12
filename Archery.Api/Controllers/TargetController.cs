@@ -1,30 +1,34 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 using Archery.Repository;
 using Archery.Model.ApiHelper;
 
 namespace Archery.Api.Controllers;
 
-
-[Authorize]
+[Authorize(Roles = "User,Admin")]
 [Route("api/[controller]")]
 public class TargetController : ArcheryController
 {
     private readonly TargetRepository _repository;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public TargetController(ILogger<TargetController> logger, TargetRepository repository) : base(logger)
+    public TargetController(ILogger<TargetController> logger, TargetRepository repository, IHttpContextAccessor httpContextAccessor) : base(logger)
     {
         _repository = repository;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     [HttpGet]
-    [Route("GetTargets")]
+    [Route("[action]")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult Get()
+    public IActionResult GetMyTargets()
     {
         try
         {
-            return Ok(_repository.GetAllTargets());
+            var claims = _httpContextAccessor?.HttpContext?.User.Claims;
+
+            return Ok(_repository.GetMyTargets(int.Parse(claims?.Single(c => c.Type == "userId").Value!)));
         }
         catch (Exception ex)
         {
@@ -38,14 +42,17 @@ public class TargetController : ArcheryController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public IActionResult Target(NewTarget newTarget)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
 
         try
         {
-            return Ok(_repository.AddTarget(newTarget));
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var claims = _httpContextAccessor?.HttpContext?.User.Claims;
+
+            return Ok(_repository.AddTarget(newTarget, int.Parse(claims?.Single(c => c.Type == "userId").Value!)));
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }

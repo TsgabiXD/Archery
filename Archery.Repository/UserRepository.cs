@@ -7,9 +7,25 @@ public class UserRepository : AbstractRepository
 {
     public UserRepository(ArcheryContext context) : base(context) { }
 
-    public IEnumerable<User> GetAllUsers()
+    public IEnumerable<User> GetAllInactiveUsers()
     {
-        return Context.User.AsNoTracking().ToList();
+        var activeUserMappings = Context.Mapping
+            .Include(m => m.User)
+            .Include(m => m.Event)
+            .AsNoTracking()
+            .Where(m => m.Event.IsRunning && m.User != null);
+
+        List<int> userIds = new();
+
+        foreach (var ium in activeUserMappings)
+            userIds.Add(ium.User!.Id);
+
+        var inactiveUser = Context.User
+            .Where(u => !userIds.Contains(u.Id))
+            .AsNoTracking()
+            .ToList();
+
+        return inactiveUser;
     }
 
     public bool CheckUser(string nickName)
@@ -36,29 +52,36 @@ public class UserRepository : AbstractRepository
 
     public string AddUser(User user)
     {
-        try
+        if (user == null)
+            throw new InvalidOperationException("Fehler beim Hinzufügen des Users");
+
+        if (!(user.FirstName.Length <= 150 && user.LastName.Length <= 150 && user.NickName.Length <= 150))
+            throw new Exception("Parcourname zu lang!");
+
+        if (string.IsNullOrEmpty(user.FirstName) &&
+            string.IsNullOrEmpty(user.LastName) &&
+            string.IsNullOrEmpty(user.NickName))
+            throw new Exception("Ungültige Werte!");
+
+        if (Context.User.SingleOrDefault(u =>
+                    u.FirstName == user.FirstName &&
+                    u.LastName == user.LastName &&
+                    u.NickName == user.NickName) != null)
+            throw new Exception("no user found");
+
+        // TODO möglicher Exploit
+        var existingUser = Context.User.SingleOrDefault(u =>
+            u.FirstName == user.FirstName &&
+            u.LastName == user.LastName &&
+            u.NickName == user.NickName);
+
+        if (existingUser is null)
         {
-            if (user.FirstName.Length <= 150 && user.LastName.Length <= 150 && user.NickName.Length <= 150)
-            {
-                // TODO möglicher Exploit
-                if ((!(string.IsNullOrEmpty(user.FirstName) &&
-                        string.IsNullOrEmpty(user.LastName) &&
-                        string.IsNullOrEmpty(user.NickName))) &&
-                        Context.User.FirstOrDefault(u => u.FirstName == user.FirstName
-                                                        && u.LastName == user.LastName
-                                                        && u.NickName == user.NickName) is null)
-                {
-                    Context.User.Add(user);
-                    Context.SaveChanges();
-                    return "Benutzer hinzugefügt";
-                }
-                return "Ungültige Werte!";
-            }
-            return "Parcourname zu lang!";
+            Context.User.Add(user);
+            Context.SaveChanges();
+            return "Benutzer hinzugefügt!";
         }
-        catch (Exception ex)
-        {
-            return "Fail: " + ex.Message;
-        }
+        else // TODO remove after all admins has been registered
+            return "Benutzer existiert bereits!";
     }
 }

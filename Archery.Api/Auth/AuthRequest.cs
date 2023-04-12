@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Archery.Api.Helper;
+namespace Archery.Api.Auth;
+
 public class AuthRequest
 {
     [Required]

@@ -31,13 +31,13 @@ public class ParcourRepository : AbstractRepository
 
     public string AddParcour(Parcour parcour)
     {
-        try
+        if (parcour != null)
         {
             if (!(parcour.Name.Length <= 150))
-                return "Vorname, Nachname oder Nickname zu lang!";
+                throw new ArgumentException("Vorname, Nachname oder Nickname zu lang!");
 
             if (string.IsNullOrEmpty(parcour.Name) || string.IsNullOrEmpty(parcour.Location) || parcour.AnimalNumber <= 0)
-                return "Ungültige Werte!";
+                throw new ArgumentException("Ungültige Werte!");
 
             Context.Parcour.Add(new()
             {
@@ -45,14 +45,12 @@ public class ParcourRepository : AbstractRepository
                 Name = parcour.Name,
                 Location = parcour.Location,
             });
+
             Context.SaveChanges();
 
-            return "success";
+            return "Gespeichert";
         }
-        catch (Exception ex)
-        {
-            return "Fail: " + ex.Message;
-        }
+        throw new InvalidOperationException("Fehler beim Hinzufügen des Parcours");
     }
 }
 

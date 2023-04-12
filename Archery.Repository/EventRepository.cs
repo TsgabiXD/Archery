@@ -11,112 +11,149 @@ namespace Archery.Repository
 {
     public class EventRepository : AbstractRepository
     {
-        public EventRepository(ArcheryContext context) : base(context)
+        private readonly UserRepository _userRepository;
+        private readonly TargetRepository _targetRepository;
+
+        public EventRepository(ArcheryContext context, UserRepository userRepository, TargetRepository targetRepository) : base(context)
         {
+            _userRepository = userRepository;
+            _targetRepository = targetRepository;
         }
 
         public string StartEvent(NewEvent newEvent)
         {
-            try
-            {
-                if (newEvent != null)
-                {
+            if (newEvent is null)
+                throw new ArgumentNullException(nameof(newEvent), "Keine Eventdaten im Request!");
 
-                    var eventUser = Context.User
-                        .Where(u => newEvent.UserIds.Contains(u.Id))
-                        .ToList();
+            List<int> allUserIds = new();
+            foreach (var u in Context.User.ToArray())
+                allUserIds.Add(u.Id);
+            foreach (var userId in newEvent.UserIds)
+                if (!allUserIds.Contains(userId))
+                    throw new Exception($"User with Id {userId} does not exist!");
 
-                    var eventParcour = Context.Parcour
-                        .SingleOrDefault(u => newEvent.ParcourId == u.Id);
+            var eventUser = Context.User
+                .Where(u => newEvent.UserIds.Contains(u.Id))
+                .ToList();
 
-                    if (eventParcour is null)
-                        throw new Exception();
+            var inactiveUser = _userRepository.GetAllInactiveUsers().ToList();
+            var activeUser = Context.User.Where(u => !inactiveUser.Contains(u));
 
-                    var e = Context.Event.Add(new() { Name = newEvent.Name, Parcour = eventParcour, IsRunning = true }).Entity;
+            foreach (var user in eventUser)
+                if (activeUser.Contains(user))
+                    throw new Exception($"User \"{user.NickName}\" is already participating in another Event!");
 
-                    foreach (var user in eventUser)
-                        Context.Mapping.Add(new() { Event = e, User = user });
+            var eventParcour = Context.Parcour
+                .SingleOrDefault(u => newEvent.ParcourId == u.Id);
 
-                    if (e == null)
-                    {
-                        return "Event not found";
-                    }
+            if (eventParcour is null)
+                throw new Exception("Parcour not found in Database!");
 
-                    Context.SaveChanges();
+            var e = Context.Event.Add(new() { Name = newEvent.Name, Parcour = eventParcour, IsRunning = true }).Entity;
 
-                    return e.Id.ToString();
-                }
-                throw new Exception();
-            }
-            catch (Exception ex)
-            {
-                return "Fail: " + ex.Message;
-            }
+            foreach (var user in eventUser)
+                Context.Mapping.Add(new() { Event = e, User = user });
+
+            if (e == null)
+                throw new Exception("Error adding the Event!");
+
+            Context.SaveChanges();
+
+            return e.Id.ToString();
         }
+
 
         public IEnumerable<AdminViewElement> GetAdminViewElements()
         {
-            var userEventMapping = Context.Mapping
-                                    .Include(m => m.User)
-                                    .Include(m => m.Event)
-                                    .Where(m => m.Event.IsRunning)
-                                    .AsNoTracking()
-                                    .ToArray();
+            var userEventMappings = Context.Mapping
+                .Include(m => m.User)
+                .Include(m => m.Event)
+                .Where(m => m.Event.IsRunning)
+                .AsNoTracking()
+                .ToArray();
 
-            var targetEventMapping = Context.Mapping
-                                        .Include(m => m.Target)
-                                        .Include(m => m.Event)
-                                        .Where(m => m.Event.IsRunning)
-                                        .AsNoTracking()
-                                        .ToArray();
+            var mappings = Context.Mapping
+                .Include(m => m.Target)
+                .Include(m => m.Event)
+                .Include(m => m.User)
+                .Where(m => m.Event.IsRunning)
+                .AsNoTracking()
+                .ToArray();
 
-            if (userEventMapping is null)
+            if (userEventMappings is null)
                 throw new Exception();
 
-            List<AdminViewElement> result = new();
+            List<AdminViewElement> results = new();
 
-            foreach (var uem in userEventMapping)
+            foreach (var uem in userEventMappings)
             {
-                result.Add(new() { EventName = uem.Event.Name });
+                results.Add(new() { Id = uem.Event.Id, EventName = uem.Event.Name });
 
-                int score = 0;
-                int[,] countingResults = new int[3, 3]{
-                                                    {20, 18, 16},
-                                                    {14, 12, 10},
-                                                    {8, 6, 4},
-                                                };
-                // TODO implementieren
-                // foreach (var targetEvent in targetEventMapping.Where(m => m.Event.Id == uem.Event.Id))
-                //     targetEvent.Target
+                var countingResults = new int[3, 3]{
+                    {20, 18, 16},
+                    {14, 12, 10},
+                    {8, 6, 4},
+                };
 
-                result.Last().User.Add(new() { NickName = uem.User.NickName, Score = score });
+                foreach (var m in mappings.Where(m => m.Event.Id == uem.Event.Id && m.User?.Id == uem.User?.Id))
+                {
+                    var score = 0;
+                    var targetsOfUser = m.Target;
+
+                    foreach (var target in targetsOfUser)
+                        score += countingResults[target.ArrowCount - 1, target.HitArea - 1];
+
+                    results.Last().User.Add(new() { NickName = uem.User!.NickName, Score = score });
+                }
             }
 
-            return result;
+            List<AdminViewElement> groupedByEvents = new();
+
+            var events = Context.Event
+                .Include(e => e.Parcour)
+                .Where(e => e.IsRunning)
+                .AsNoTracking()
+                .ToArray();
+
+            foreach (var e in events)
+            {
+                List<AdminViewUser> user = new();
+
+                var singleEventWithAllUsers = results.Where(r => r.EventName == e.Name);
+
+                foreach (var ewu in singleEventWithAllUsers)
+                    user.Add(new()
+                    {
+                        NickName = ewu.User[0].NickName,
+                        Score = ewu.User[0].Score,
+                        Targets = _targetRepository.GetMyTargets(Context.User.SingleOrDefault(u =>
+                            u.NickName == ewu.User[0].NickName)?.Id
+                            ?? throw new Exception("User not existing!"))
+                    });
+
+                var parcourName = e.Parcour.Name;
+
+                groupedByEvents.Add(new() { Id = e.Id, EventName = e.Name, User = user, ParcourName = parcourName });
+            }
+
+            return groupedByEvents;
         }
 
-        public string EndEvent(int eventToStop)
+        public int EndEvent(int eventToStop)
         {
-            try
-            {
-                var stopEvent = Context.Event.SingleOrDefault(e => e.Id == eventToStop);
+            if (eventToStop <= 0)
+                throw new InvalidOperationException("Invalid EventId");
 
-                if (stopEvent == null)
-                {
-                    return "Fail: stopEvent ist Null";
-                }
+            var stopEvent = Context.Event.SingleOrDefault(e => e.Id == eventToStop);
 
+            if (stopEvent == null)
+                throw new Exception("Fail: stopEvent ist Null");
 
-                stopEvent.IsRunning = false;
+            stopEvent.IsRunning = false;
 
-                Context.SaveChanges();
+            Context.SaveChanges();
 
-                return " Event beendet";
-            }
-            catch (Exception ex)
-            {
-                return "Fail: " + ex.Message;
-            }
+            return stopEvent.Id;
         }
     }
 }

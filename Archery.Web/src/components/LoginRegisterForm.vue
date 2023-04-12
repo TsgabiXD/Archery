@@ -1,80 +1,78 @@
 <template>
-  <div>
-    <v-card elevation="7" :loading="isLoading">
-      <v-card-title>
-        {{ isLogin ? "Login" : "Registrieren" }}
-        <v-spacer></v-spacer>
-        <v-btn elevation="2" outlined rounded small @click="switchState">
-          {{ isLogin ? "Kein Account?" : "Zurück zum Login?" }}
-        </v-btn>
-      </v-card-title>
-      <v-card-text>
-        <v-container class="grey lighten-5" rounded>
-          <v-row v-if="!isLogin" dense>
-            <v-col cols="12" md="6">
-              <v-text-field label="Vorname" outlined v-model="firstname">
-              </v-text-field>
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-text-field label="Nachname" outlined v-model="lastname">
-              </v-text-field>
-            </v-col>
-          </v-row>
-          <v-row dense>
-            <v-col>
-              <v-text-field
-                label="Nickname"
-                outlined
-                v-model="nickname"
-                @blur="checkNickName"
-                :success-messages="
-                  !login && !nickIsValid && nickname !== ''
-                    ? 'Benutzername ist frei'
-                    : ''
-                "
-                :error-messages="
-                  !login && nickIsValid && nickname !== ''
-                    ? 'Benutzername ist vergeben'
-                    : ''
-                "
-              >
-              </v-text-field>
-            </v-col>
-          </v-row>
-          <v-row dense>
-            <v-col>
-              <v-text-field
-                label="Passwort"
-                type="password"
-                outlined
-                v-model="password"
-              >
-              </v-text-field>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn
-          color="primary"
-          class="mb-2"
-          elevation="2"
-          @click="registerLogin"
-        >
-          {{ isLogin ? "Einloggen" : "Registrieren" }}
-        </v-btn>
-        <v-spacer></v-spacer>
-      </v-card-actions>
-    </v-card>
-    <div>
-      <error-message
-        v-for="(message, i) in errorMessages"
-        :key="i"
-        :message="message">
-      </error-message>
-    </div>
-  </div>
+  <v-card elevation="7" :loading="isLoading" v-focus>
+    <v-card-title>
+      {{ isLogin ? "Login" : "Registrieren" }}
+      <v-spacer></v-spacer>
+      <v-btn elevation="2" outlined rounded small @click="switchState">
+        {{ isLogin ? "Kein Account?" : "Zurück zum Login?" }}
+      </v-btn>
+    </v-card-title>
+    <v-card-text>
+      <v-container class="grey lighten-5" rounded>
+        <v-row v-if="!isLogin" dense>
+          <v-col cols="12" md="6">
+            <v-text-field
+              label="Vorname"
+              outlined
+              v-model="firstname"
+              @keypress.native.enter="registerLogin"
+            >
+            </v-text-field>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-text-field
+              label="Nachname"
+              outlined
+              v-model="lastname"
+              @keypress.native.enter="registerLogin"
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
+        <v-row dense>
+          <v-col>
+            <v-text-field
+              label="Nickname"
+              outlined
+              v-model="nickname"
+              @blur="checkNickName"
+              @keypress.native.enter="registerLogin"
+              :success-messages="
+                !login && !nickIsValid && nickname !== ''
+                  ? 'Benutzername ist frei'
+                  : ''
+              "
+              :error-messages="
+                !login && nickIsValid && nickname !== ''
+                  ? 'Benutzername ist vergeben'
+                  : ''
+              "
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
+        <v-row dense>
+          <v-col>
+            <v-text-field
+              label="Passwort"
+              type="password"
+              outlined
+              v-model="password"
+              @keypress.native.enter="registerLogin"
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card-text>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn color="primary" class="mb-2" elevation="2" @click="registerLogin">
+        {{ isLogin ? "Einloggen" : "Registrieren" }}
+      </v-btn>
+      <v-spacer></v-spacer>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script lang="ts">
@@ -124,18 +122,13 @@ export default defineComponent({
             password: this.password,
           }) // TODO login
           .then((response) => {
-            this.$emit("login", {
-              token: response.data.token,
-              username: response.data.username,
-              role: response.data.role,
-              userId: response.data.id,
-            });
+            this.$emit("login", response.data.token);
           })
           .catch((err: AxiosError) =>
             this.errorMessages.push(err.response?.data as string)
           )
           .finally(() => {
-            this.isLoading = false; // TODO authenticate
+            this.isLoading = false;
           });
       else
         axios
@@ -146,18 +139,13 @@ export default defineComponent({
             password: this.password,
           })
           .then((response) => {
-            this.$emit("login", {
-              token: response.data.token,
-              username: response.data.username,
-              role: response.data.role,
-              userId: response.data.id,
-            });
+            this.$emit("login", response.data.token);
           })
           .catch((err: AxiosError) =>
             this.errorMessages.push(err.response?.data as string)
           )
           .finally(() => {
-            this.isLoading = false; // TODO authenticate
+            this.isLoading = false;
           });
     },
     checkNickName(): void {
@@ -170,6 +158,22 @@ export default defineComponent({
           .catch((err: AxiosError) =>
             this.errorMessages.push(err.response?.data as string)
           );
+    },
+  },
+  directives: {
+    focus: {
+      inserted: function (el) {
+        window.setTimeout(() => {
+          let childData = el.querySelectorAll("input")[0];
+          childData.focus();
+        }, 500);
+      },
+      update: function (el) {
+        window.setTimeout(() => {
+          let childData = el.querySelectorAll("input")[0];
+          if ((childData as HTMLInputElement).value === "") childData.focus();
+        }, 500);
+      },
     },
   },
 });
