@@ -52,13 +52,13 @@
       >
       </new-target>
     </div>
-    <!-- TODO <error-message v-for="(message,i) in errorMessages" :key="i" :message="message"></error-message> -->
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import axios from '@/router/axios';
+import { AxiosError } from 'axios';
 
 import NewTarget from '@/components/NewTarget.vue';
 import UserChart from '@/components/UserChart.vue';
@@ -189,7 +189,7 @@ export default defineComponent({
             }
           );
         })
-        .catch((err: AxiosError ) => this.errorMessages.push(err.response?.data as string));
+        .catch((err: AxiosError ) => this.throwError(err.response?.data as string));
     },
     checkUserInEvent(): void {
       axios
@@ -197,7 +197,10 @@ export default defineComponent({
         .then((response) => {
           if (response.data.length !== 0) this.events = response.data;
         })
-        .catch((err) => console.log(err));
+        .catch((err: AxiosError ) => this.throwError(err.response?.data as string));
+    },
+    throwError(errorMessage: string): void {
+      this.$emit('error', errorMessage);
     },
   },
 });

@@ -45,20 +45,33 @@
         :resetToken="token"
         :adminMode="adminMode"
         @login="setToken"
+        @error="addErrorMessage"
       />
     </v-main>
+    <error-message
+      v-for="(message, i) in errorMessages"
+      :key="i"
+      :message="message"
+    >
+    </error-message>
   </v-app>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue from 'vue';
+
+import ErrorMessage from '@/components/ErrorMessage.vue';
 
 export default Vue.extend({
-  name: "App",
+  name: 'App',
+  components: {
+    ErrorMessage,
+  },
   data: () => {
     return {
-      token: "",
+      token: '',
       adminMode: false,
+      errorMessages: [] as string[],
     };
   },
   methods: {
@@ -66,36 +79,39 @@ export default Vue.extend({
       this.token = token;
     },
     logout() {
-      this.token = "";
+      this.token = '';
+    },
+    addErrorMessage(errorMessage: string): void {
+      this.errorMessages.push(errorMessage);
     },
   },
   computed: {
     tokenData() {
-      if (this.token === "") return undefined;
+      if (this.token === '') return undefined;
 
-      let base64Url = this.token.split(".")[1];
-      let base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      let base64Url = this.token.split('.')[1];
+      let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
       let jsonPayload = decodeURIComponent(
         window
           .atob(base64)
-          .split("")
-          .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-          .join("")
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
       );
 
       let result = JSON.parse(jsonPayload);
 
       result.role =
-        result["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+        result['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
       result.username =
-        result["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
+        result['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
 
       return result;
     },
   },
   watch: {
     tokenData() {
-      this.adminMode = this.tokenData?.role === "Admin";
+      this.adminMode = this.tokenData?.role === 'Admin';
     },
   },
 });

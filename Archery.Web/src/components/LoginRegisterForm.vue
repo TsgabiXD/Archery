@@ -1,10 +1,10 @@
 <template>
   <v-card elevation="7" :loading="isLoading" v-focus>
     <v-card-title>
-      {{ isLogin ? "Login" : "Registrieren" }}
+      {{ isLogin ? 'Login' : 'Registrieren' }}
       <v-spacer></v-spacer>
       <v-btn elevation="2" outlined rounded small @click="switchState">
-        {{ isLogin ? "Kein Account?" : "Zurück zum Login?" }}
+        {{ isLogin ? 'Kein Account?' : 'Zurück zum Login?' }}
       </v-btn>
     </v-card-title>
     <v-card-text>
@@ -68,7 +68,7 @@
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn color="primary" class="mb-2" elevation="2" @click="registerLogin">
-        {{ isLogin ? "Einloggen" : "Registrieren" }}
+        {{ isLogin ? 'Einloggen' : 'Registrieren' }}
       </v-btn>
       <v-spacer></v-spacer>
     </v-card-actions>
@@ -76,25 +76,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import axios from "@/router/axios";
-import ErrorMessage from "@/components/ErrorMessage.vue";
-import { AxiosError } from "axios";
+import { defineComponent } from 'vue';
+import axios from '@/router/axios';
+import { AxiosError } from 'axios';
 
 export default defineComponent({
-  components: {
-    ErrorMessage,
-  },
   data: () => {
     return {
       login: true,
       isLoading: false,
-      firstname: "",
-      lastname: "",
-      nickname: "",
-      password: "",
-      nickIsValid: "" as string | boolean,
-      errorMessages: ["Hello", "test"] as string[],
+      firstname: '',
+      lastname: '',
+      nickname: '',
+      password: '',
+      nickIsValid: '' as string | boolean,
     };
   },
   computed: {
@@ -108,6 +103,9 @@ export default defineComponent({
     },
   },
   methods: {
+    throwError(errorMessage: string): void {
+      this.$emit('error', errorMessage);
+    },
     switchState(): void {
       this.isLogin = !this.isLogin;
       this.isLoading = false;
@@ -117,61 +115,71 @@ export default defineComponent({
 
       if (this.isLogin)
         axios
-          .post("auth/login", {
+          .post('auth/login', {
             username: this.nickname,
             password: this.password,
           }) // TODO login
           .then((response) => {
-            this.$emit("login", response.data.token);
+            this.$emit('login', response.data.token);
           })
-          .catch((err: AxiosError) =>
-            this.errorMessages.push(err.response?.data as string)
-          )
+          .catch((err: any) => {
+            // TODO add Type
+            if(err.response?.data?.errors?.Password[0])
+            this.throwError(err.response?.data?.errors?.Password[0]);
+            // TODO add Type
+            if(err.response?.data?.errors?.Password[0])
+            this.throwError(err.response?.data?.errors?.Username[0]);
+          })
           .finally(() => {
             this.isLoading = false;
           });
       else
         axios
-          .post("auth/register", {
+          .post('auth/register', {
             firstName: this.firstname,
             lastName: this.lastname,
             username: this.nickname,
             password: this.password,
           })
           .then((response) => {
-            this.$emit("login", response.data.token);
+            this.$emit('login', response.data.token);
           })
-          .catch((err: AxiosError) =>
-            this.errorMessages.push(err.response?.data as string)
-          )
+          .catch((err: any) => {
+            // TODO add Type
+            if(err.response?.data?.errors?.Password[0])
+            this.throwError(err.response?.data?.errors?.Password[0]);
+            // TODO add Type
+            if(err.response?.data?.errors?.Password[0])
+            this.throwError(err.response?.data?.errors?.Username[0]);
+          })
           .finally(() => {
             this.isLoading = false;
           });
     },
     checkNickName(): void {
-      if (!this.login && this.nickname !== "")
+      if (!this.login && this.nickname !== '')
         axios
           .get(`user/checkuser/${this.nickname}`)
           .then((response) => {
             this.nickIsValid = response.data;
           })
-          .catch((err: AxiosError) =>
-            this.errorMessages.push(err.response?.data as string)
-          );
+          .catch((err: AxiosError) => {
+            this.throwError(err.response?.data as string);
+          });
     },
   },
   directives: {
     focus: {
       inserted: function (el) {
         window.setTimeout(() => {
-          let childData = el.querySelectorAll("input")[0];
+          let childData = el.querySelectorAll('input')[0];
           childData.focus();
         }, 500);
       },
       update: function (el) {
         window.setTimeout(() => {
-          let childData = el.querySelectorAll("input")[0];
-          if ((childData as HTMLInputElement).value === "") childData.focus();
+          let childData = el.querySelectorAll('input')[0];
+          if ((childData as HTMLInputElement).value === '') childData.focus();
         }, 500);
       },
     },
