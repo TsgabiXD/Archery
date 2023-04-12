@@ -39,6 +39,7 @@
       >
       </new-target>
     </div>
+    <error-message> </error-message>
   </div>
 </template>
 
@@ -46,10 +47,13 @@
 import { defineComponent } from "vue";
 import axios from "@/router/axios";
 import NewTarget from "@/components/NewTarget.vue";
+import ErrorMessage from "@/components/ErrorMessage.vue";
+import { AxiosError } from "axios";
 
 export default defineComponent({
   components: {
     NewTarget,
+    ErrorMessage,
   },
   props: {
     token: { type: String, required: true },
@@ -67,6 +71,7 @@ export default defineComponent({
       isUserInEvent: false,
       events: [] as number[],
       checkIntervalId: 0,
+      errorMessages:[] as string []
     };
   },
   mounted() {
@@ -77,7 +82,7 @@ export default defineComponent({
       }
     }, 10000);
   },
-  beforeUnmount(){    
+  beforeUnmount() {
     clearInterval(this.checkIntervalId); // TODO fix this
   },
   computed: {
@@ -109,7 +114,7 @@ export default defineComponent({
           // TODO prüfen
           this.targets = response.data;
         })
-        .catch((err) => console.log(err));
+        .catch((err: AxiosError ) => this.errorMessages.push(err.response?.data as string));
     },
     checkUserInEvent(): void {
       if (this.userId !== -1)
@@ -122,7 +127,7 @@ export default defineComponent({
             this.isUserInEvent = response.data.length !== 0;
             if (this.isUserInEvent) this.events = response.data;
           })
-          .catch((err) => console.log(err));
+          .catch((err: AxiosError ) => this.errorMessages.push(err.response?.data as string));
     },
   },
 });
