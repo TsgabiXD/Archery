@@ -48,12 +48,14 @@
         @error="addErrorMessage"
       />
     </v-main>
-    <error-message
-      v-for="(message, i) in errorMessages"
-      :key="i"
-      :message="message"
-    >
-    </error-message>
+    <div class="messageList">
+      <error-message
+        v-for="(message, i) in errorMessages"
+        :key="i"
+        :message="message"
+      >
+      </error-message>
+    </div>
   </v-app>
 </template>
 
@@ -116,3 +118,11 @@ export default Vue.extend({
   },
 });
 </script>
+<style scoped>
+.messageList{
+   position: absolute;
+  left: 60px;
+  bottom: 50px;
+  transform: translate(-50px, -40%);
+}
+</style>
