@@ -20,15 +20,31 @@
               </v-radio-group>
             </v-card-text>
             <v-card-actions class="stepper-card-actions">
-              <v-btn color="error" class="mx-2" @click="close">
+              <v-btn
+                color="error"
+                class="mx-2 d-none d-sm-inline-flex"
+                @click="close"
+              >
                 Abbrechen
+              </v-btn>
+              <v-btn color="error" class="mx-2 d-sm-none" @click="close">
+                <v-icon>mdi-close</v-icon>
               </v-btn>
               <v-btn
                 color="primary"
+                class="d-none d-sm-inline-flex"
                 @click="step = 2"
                 :disabled="arrowCount === -1"
               >
                 Weiter
+              </v-btn>
+              <v-btn
+                color="primary"
+                class="d-sm-none"
+                @click="step = 2"
+                :disabled="arrowCount === -1"
+              >
+                <v-icon>mdi-arrow-right-thin</v-icon>
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -79,19 +95,41 @@
               </div>
             </v-card-text>
             <v-card-actions class="stepper-card-actions">
-              <v-btn color="secondary" class="mx-2" @click="step = 1">
+              <v-btn
+                color="secondary"
+                class="mx-2 d-none d-sm-inline-flex"
+                @click="step = 1"
+              >
                 Zurück
               </v-btn>
-              <v-btn color="error" class="mx-2" @click="close">
+              <v-btn color="secondary" class="mx-2 d-sm-none" @click="step = 1">
+                <v-icon>mdi-arrow-left-thin</v-icon>
+              </v-btn>
+              <v-btn
+                color="error"
+                class="mx-2 d-none d-sm-inline-flex"
+                @click="close"
+              >
                 Abbrechen
+              </v-btn>
+              <v-btn color="error" class="mx-2 d-sm-none" @click="close">
+                <v-icon>mdi-close</v-icon>
               </v-btn>
               <v-btn
                 color="primary"
-                class="mx-2"
+                class="mx-2 d-none d-sm-inline-flex"
                 @click="save"
                 :disabled="!isSaveAble"
               >
                 Speichern
+              </v-btn>
+              <v-btn
+                color="primary"
+                class="mx-2 d-sm-none"
+                @click="save"
+                :disabled="!isSaveAble"
+              >
+                <v-icon>mdi-content-save</v-icon>
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -173,6 +211,7 @@ export default defineComponent({
 .stepper-card-actions {
   position: absolute;
   bottom: 0;
+  width: 100%;
   padding-bottom: 12px;
 }
 
