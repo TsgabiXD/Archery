@@ -49,6 +49,7 @@
         :eventId="events[0]"
         @save="loadTargets"
         @close="hideNewTarget"
+        @error="throwError"
       >
       </new-target>
     </div>
@@ -189,7 +190,9 @@ export default defineComponent({
             }
           );
         })
-        .catch((err: AxiosError ) => this.throwError(err.response?.data as string));
+        .catch((err: AxiosError) =>
+          this.throwError(err.response?.data as string)
+        );
     },
     checkUserInEvent(): void {
       axios
@@ -197,7 +200,9 @@ export default defineComponent({
         .then((response) => {
           if (response.data.length !== 0) this.events = response.data;
         })
-        .catch((err: AxiosError ) => this.throwError(err.response?.data as string));
+        .catch((err: AxiosError) =>
+          this.throwError(err.response?.data as string)
+        );
     },
     throwError(errorMessage: string): void {
       this.$emit('error', errorMessage);

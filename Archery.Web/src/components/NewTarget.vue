@@ -1,5 +1,10 @@
 <template>
-  <v-dialog :value="show" fullscreen transition="dialog-bottom-transition">
+  <v-dialog
+    :value="show"
+    fullscreen
+    transition="dialog-bottom-transition"
+    attach=".v-main__wrap > div > div > div > div.row.no-gutters > div.col-12.col-md-6"
+  >
     <v-stepper v-model="step" flat>
       <v-stepper-header>
         <v-spacer></v-spacer>
@@ -142,6 +147,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import axios from '@/router/axios';
+import { AxiosError } from 'axios';
 
 export default defineComponent({
   props: {
@@ -172,7 +178,7 @@ export default defineComponent({
           this.$emit('save');
           this.close();
         })
-        .catch((err) => console.log(err));
+        .catch((err: any) => this.throwError(err.response.data));
     },
     close(): void {
       this.clearData();
@@ -182,6 +188,9 @@ export default defineComponent({
       this.step = 1;
       this.arrowCount = -1;
       this.hitArea = -1;
+    },
+    throwError(errorMessage: string): void {
+      this.$emit('error', errorMessage);
     },
   },
   computed: {

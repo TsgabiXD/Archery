@@ -3,7 +3,7 @@
     <v-container v-if="!bearerToken">
       <login-register-form @login="setToken" @error="throwError" />
     </v-container>
-    <user-home v-else-if="!isAdmin" :token="bearerToken" />
+    <user-home v-else-if="!isAdmin" :token="bearerToken" @error="throwError" />
     <v-container v-else>
       <start-event-form
         :token="bearerToken"

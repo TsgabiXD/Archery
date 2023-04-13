@@ -118,9 +118,10 @@ export default Vue.extend({
   },
 });
 </script>
+
 <style scoped>
 .messageList {
-  position: absolute;
+  position: fixed;
   left: 60px;
   bottom: 0;
 }

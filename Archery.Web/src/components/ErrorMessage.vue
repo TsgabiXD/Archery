@@ -20,5 +20,6 @@ export default defineComponent({
 <style scoped>
 .v-alert {
   transform: translate(-50px, -40%);
+  z-index: 500 !important;
 }
 </style>
