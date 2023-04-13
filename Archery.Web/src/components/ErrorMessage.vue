@@ -1,5 +1,5 @@
 <template>
-  <v-alert border="left" color="red" dismissible elevation="24" type="error" >
+  <v-alert border="left" color="red" dismissible elevation="24" type="error">
     {{ message }}
   </v-alert>
 </template>
@@ -16,3 +16,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.v-alert {
+  transform: translate(-50px, -40%);
+}
+</style>
