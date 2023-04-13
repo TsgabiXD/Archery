@@ -1,0 +1,18 @@
+# To learn more about .editorconfig see https://aka.ms/editorconfigdocs
+###############################
+# Core EditorConfig Options   #
+###############################
+root = true
+
+# All files
+[*]
+indent_style = space
+# Code files
+[*.{js,ts,json,tsx}]
+indent_size = 2
+indent_style = space
+end_of_line = crlf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+max_line_length = 120

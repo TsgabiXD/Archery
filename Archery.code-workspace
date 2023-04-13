@@ -4,5 +4,12 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {},
+	"extensions": {
+		"recommendations": [
+			"vue.volar",
+			"octref.vetur",
+			"DotJoshJohnson.xml"
+		]
+	}
 }

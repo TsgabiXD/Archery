@@ -1,0 +1,15 @@
+{
+    "recommendations": [
+        "formulahendry.auto-rename-tag",
+        "hediet.vscode-drawio",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "gruntfuggly.todo-tree",
+        "pflannery.vscode-versionlens",
+        "jrichardeau.vscode-vsproj",
+        "fernandoescolar.vscode-solution-explorer",
+        "ms-dotnettools.csharp",
+        "octref.vetur",
+        "dotjoshjohnson.xml"
+    ]
+}

@@ -2,25 +2,69 @@ using Microsoft.AspNetCore.Mvc;
 
 using Archery.Model;
 using Archery.Repository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Archery.Api.Controllers;
 
-[ApiController]
-[Route("[controller]")]
-public class ParcourController : ControllerBase
+[Authorize(Roles = "Admin")]
+[Route("api/[controller]")]
+public class ParcourController : ArcheryController
 {
-    private readonly ILogger<ParcourController> _logger;
     private readonly ParcourRepository _repository;
 
-    public ParcourController(ILogger<ParcourController> logger, ParcourRepository repository)
+    public ParcourController(ILogger<ParcourController> logger, ParcourRepository repository) : base(logger)
     {
-        _logger = logger;
-        _repository=repository;
+        _repository = repository;
     }
 
-    [HttpGet(Name = "GetParcourController")]
-    public IEnumerable<Parcour> Get()
+    [HttpGet]
+    [Route("GetParcours")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult Get()
     {
-        return _repository.GetAllParcours().ToArray();
+        try
+        {
+            return Ok(_repository.GetAllParcours());
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
+
+    [HttpGet]
+    [Route("GetParcour/{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult GetParcour(int id)
+    {
+        try
+        {
+            return Ok(_repository.GetParcour(id));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
+    }
+
+    [HttpPost]
+    [Route("AddParcour")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public IActionResult AddParcour(Parcour parcour)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(_repository.AddParcour(parcour));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
 }
