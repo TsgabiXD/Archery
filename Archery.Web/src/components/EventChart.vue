@@ -60,6 +60,7 @@ export default defineComponent({
         [14, 12, 10],
         [8, 6, 4],
       ],
+      delayed: false,
     };
   },
   computed: {
@@ -102,7 +103,27 @@ export default defineComponent({
       };
     },
     chartOptions() {
-      return { responsive: true };
+      return {
+        responsive: true,
+        animation: {
+          onComplete: () => {
+            this.delayed = true;
+          },
+          // TODO add type
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          delay: (context: any) => {
+            let delay = 0;
+            if (
+              context.type === 'data' &&
+              context.mode === 'default' &&
+              !this.delayed
+            ) {
+              delay = context.dataIndex * 300 + context.datasetIndex * 100;
+            }
+            return delay;
+          },
+        },
+      };
     },
     chartStyle() {
       return {
