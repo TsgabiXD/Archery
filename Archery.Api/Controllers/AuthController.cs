@@ -66,11 +66,12 @@ public class AuthController : ArcheryController
                     if (simpleUser is null)
                         throw new Exception("Problems at adding the user!");
 
-                    var accessToken = _tokenService.CreateToken(userInDb, simpleUser);
 
                     _context.SaveChanges();
-                    return Ok(new AuthResponse { Token = accessToken });
                 }
+
+                var accessToken = _tokenService.CreateToken(userInDb, simpleUser);
+                return Ok(new AuthResponse { Token = accessToken });
             }
 
             foreach (var error in result.Errors)
