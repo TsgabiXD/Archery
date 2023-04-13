@@ -124,11 +124,14 @@ export default defineComponent({
           })
           .catch((err: any) => {
             // TODO add Type
-            if(err.response?.data?.errors?.Password[0])
-            this.throwError(err.response?.data?.errors?.Password[0]);
+            if (err.response?.data?.errors?.Password[0])
+              this.throwError(err.response?.data?.errors?.Password[0]);
             // TODO add Type
-            if(err.response?.data?.errors?.Password[0])
-            this.throwError(err.response?.data?.errors?.Username[0]);
+            if (err.response?.data?.errors?.Password[0])
+              this.throwError(err.response?.data?.errors?.Username[0]);
+
+            if (typeof err.response?.data === 'string')
+              this.throwError(err.response?.data);
           })
           .finally(() => {
             this.isLoading = false;
@@ -146,11 +149,17 @@ export default defineComponent({
           })
           .catch((err: any) => {
             // TODO add Type
-            if(err.response?.data?.errors?.Password[0])
-            this.throwError(err.response?.data?.errors?.Password[0]);
+            if (err.response?.data?.errors?.Password[0])
+              this.throwError(err.response?.data?.errors?.Password[0]);
             // TODO add Type
-            if(err.response?.data?.errors?.Password[0])
-            this.throwError(err.response?.data?.errors?.Username[0]);
+            if (err.response?.data?.errors?.Password[0])
+              this.throwError(err.response?.data?.errors?.Username[0]);
+
+            if (typeof err.response?.data === 'string')
+              this.throwError(err.response?.data);
+
+            if (err.response?.data?.PasswordTooShort[0])
+              this.throwError(err.response?.data?.PasswordTooShort[0]);
           })
           .finally(() => {
             this.isLoading = false;
