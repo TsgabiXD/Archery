@@ -7,13 +7,11 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR "./Archery"
 COPY . .
 RUN ls -la
-RUN dotnet restore "Archery.Api/Archery.Api.csproj"
-RUN dotnet build "Archery.Api/Archery.Api.csproj" -c Release -o /app/build
-RUN dotnet publish "Archery.Api/Archery.Api.csproj" -c Release -o /app/publish
+RUN dotnet publish "Archery.Api/Archery.Api.csproj" -c Release -o /app
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine
 RUN ls -la
 WORKDIR /app
 RUN ls -la
-COPY --from=publish /app/publish .
+COPY --from=publish /app .
 ENTRYPOINT ["dotnet", "Archery.Api.dll"]
