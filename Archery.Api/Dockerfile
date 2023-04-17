@@ -14,7 +14,11 @@ RUN dir
 RUN dotnet build "Archery.Api.csproj" -c Release -o /app/build
 #RUN dotnet publish "Archery.Api.csproj" -c Release -o /app/publish
 
-#FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine
-#WORKDIR /app
-#COPY --from=publish /app/publish .
-#ENTRYPOINT ["dotnet", "Archery.Api.dll"]
+FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine
+RUN ls -la
+RUN dir
+WORKDIR /app
+RUN ls -la
+RUN dir
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "Archery.Api.dll"]
