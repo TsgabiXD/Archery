@@ -9,9 +9,6 @@ COPY . .
 RUN ls -la
 RUN dotnet publish "Archery.Api/Archery.Api.csproj" -c Release -o /app
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine
-RUN ls -la
 WORKDIR /app
 RUN ls -la
-COPY  /app .
 ENTRYPOINT ["dotnet", "Archery.Api.dll"]
