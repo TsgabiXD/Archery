@@ -5,9 +5,9 @@
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 COPY . .
-WORKDIR "./Archery/Archery.Api"
+WORKDIR "./Archery"
 RUN ls -la
-RUN dotnet restore
+RUN dotnet restore "Archery.Api.csproj"
 RUN dotnet build -c Release -o /app/build
 RUN dotnet publish -c Release -o /app/publish
 
