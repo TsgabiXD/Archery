@@ -4,6 +4,7 @@
 #For more information, please see https://aka.ms/containercompat
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR "./Archery"
 COPY . .
 RUN ls -la
 RUN dotnet restore "Archery.Api.csproj"
