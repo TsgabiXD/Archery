@@ -13,5 +13,5 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine
 RUN ls -la
 WORKDIR /app
 RUN ls -la
-COPY --from=publish /app .
+COPY  /app .
 ENTRYPOINT ["dotnet", "Archery.Api.dll"]
