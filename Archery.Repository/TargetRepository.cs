@@ -54,8 +54,8 @@ namespace Archery.Repository
 
         public string AddTarget(NewTarget newTarget, int userId)
         {
-            if (!(newTarget.ArrowCount > 0 && newTarget.ArrowCount < 4 &&
-                newTarget.HitArea > 0 && newTarget.HitArea < 4 &&
+            if (!(newTarget.ArrowCount >= 0 && newTarget.ArrowCount < 4 &&
+                newTarget.HitArea >= 0 && newTarget.HitArea < 4 &&
                 newTarget.EventId > 0))
                 throw new ArgumentException("Ungültige Werte!");
 
