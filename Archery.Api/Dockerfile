@@ -3,22 +3,16 @@
 #Depending on the operating system of the host machines(s) that will build or run the containers, the image specified in the FROM statement may need to be changed.
 #For more information, please see https://aka.ms/containercompat
 
-RUN ls -la
-RUN dir
-
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 COPY . .
 RUN ls -la
-RUN dir
 RUN dotnet restore "Archery.Api.csproj"
 RUN dotnet build "Archery.Api.csproj" -c Release -o /app/build
 RUN dotnet publish "Archery.Api.csproj" -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine
 RUN ls -la
-RUN dir
 WORKDIR /app
 RUN ls -la
-RUN dir
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Archery.Api.dll"]
