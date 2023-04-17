@@ -10,9 +10,9 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 COPY . .
 RUN ls -la
 RUN dir
-#RUN dotnet restore "Archery.Api.csproj"
+RUN dotnet restore "Archery.Api.csproj"
 RUN dotnet build "Archery.Api.csproj" -c Release -o /app/build
-#RUN dotnet publish "Archery.Api.csproj" -c Release -o /app/publish
+RUN dotnet publish "Archery.Api.csproj" -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine
 RUN ls -la
