@@ -5,6 +5,7 @@
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 COPY . .
+RUN ls -la
 WORKDIR "./Archery"
 RUN ls -la
 RUN dotnet restore "Archery.Api.csproj"
