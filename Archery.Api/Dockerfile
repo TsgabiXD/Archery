@@ -5,10 +5,10 @@
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 COPY . .
-WORKDIR "./Achery/"
+WORKDIR "./Archery/"
 RUN dotnet restore "./Archery.Api/Archery.Api.csproj"
-RUN dotnet build "./Archery.Api.csproj" -c Release -o /app/build
-RUN dotnet publish "./Archery.Api.csproj" -c Release -o /app/publish
+RUN dotnet build "./Archery.Archery.Api.csproj" -c Release -o /app/build
+RUN dotnet publish "./Archery.Archery.Api.csproj" -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine
 WORKDIR /app
