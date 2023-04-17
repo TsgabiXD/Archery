@@ -10,10 +10,10 @@ resources:
 
 variables:
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: 'e1ef0328-5bc5-4aef-93e6-d9d5db1bb7d3'
+  dockerRegistryServiceConnection: 'mycontainerregistryarcherry'
   imageRepository: 'archery'
   containerRegistry: 'mycontainerregistryarcherry.azurecr.io'
-  dockerfilePath: '$(Build.SourcesDirectory)/Archery.Api/Dockerfile'
+  dockerfilePath: '**/Dockerfile'
   tag: '$(Build.BuildId)'
 
   # Agent VM image name
