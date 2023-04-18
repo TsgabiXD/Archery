@@ -8,7 +8,6 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Publish'
-  Build.ArtifactStagingDirectory: 'Test'
 
 steps:
 - task: UseDotNet@2
@@ -22,5 +21,5 @@ steps:
   inputs:
     command: publish
     publishWebProjects: True
-    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    arguments: '--configuration $(BuildConfiguration) --output $(System.DefaultWorkingDirectory)'
     zipAfterPublish: True
