@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/c4015fa4-67bc-444b-bb81-0973c53a2745/resourceGroups/Archerry/providers/Microsoft.Web/sites/Archerry",
+    "appService.deploySubpath": "Archery.Api\\bin\\Publish"
+}
