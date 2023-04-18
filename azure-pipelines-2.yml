@@ -8,6 +8,7 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Publish'
+  Build.ArtifactStagingDirectory: 'Test'
 
 steps:
 
