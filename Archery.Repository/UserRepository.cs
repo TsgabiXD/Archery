@@ -21,7 +21,7 @@ public class UserRepository : AbstractRepository
             userIds.Add(aum.User!.Id);
 
         var inactiveUser = Context.User
-            .Where(u => !userIds.Contains(u.Id))
+            .Where(u => !userIds.Contains(u.Id) && !u.Hist)
             .AsNoTracking()
             .ToList();
 
