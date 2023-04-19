@@ -77,4 +77,30 @@ public class UserController : ArcheryController
             return BadRequest(ex.Message);
         }
     }
+
+    [Authorize(Roles = "User,Admin")]
+    [HttpDelete]
+    [Route("[action]")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public IActionResult DeleteUser(int? id)
+    {
+        try
+        {
+            var claims = _httpContextAccessor.HttpContext?.User.Claims;
+
+            var uid = int.Parse(claims?.Single(c => c.Type == "userId").Value!);
+            if (id is not null)
+            {
+
+                return Ok(_repository.DeleteUser((int)id));
+            }
+            else return Ok(_repository.DeleteUser(int.Parse(claims?.Single(c => c.Type == "userId").Value!)));
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }  
+       
+    }
 }

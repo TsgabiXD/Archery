@@ -15,7 +15,7 @@ namespace Archery.Api.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.4");
+            modelBuilder.HasAnnotation("ProductVersion", "7.0.5");
 
             modelBuilder.Entity("Archery.Model.Event", b =>
                 {
@@ -81,15 +81,6 @@ namespace Archery.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Parcour");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AnimalNumber = 30,
-                            Location = "Kirchschlag",
-                            Name = "Dinosaurier"
-                        });
                 });
 
             modelBuilder.Entity("Archery.Model.Target", b =>
@@ -124,6 +115,9 @@ namespace Archery.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(150)");
 
+                    b.Property<bool>("Hist")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(150)");
@@ -145,6 +139,7 @@ namespace Archery.Api.Migrations
                         {
                             Id = 1,
                             FirstName = "Tobias",
+                            Hist = false,
                             LastName = "Schachner",
                             NickName = "TsgabiXD",
                             Role = "Admin"
@@ -153,6 +148,7 @@ namespace Archery.Api.Migrations
                         {
                             Id = 2,
                             FirstName = "Luka",
+                            Hist = false,
                             LastName = "Walkner",
                             NickName = "woiges",
                             Role = "Admin"
@@ -161,6 +157,7 @@ namespace Archery.Api.Migrations
                         {
                             Id = 3,
                             FirstName = "Johannes",
+                            Hist = false,
                             LastName = "R�lz",
                             NickName = "JoRole",
                             Role = "Admin"

@@ -16,14 +16,14 @@ using Archery.Api.Auth;
 
 static async Task CreateDbAsync(IServiceProvider serviceProvider, IWebHostEnvironment env)
 {
-    if (!env.IsProduction())
-    {
-        await using AsyncServiceScope scope = serviceProvider.CreateAsyncScope();
+    //if (!env.IsProduction())
+    //{
+    await using AsyncServiceScope scope = serviceProvider.CreateAsyncScope();
 
-        var dbContext = scope.ServiceProvider.GetRequiredService<ArcheryContext>();
+    var dbContext = scope.ServiceProvider.GetRequiredService<ArcheryContext>();
 
-        await dbContext.Database.MigrateAsync();
-    }
+    await dbContext.Database.MigrateAsync();
+    //}
 }
 
 var pcName = Environment.MachineName;
@@ -63,7 +63,7 @@ builder.Services.AddControllers()
 
     .AddSwaggerGen(option =>
         {
-            option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
+            option.SwaggerDoc("v1", new OpenApiInfo { Title = "Archery API", Version = "v1" });
             option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 In = ParameterLocation.Header,
@@ -173,8 +173,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwagger(c => c.RouteTemplate = "/swagger/{documentName}/swagger.json");
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Archery API v1"));
 }
 
 app.UseHttpsRedirection();

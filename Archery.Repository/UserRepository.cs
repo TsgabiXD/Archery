@@ -84,4 +84,22 @@ public class UserRepository : AbstractRepository
         else // TODO remove after all admins has been registered
             return "Benutzer existiert bereits!";
     }
+
+    public string DeleteUser(int uid)
+    {
+        if (uid <= 0)
+            throw new InvalidOperationException("Invalid UserID");
+
+        var setUserNull = Context.User.SingleOrDefault(u => u.Id == uid);
+
+        if (setUserNull is null)
+            throw new Exception("Fail: User ist Null");
+
+        setUserNull.Hist = true;
+
+        Context.SaveChanges();
+        return "succedfully deletet";
+    }
+
+
 }

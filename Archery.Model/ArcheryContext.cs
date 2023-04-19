@@ -11,7 +11,7 @@ public class ArcheryContext : DbContext
     public DbSet<Event> Event { set; get; } = null!;
     public DbSet<Mapping> Mapping { set; get; } = null!;
 
-    
+
     public DbSet<IdentityUser> IdentityUser { set; get; } = null!;
 
     public ArcheryContext(DbContextOptions<ArcheryContext> options) : base(options) { }
@@ -19,40 +19,33 @@ public class ArcheryContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
-            .Entity<Parcour>()
-            .HasData(new
-            {
-                Id = 1,
-                Name = "Dinosaurier",
-                Location = "Kirchschlag",
-                AnimalNumber = 30
-            });
-
-        modelBuilder
-            .Entity<User>()
-            .HasData(new
-            {
-                Id = 1,
-                FirstName = "Tobias",
-                LastName = "Schachner",
-                NickName = "TsgabiXD",
-                Role = "Admin"
-            },
-            new
-            {
-                Id = 2,
-                FirstName = "Luka",
-                LastName = "Walkner",
-                NickName = "woiges",
-                Role = "Admin"
-            },
-            new
-            {
-                Id = 3,
-                FirstName = "Johannes",
-                LastName = "R�lz",
-                NickName = "JoRole",
-                Role = "Admin"
-            });
+         .Entity<User>()
+         .HasData(new
+         {
+             Id = 1,
+             FirstName = "Tobias",
+             LastName = "Schachner",
+             NickName = "TsgabiXD",
+             Role = "Admin",
+             Hist = false
+         },
+         new
+         {
+             Id = 2,
+             FirstName = "Luka",
+             LastName = "Walkner",
+             NickName = "woiges",
+             Role = "Admin",
+             Hist = false
+         },
+         new
+         {
+             Id = 3,
+             FirstName = "Johannes",
+             LastName = "R�lz",
+             NickName = "JoRole",
+             Role = "Admin",
+             Hist = false
+         });
     }
 }
