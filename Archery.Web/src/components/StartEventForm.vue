@@ -270,12 +270,6 @@ export default defineComponent({
           childData.focus();
         }, 500);
       },
-      update: function (el) {
-        window.setTimeout(() => {
-          let childData = el.querySelectorAll('input')[0];
-          if ((childData as HTMLInputElement).value === '') childData.focus();
-        }, 500);
-      },
     },
   },
 });
