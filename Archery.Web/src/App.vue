@@ -37,7 +37,9 @@
             </v-list-item-title>
           </v-list-item>
           <v-btn tile text block @click="logout"> Logout </v-btn>
-          <v-btn tile text block @click="deleteUser" color="red"> Löschen </v-btn>
+          <v-btn tile text block @click="deleteUser" color="red">
+            Löschen
+          </v-btn>
         </v-list>
       </v-menu>
     </v-app-bar>
@@ -92,6 +94,7 @@ export default Vue.extend({
     deleteUser(): void {
       axios
         .delete('user/deleteuser', this.axiosAuthConfig)
+        .then(() => this.logout())
         .catch((err: AxiosError) =>
           this.throwError(err.response?.data as string)
         );
