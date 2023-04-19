@@ -84,4 +84,15 @@ public class UserRepository : AbstractRepository
         else // TODO remove after all admins has been registered
             return "Benutzer existiert bereits!";
     }
+
+    public string DeleteUser(int uid)
+    {
+        if(Context.User.)
+
+
+
+        return "succedfully deletet";
+    }
+
+
 }

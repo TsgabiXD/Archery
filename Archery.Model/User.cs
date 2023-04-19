@@ -19,4 +19,6 @@ public class User
 
     public string Role { set; get; } = "User";
 
+    public bool Hist { get; set; }
+
 }
