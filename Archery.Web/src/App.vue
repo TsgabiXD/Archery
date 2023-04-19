@@ -37,6 +37,7 @@
             </v-list-item-title>
           </v-list-item>
           <v-btn tile text block @click="logout"> Logout </v-btn>
+          <v-btn tile text block @click="deleteUser" color="red"> Löschen </v-btn>
         </v-list>
       </v-menu>
     </v-app-bar>
@@ -63,6 +64,8 @@
 import Vue from 'vue';
 
 import ErrorMessage from '@/components/ErrorMessage.vue';
+import axios from './router/axios';
+import { AxiosError } from 'axios';
 
 export default Vue.extend({
   name: 'App',
@@ -86,8 +89,21 @@ export default Vue.extend({
     addErrorMessage(errorMessage: string): void {
       this.errorMessages.push(errorMessage);
     },
+    deleteUser(): void {
+      axios
+        .delete('user/deleteuser', this.axiosAuthConfig)
+        .catch((err: AxiosError) =>
+          this.throwError(err.response?.data as string)
+        );
+    },
+    throwError(errorMessage: string): void {
+      this.$emit('error', errorMessage);
+    },
   },
   computed: {
+    axiosAuthConfig(): object {
+      return { headers: { Authorization: `Bearer ${this.token}` } };
+    },
     tokenData() {
       if (this.token === '') return undefined;
 
