@@ -1,10 +1,5 @@
 <template>
-  <v-dialog
-    :value="show"
-    fullscreen
-    transition="dialog-bottom-transition"
-    attach=".v-main__wrap > div > div > div > div.row.no-gutters > div.col-12.col-md-6"
-  >
+  <v-dialog :value="show" fullscreen transition="dialog-bottom-transition">
     <v-stepper v-model="step" flat>
       <v-stepper-header>
         <v-spacer></v-spacer>
@@ -164,16 +159,18 @@ export default defineComponent({
   },
   methods: {
     save(): void {
+      let newTarget = {
+        arrowCount: this.arrowCount,
+        hitArea: this.hitArea,
+        eventId: this.eventId,
+      };
+
+      if (newTarget.arrowCount == 0) {
+        newTarget.hitArea = 0;
+      }
+
       axios
-        .post(
-          'target/addtarget',
-          {
-            arrowCount: this.arrowCount,
-            hitArea: this.hitArea,
-            eventId: this.eventId,
-          },
-          this.axiosAuthConfig
-        )
+        .post('target/addtarget', newTarget, this.axiosAuthConfig)
         .then(() => {
           this.$emit('save');
           this.close();
