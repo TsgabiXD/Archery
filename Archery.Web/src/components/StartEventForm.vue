@@ -51,6 +51,22 @@
                 Zur Zeit sind alle Benutzer beschäftigt.
               </div>
               <v-simple-table dense v-else>
+                <thead>
+                  <tr>
+                    <td></td>
+                    <td class="d-flex">
+                      <v-spacer></v-spacer>
+                      <v-switch
+                        v-model="selectAll"
+                        color="success"
+                        :value="true"
+                        dense
+                        class="ma-0"
+                      >
+                      </v-switch>
+                    </td>
+                  </tr>
+                </thead>
                 <tbody>
                   <tr v-for="user in users" :key="user.name">
                     <td>{{ user.nickName }}</td>
@@ -126,6 +142,7 @@ export default defineComponent({
         nickName: string;
         role: string;
       }[], // TODO add Type
+      selectAll: true,
     };
   },
   mounted() {
@@ -180,6 +197,9 @@ export default defineComponent({
         .get('user/getinactiveusers', this.axiosAuthConfig)
         .then((response) => {
           // TODO prüfen
+          this.eventUser = [];
+          this.users = [];
+
           this.users = response.data;
 
           response.data.forEach(
@@ -224,6 +244,22 @@ export default defineComponent({
     },
     lastEndedEventId() {
       this.getUsers();
+    },
+    selectAll(newVal: boolean) {
+      if (newVal)
+        this.users.forEach(
+          (e: {
+            id: number;
+            firstName: string;
+            lastName: string;
+            nickName: string;
+            role: string;
+          }) => {
+            // TODO add Type
+            this.eventUser.push(e);
+          }
+        );
+      else this.eventUser = [];
     },
   },
   directives: {
