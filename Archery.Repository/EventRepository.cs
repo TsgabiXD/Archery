@@ -101,7 +101,8 @@ namespace Archery.Repository
                     var targetsOfUser = m.Target;
 
                     foreach (var target in targetsOfUser)
-                        score += countingResults[target.ArrowCount - 1, target.HitArea - 1];
+                        if (target.ArrowCount != 0 && target.HitArea != 0)
+                            score += countingResults[target.ArrowCount - 1, target.HitArea - 1];
 
                     results.Last().User.Add(new() { NickName = uem.User!.NickName, Score = score });
                 }

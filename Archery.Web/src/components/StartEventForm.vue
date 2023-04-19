@@ -171,6 +171,7 @@ export default defineComponent({
         .then((response) => {
           // TODO prüfen
           this.parcours = response.data;
+          if (this.parcours.length === 0) this.isAddParcour = true;
         })
         .catch((err) => console.log(err));
     },
