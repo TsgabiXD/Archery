@@ -77,7 +77,7 @@ export default defineComponent({
         });
 
         data.forEach((d, i) => {
-          if (i - 1 >= 0 && d) data[i] = d + data[i - 1];
+          if (i - 1 >= 0 && d >= 0) data[i] = d + data[i - 1];
         });
 
         dataSets.push({
