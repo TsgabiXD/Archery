@@ -106,7 +106,7 @@ public class AuthController : ArcheryController
         var userInDb = _context.IdentityUser.FirstOrDefault(u => u.UserName == request.Username);
         var currentUser = _context.User.FirstOrDefault(u => u.NickName == request.Username);
 
-        if (userInDb is null || currentUser is null)
+        if (userInDb is null || currentUser is null || currentUser.Hist)
             return Unauthorized();
 
         var accessToken = _tokenService.CreateToken(userInDb, currentUser);
