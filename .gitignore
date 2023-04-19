@@ -350,3 +350,6 @@ MigrationBackup/
 .ionide/
 
 dist/
+*.db
+*.db-shm
+*.db-wal

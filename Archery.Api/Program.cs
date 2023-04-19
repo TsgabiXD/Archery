@@ -27,14 +27,13 @@ static async Task CreateDbAsync(IServiceProvider serviceProvider, IWebHostEnviro
 }
 
 var pcName = Environment.MachineName;
-var connection = pcName.Contains("03302") ? "DB" :
+var connection = pcName.Contains("03302") ? "DbWebService" :
                 pcName == "P3643" ? "DBLukaPC" :
                 pcName.Contains("AGVGCQH") ? "DBTobiPC" :
                 pcName.Contains("F186T1U") ? "DBTobiPCDaheim" :
                 pcName.Contains("336692") ? "DBTobiPCWork" :
                 pcName.Contains("ROELZJNB") ? "DBJohnnyPCWork" :
-                pcName == "webwk000000" ? "DbWebService" :
-                throw new Exception("No Specified PC!!!");
+                "DbWebService";
 
 var builder = WebApplication.CreateBuilder(args);
 

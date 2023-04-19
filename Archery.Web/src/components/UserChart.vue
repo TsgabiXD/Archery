@@ -102,9 +102,13 @@ export default defineComponent({
             pointStyle: 'circle',
             backgroundColor: '#8e24aa80',
             borderColor: '#8e24aa80',
-            data: d.targets.map(
-              (t) => this.countingResults[t.hitArea - 1][t.arrowCount - 1]
-            ),
+            data: d.targets.map((t) => {
+              if (t) {
+                if (t.arrowCount !== 0 && t.hitArea !== 0)
+                  return this.countingResults[t.arrowCount - 1][t.hitArea - 1];
+                else return 0;
+              } else return t;
+            }),
             yAxisID: 'y1',
           });
         }
