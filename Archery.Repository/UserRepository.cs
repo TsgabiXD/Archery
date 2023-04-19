@@ -13,12 +13,12 @@ public class UserRepository : AbstractRepository
             .Include(m => m.User)
             .Include(m => m.Event)
             .AsNoTracking()
-            .Where(m => m.Event.IsRunning && m.User != null);
+            .Where(m => m.Event.IsRunning && m.User != null && !m.User.Hist);
 
         List<int> userIds = new();
 
-        foreach (var ium in activeUserMappings)
-            userIds.Add(ium.User!.Id);
+        foreach (var aum in activeUserMappings)
+            userIds.Add(aum.User!.Id);
 
         var inactiveUser = Context.User
             .Where(u => !userIds.Contains(u.Id))
