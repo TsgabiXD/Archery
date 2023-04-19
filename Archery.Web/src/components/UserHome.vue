@@ -190,9 +190,10 @@ export default defineComponent({
             }
           );
         })
-        .catch((err: AxiosError) =>
-          this.throwError(err.response?.data as string)
-        );
+        .catch((err: AxiosError) => {
+          if ((err.response?.data as string) !== 'Event nicht gefunden!')
+            this.throwError(err.response?.data as string);
+        });
     },
     checkUserInEvent(): void {
       axios
