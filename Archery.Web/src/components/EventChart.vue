@@ -73,11 +73,11 @@ export default defineComponent({
             if (t.arrowCount !== 0 && t.hitArea !== 0)
               return this.countingResults[t.arrowCount - 1][t.hitArea - 1];
             else return 0;
-          } else return t;
+          } else return null;
         });
 
         data.forEach((d, i) => {
-          if (i - 1 >= 0 && d >= 0) data[i] = d + data[i - 1];
+          if (i - 1 >= 0 && d!==null && d >= 0) data[i] = d + Number(data[i - 1]);
         });
 
         dataSets.push({
