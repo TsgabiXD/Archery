@@ -37,13 +37,16 @@
             </v-list-item-title>
           </v-list-item>
           <v-btn tile text block @click="logout"> Logout </v-btn>
-          <v-btn tile text block @click="deleteUser" color="red">
+          <v-btn tile text block @click="deleteUserForm = true" color="red">
             Löschen
           </v-btn>
         </v-list>
       </v-menu>
     </v-app-bar>
     <v-main>
+      <v-overlay :value="deleteUserForm">
+        <v-btn color="red" @click="deleteUser"> Sicher? </v-btn>
+      </v-overlay>
       <router-view
         :resetToken="token"
         :adminMode="adminMode"
@@ -79,6 +82,7 @@ export default Vue.extend({
       token: '',
       adminMode: false,
       errorMessages: [] as string[],
+      deleteUserForm: false,
     };
   },
   methods: {
@@ -94,7 +98,10 @@ export default Vue.extend({
     deleteUser(): void {
       axios
         .delete('user/deleteuser', this.axiosAuthConfig)
-        .then(() => this.logout())
+        .then(() => {
+          this.logout();
+          this.deleteUserForm = false;
+        })
         .catch((err: AxiosError) =>
           this.throwError(err.response?.data as string)
         );
