@@ -27,10 +27,4 @@
     <ProjectReference Include="..\Archery.Repository\Archery.Repository.csproj" />
   </ItemGroup>
 
-	<ItemGroup>
-		<None Update="DB\Achery.db">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-	</ItemGroup>
-
 </Project>
