@@ -37,7 +37,14 @@
             </v-list-item-title>
           </v-list-item>
           <v-btn tile text block @click="logout"> Logout </v-btn>
-          <v-btn tile text block @click="deleteUserForm = true" color="red">
+          <v-btn
+            v-if="tokenData?.role !== 'Admin'"
+            tile
+            text
+            block
+            @click="deleteUserForm = true"
+            color="red"
+          >
             Löschen
           </v-btn>
         </v-list>
