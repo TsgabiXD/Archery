@@ -4,7 +4,9 @@
 			"path": "."
 		}
 	],
-	"settings": {},
+	"settings": {
+		"dotnet.defaultSolution": "Archery.sln"
+	},
 	"extensions": {
 		"recommendations": [
 			"vue.volar",
